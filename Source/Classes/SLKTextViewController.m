@@ -78,6 +78,14 @@
     self.inverted = YES;
     self.undoShakingEnabled = NO;
     self.keyboardPanningEnabled = YES;
+}
+
+
+#pragma mark - View lifecycle
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
     
     self.view.backgroundColor = [UIColor whiteColor];
     
@@ -88,9 +96,6 @@
     
     [self setupViewConstraints];
 }
-
-
-#pragma mark - View lifecycle
 
 - (void)viewWillAppear:(BOOL)animated
 {
