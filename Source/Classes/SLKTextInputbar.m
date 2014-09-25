@@ -467,7 +467,7 @@ NSString * const SCKInputAccessoryViewKeyboardFrameDidChangeNotification = @"com
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UITextViewTextDidChangeNotification object:nil];
-     [self removeObserver:self.leftButton.imageView forKeyPath:NSStringFromSelector(@selector(image))];
+    [_leftButton.imageView removeObserver:self forKeyPath:NSStringFromSelector(@selector(image))];
     
     _leftButton = nil;
     _rightButton = nil;
