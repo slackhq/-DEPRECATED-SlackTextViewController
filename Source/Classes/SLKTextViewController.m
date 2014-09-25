@@ -15,6 +15,7 @@
 //
 
 #import "SLKTextViewController.h"
+#import "SLKUIConstants.h"
 
 @interface SLKTextViewController () <UIGestureRecognizerDelegate, UIAlertViewDelegate>
 {
@@ -28,12 +29,17 @@
 @property (nonatomic, strong) NSLayoutConstraint *autoCompletionViewHC;
 @property (nonatomic, strong) NSLayoutConstraint *keyboardHC;
 
+// The single tap gesture used to dismiss the keyboard
 @property (nonatomic, strong) UIGestureRecognizer *singleTapGesture;
 
-@property (nonatomic, readonly, getter = isPanningKeyboard) BOOL panningKeyboard;
+// YES if the user is moving the keyboard with a gesture
+@property (nonatomic, readonly, getter = isMovingKeyboard) BOOL movingKeyboard;
 
 // Used for Auto-Completion
 @property (nonatomic, readonly) NSRange foundPrefixRange;
+
+// The current QuicktypeBar mode (hidden, collapsed or expanded)
+@property (nonatomic) SLKQuicktypeBarMode quicktypeBarMode;
 
 @end
 
@@ -83,9 +89,9 @@
 
 #pragma mark - View lifecycle
 
-- (void)viewDidLoad
+- (void)loadView
 {
-    [super viewDidLoad];
+    [super loadView];
     
     self.view.backgroundColor = [UIColor whiteColor];
     
@@ -155,7 +161,7 @@
     if (_tableView) {
         return _tableView;
     }
-    else if (_collectionView) {
+    if (_collectionView) {
         return _collectionView;
     }
     return nil;
@@ -220,7 +226,15 @@
 
 - (BOOL)isEditing
 {
-    return self.textInputbar.isEditing;
+    if (_tableView.isEditing) {
+        return YES;
+    }
+    
+    if (self.textInputbar.isEditing) {
+        return YES;
+    }
+    
+    return NO;
 }
 
 - (SLKTextView *)textView
@@ -293,6 +307,28 @@
     return roundf(height);
 }
 
+- (CGFloat)appropriateKeyboardHeight:(NSNotification *)notification
+{
+    CGRect endFrame = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    
+    CGFloat keyboardHeight = 0.0;
+    
+    // The height of the keyboard if showing
+    if ([notification.name isEqualToString:UIKeyboardWillShowNotification]) {
+        
+        keyboardHeight = MIN(CGRectGetWidth(endFrame), CGRectGetHeight(endFrame));
+        keyboardHeight -= CGRectGetHeight(self.tabBarController.tabBar.frame);
+    }
+    
+    // The height of the keyboard if sliding
+    if ([notification.name isEqualToString:SCKInputAccessoryViewKeyboardFrameDidChangeNotification]) {
+        keyboardHeight = CGRectGetHeight([UIScreen mainScreen].bounds)-endFrame.origin.y;
+        keyboardHeight -= CGRectGetHeight(self.tabBarController.tabBar.frame);
+    }
+    
+    return keyboardHeight;
+}
+
 - (CGFloat)appropriateScrollViewHeight
 {
     CGFloat height = self.view.bounds.size.height;
@@ -323,6 +359,34 @@
     _autoCompleting = autoCompleting;
     
     self.scrollViewProxy.scrollEnabled = !autoCompleting;
+    
+    // Updates the iOS8 QuickType bar mode based on the keyboard height constant
+    if (UI_IS_IOS8_AND_HIGHER) {
+        [self updateQuicktypeBarMode];
+    }
+}
+
+- (void)updateQuicktypeBarMode
+{
+    CGFloat quicktypeBarHeight = self.keyboardHC.constant-minimumKeyboardHeight();
+    
+    // Updates the QuickType bar mode based on the keyboard height constant
+    self.quicktypeBarMode = SLKQuicktypeBarModeForHeight(quicktypeBarHeight);
+}
+
+- (void)setQuicktypeBarMode:(SLKQuicktypeBarMode)quicktypeBarMode
+{
+    _quicktypeBarMode = quicktypeBarMode;
+    
+    BOOL shouldHide = quicktypeBarMode == SLKQuicktypeBarModeExpanded  && self.autoCompleting;
+    
+    // Skips if the QuickType Bar is minimised
+    if (quicktypeBarMode == SLKQuicktypeBarModeCollapsed) {
+        return;
+    }
+    
+    // Hides the iOS8 QuicktypeBar if visible and auto-completing mode is on
+    [self.textView disableQuicktypeBar:shouldHide];
 }
 
 - (void)setKeyboardPanningEnabled:(BOOL)enabled
@@ -355,6 +419,10 @@
     
     self.scrollViewProxy.transform = CGAffineTransformMake(1, 0, 0, inverted ? -1 : 1, 0, 0);
     self.edgesForExtendedLayout = inverted ? UIRectEdgeNone : UIRectEdgeAll;
+    
+    if (!inverted && ((self.edgesForExtendedLayout & UIRectEdgeBottom) > 0)) {
+        self.edgesForExtendedLayout = self.edgesForExtendedLayout & ~UIRectEdgeBottom;
+    }
 }
 
 
@@ -607,17 +675,18 @@
 
 - (void)willShowOrHideKeyboard:(NSNotification *)notification
 {
+    if (self.textView.didNotResignFirstResponder) {
+        return;
+    }
+    
     // Skips this if it's not the expected textView.
     if (![self.textView isFirstResponder]) {
         return;
     }
     
-    CGRect endFrame = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
     NSInteger curve = [notification.userInfo[UIKeyboardAnimationCurveUserInfoKey] integerValue];
     NSTimeInterval duration = [notification.userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
 
-    CGFloat keyboardHeight = MIN(CGRectGetWidth(endFrame), CGRectGetHeight(endFrame));
-    
     // Checks if it's showing or hidding the keyboard
     BOOL show = [notification.name isEqualToString:UIKeyboardWillShowNotification];
     
@@ -625,7 +694,7 @@
     [self.scrollViewProxy stopScrolling];
     
     // Updates the height constraints' constants
-    self.keyboardHC.constant = show ? keyboardHeight : 0.0;
+    self.keyboardHC.constant = [self appropriateKeyboardHeight:notification];
     self.scrollViewHC.constant = [self appropriateScrollViewHeight];
     
     if (!show && self.isAutoCompleting) {
@@ -641,6 +710,10 @@
 
 - (void)didShowOrHideKeyboard:(NSNotification *)notification
 {
+    if (self.textView.didNotResignFirstResponder) {
+        return;
+    }
+    
     // Checks if it's showing or hidding the keyboard
     BOOL show = [notification.name isEqualToString:UIKeyboardDidShowNotification];
     
@@ -658,14 +731,18 @@
         return;
     }
     
-    CGRect endFrame = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    CGFloat keyboardHeight = [self appropriateKeyboardHeight:notification];
     
-    self.keyboardHC.constant = CGRectGetHeight([UIScreen mainScreen].bounds)-endFrame.origin.y;
+    if (keyboardHeight < 0) {
+        return;
+    }
+    
+    self.keyboardHC.constant = keyboardHeight;
     self.scrollViewHC.constant = [self appropriateScrollViewHeight];
     
-    _panningKeyboard = self.scrollViewProxy.isDragging;
+    _movingKeyboard = self.scrollViewProxy.isDragging;
     
-    if (self.isInverted && self.isPanningKeyboard && !CGPointEqualToPoint(self.scrollViewProxy.contentOffset, _draggingOffset)) {
+    if (self.isInverted && self.isMovingKeyboard && !CGPointEqualToPoint(self.scrollViewProxy.contentOffset, _draggingOffset)) {
         self.scrollViewProxy.contentOffset = _draggingOffset;
     }
 
@@ -720,6 +797,11 @@
 
 - (void)didChangeTextViewContentSize:(NSNotification *)notification
 {
+    // Skips this it's not the expected textView.
+    if (![self.textView isEqual:notification.object]) {
+        return;
+    }
+    
     [self textDidUpdate:YES];
 }
 
@@ -955,7 +1037,7 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    if (!self.isPanningKeyboard) {
+    if (!self.isMovingKeyboard) {
         _draggingOffset = scrollView.contentOffset;
     }
 }
@@ -1121,11 +1203,6 @@
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-}
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
 }
 
 - (void)dealloc
