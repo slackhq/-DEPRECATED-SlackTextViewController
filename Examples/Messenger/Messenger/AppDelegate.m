@@ -7,9 +7,11 @@
 //
 
 #import "AppDelegate.h"
+
+#import "SLKTextViewController.h"
 #import "MessageViewController.h"
 
-@interface AppDelegate ()
+@interface AppDelegate () <UIPopoverControllerDelegate>
 @end
 
 @implementation AppDelegate
@@ -23,7 +25,7 @@
     
     [self.window makeKeyAndVisible];
     
-    return self.window;
+    return YES;
 }
 
 @end

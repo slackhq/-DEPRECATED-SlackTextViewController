@@ -21,6 +21,8 @@
 #import "UITextView+SLKAdditions.h"
 #import "UIView+SLKAdditions.h"
 
+#import "SLKUIConstants.h"
+
 NSString * const SCKInputAccessoryViewKeyboardFrameDidChangeNotification = @"com.slack.TextViewController.TextInputbar.FrameDidChange";
 
 @interface SLKTextInputbar () <UITextViewDelegate>
@@ -62,6 +64,8 @@ NSString * const SCKInputAccessoryViewKeyboardFrameDidChangeNotification = @"com
     [self setupViewConstraints];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeTextView:) name:UITextViewTextDidChangeNotification object:nil];
+    
+    [self.leftButton.imageView addObserver:self forKeyPath:NSStringFromSelector(@selector(image)) options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:NULL];
 }
 
 
@@ -99,25 +103,26 @@ NSString * const SCKInputAccessoryViewKeyboardFrameDidChangeNotification = @"com
         _textView.translatesAutoresizingMaskIntoConstraints = NO;
         _textView.font = [UIFont systemFontOfSize:15.0];
         _textView.maxNumberOfLines = [self defaultNumberOfLines];
+        _textView.delegate = self;
         
-#if DEBUG && TARGET_IPHONE_SIMULATOR
-        _textView.autocorrectionType = UITextAutocorrectionTypeNo;
-        _textView.spellCheckingType = UITextSpellCheckingTypeNo;
-#else
         _textView.autocorrectionType = UITextAutocorrectionTypeDefault;
         _textView.spellCheckingType = UITextSpellCheckingTypeDefault;
-#endif
-        
         _textView.autocapitalizationType = UITextAutocapitalizationTypeSentences;
         _textView.keyboardType = UIKeyboardTypeTwitter;
         _textView.returnKeyType = UIReturnKeyDefault;
         _textView.enablesReturnKeyAutomatically = YES;
         _textView.scrollIndicatorInsets = UIEdgeInsetsMake(0, -1, 0, 1);
-        _textView.delegate = self;
         
         _textView.layer.cornerRadius = 5.0;
         _textView.layer.borderWidth = 1.0;
         _textView.layer.borderColor =  [UIColor colorWithRed:200.0/255.0 green:200.0/255.0 blue:205.0/255.0 alpha:1.0].CGColor;
+        
+        // Adds an aditional action to a private gesture to detect when the magnifying glass becomes visible
+        for (UIGestureRecognizer *gesture in _textView.gestureRecognizers) {
+            if ([gesture isKindOfClass:NSClassFromString(@"UIVariableDelayLoupeGesture")]) {
+                [gesture addTarget:self action:@selector(willShowLoupe:)];
+            }
+        }
     }
     return _textView;
 }
@@ -199,16 +204,14 @@ NSString * const SCKInputAccessoryViewKeyboardFrameDidChangeNotification = @"com
 
 - (NSUInteger)defaultNumberOfLines
 {
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        if (CGRectGetHeight([UIScreen mainScreen].bounds) >= 568.0) {
-            return 6;
-        }
-        else {
-            return 4;
-        }
+    if (UI_IS_IPAD) {
+        return 8;
+    }
+    if (UI_IS_IPHONE4) {
+        return 4;
     }
     else {
-        return 8;
+        return 6;
     }
 }
 
@@ -301,6 +304,24 @@ NSString * const SCKInputAccessoryViewKeyboardFrameDidChangeNotification = @"com
 }
 
 
+#pragma mark - Magnifying Glass handling
+
+- (void)willShowLoupe:(UIGestureRecognizer *)gesture
+{
+    if (gesture.state == UIGestureRecognizerStateChanged) {
+        self.textView.loupeVisible = YES;
+    }
+    else {
+        self.textView.loupeVisible = NO;
+    }
+    
+    // We still need to notify a selection change in the textview after the magnifying class is dismissed
+    if (gesture.state == UIGestureRecognizerStateEnded) {
+        [self textViewDidChangeSelection:self.textView];
+    }
+}
+
+
 #pragma mark - UITextViewDelegate
 
 - (BOOL)textViewShouldBeginEditing:(UITextView *)textView
@@ -331,6 +352,10 @@ NSString * const SCKInputAccessoryViewKeyboardFrameDidChangeNotification = @"com
 
 - (void)textViewDidChangeSelection:(UITextView *)textView
 {
+    if (self.textView.isLoupeVisible) {
+        return;
+    }
+    
     NSDictionary *userInfo = @{@"range": [NSValue valueWithRange:textView.selectedRange]};
     [[NSNotificationCenter defaultCenter] postNotificationName:SLKTextViewSelectionDidChangeNotification object:self.textView userInfo:userInfo];
 }
@@ -339,7 +364,7 @@ NSString * const SCKInputAccessoryViewKeyboardFrameDidChangeNotification = @"com
 {
     SLKTextView *textView = (SLKTextView *)notification.object;
     
-    // If it's not the expected textView, return.
+    // Skips this it's not the expected textView.
     if (![textView isEqual:self.textView]) {
         return;
     }
@@ -393,7 +418,7 @@ NSString * const SCKInputAccessoryViewKeyboardFrameDidChangeNotification = @"com
                               };
     
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(==hor)-[leftButton(0)]-(<=hor)-[textView]-(==hor)-[rightButton(0)]-(==hor)-|" options:0 metrics:metrics views:views]];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=0)-[leftButton(0)]-(0)-|" options:0 metrics:metrics views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=0)-[leftButton(0)]-(0@750)-|" options:0 metrics:metrics views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=rightVerMargin)-[rightButton]-(<=rightVerMargin)-|" options:0 metrics:metrics views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[accessoryView(0)]-(<=ver)-[textView(==minTextViewHeight@250)]-(==ver)-|" options:0 metrics:metrics views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[accessoryView]|" options:0 metrics:metrics views:views]];
@@ -431,7 +456,7 @@ NSString * const SCKInputAccessoryViewKeyboardFrameDidChangeNotification = @"com
     {
         self.accessoryViewHC.constant = zero;
 
-        CGSize leftButtonSize = [self.leftButton imageForState:UIControlStateNormal].size;
+        CGSize leftButtonSize = [self.leftButton imageForState:self.leftButton.state].size;
         
         self.leftButtonWC.constant = roundf(leftButtonSize.width);
         self.leftButtonHC.constant = roundf(leftButtonSize.height);
@@ -443,12 +468,33 @@ NSString * const SCKInputAccessoryViewKeyboardFrameDidChangeNotification = @"com
     }
 }
 
+#pragma mark - Observers
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([object isEqual:self.leftButton.imageView] && [keyPath isEqualToString:NSStringFromSelector(@selector(image))]) {
+        UIImage *newImage = change[NSKeyValueChangeNewKey];
+        UIImage *oldImage = change[NSKeyValueChangeOldKey];
+        
+        if ([newImage isEqual:oldImage]) {
+            return;
+        }
+        
+        [self updateConstraintConstants];
+    }
+    else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
+}
+
 
 #pragma mark - Lifeterm
 
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UITextViewTextDidChangeNotification object:nil];
+    
+    [_leftButton.imageView removeObserver:self forKeyPath:NSStringFromSelector(@selector(image))];
     
     _leftButton = nil;
     _rightButton = nil;
@@ -474,20 +520,30 @@ NSString * const SCKInputAccessoryViewKeyboardFrameDidChangeNotification = @"com
 
 @implementation SCKInputAccessoryView
 
+- (NSString *)keyPathForKeyboardHandling
+{
+    if (UI_IS_IOS8_AND_HIGHER) {
+        return NSStringFromSelector(@selector(center));
+    }
+    else {
+        return NSStringFromSelector(@selector(frame));
+    }
+}
+
 - (void)willMoveToSuperview:(UIView *)newSuperview
 {
     if (self.superview) {
-        [self.superview removeObserver:self forKeyPath:NSStringFromSelector(@selector(center))];
+        [self.superview removeObserver:self forKeyPath:[self keyPathForKeyboardHandling]];
     }
     
-    [newSuperview addObserver:self forKeyPath:NSStringFromSelector(@selector(center)) options:0 context:NULL];
+    [newSuperview addObserver:self forKeyPath:[self keyPathForKeyboardHandling] options:0 context:NULL];
     
     [super willMoveToSuperview:newSuperview];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    if ([object isEqual:self.superview] && [keyPath isEqualToString:NSStringFromSelector(@selector(center))])
+    if ([object isEqual:self.superview] && [keyPath isEqualToString:[self keyPathForKeyboardHandling]])
     {
         NSDictionary *userInfo = @{UIKeyboardFrameEndUserInfoKey:[NSValue valueWithCGRect:[object frame]]};
         [[NSNotificationCenter defaultCenter] postNotificationName:SCKInputAccessoryViewKeyboardFrameDidChangeNotification object:nil userInfo:userInfo];
@@ -497,7 +553,7 @@ NSString * const SCKInputAccessoryViewKeyboardFrameDidChangeNotification = @"com
 - (void)dealloc
 {
     if (self.superview) {
-        [self.superview removeObserver:self forKeyPath:NSStringFromSelector(@selector(center))];
+        [self.superview removeObserver:self forKeyPath:[self keyPathForKeyboardHandling]];
     }
 }
 

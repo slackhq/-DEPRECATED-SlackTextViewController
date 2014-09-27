@@ -175,16 +175,17 @@ static NSString *AutoCompletionCellIdentifier = @"AutoCompletionCell";
 
 - (void)didPressLeftButton:(id)sender
 {
+    NSLog(@"%s",__FUNCTION__);
+    
     [super didPressLeftButton:sender];
 }
 
 - (void)didPressRightButton:(id)sender
 {
-    // This little trick validates any pending auto-correction or auto-spelling just after hitting the 'Send' button (in iOS7)
-    if ([self.textView isFirstResponder]) {
-        [self.textView resignFirstResponder];
-        [self.textView becomeFirstResponder];
-    }
+    NSLog(@"%s",__FUNCTION__);
+    
+    // This little trick validates any pending auto-correction or auto-spelling just after hitting the 'Send' button
+    [self.textView refreshFirstResponder];
     
     NSString *message = [self.textView.text copy];
     
@@ -244,18 +245,18 @@ static NSString *AutoCompletionCellIdentifier = @"AutoCompletionCell";
         array = self.users;
         
         if (word.length > 0) {
-            array = [array filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self BEGINSWITH[c] %@ AND self !=[c] %@", word, word]];
+            array = [array filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self BEGINSWITH[c] %@", word]];
         }
     }
     else if ([prefix isEqualToString:@"#"])
     {
         array = self.channels;
         if (word.length > 0) {
-            array = [array filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self BEGINSWITH[c] %@ AND self !=[c] %@", word, word]];
+            array = [array filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self BEGINSWITH[c] %@", word]];
         }
     }
     else if ([prefix isEqualToString:@":"] && word.length > 0) {
-        array = [self.emojis filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self BEGINSWITH[c] %@ AND NOT (self CONTAINS[cd] %@)", word, prefix]];
+        array = [self.emojis filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self BEGINSWITH[c] %@", word]];
     }
     
     if (array.count > 0) {

@@ -27,16 +27,16 @@
 @interface SLKTextViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource>
 
 /** The main table view managed by the controller object. Default view if initialized with -init */
-@property (nonatomic, readonly) UITableView *tableView;
+@property (nonatomic, readonly) IBOutlet UITableView *tableView;
 
 /** The main collection view managed by the controller object. Not nil if the controller is initialised with -initWithCollectionViewLayout: */
-@property (nonatomic, readonly) UICollectionView *collectionView;
+@property (nonatomic, readonly) IBOutlet UICollectionView *collectionView;
 
 /** The bottom toolbar containing a text view and buttons. */
-@property (nonatomic, readonly) SLKTextInputbar *textInputbar;
+@property (nonatomic, readonly) IBOutlet SLKTextInputbar *textInputbar;
 
 /** The typing indicator used to display user names horizontally. */
-@property (nonatomic, readonly) SLKTypingIndicatorView *typingIndicatorView;
+@property (nonatomic, readonly) IBOutlet SLKTypingIndicatorView *typingIndicatorView;
 
 /** YES if control's animation should have bouncy effects. Default is YES. */
 @property (nonatomic, assign) BOOL bounces;
@@ -47,7 +47,8 @@
 /** YES if keyboard can be dismissed gradually with a vertical panning gesture. Default is YES. */
 @property (nonatomic, assign) BOOL keyboardPanningEnabled;
 
-/** YES if the main table view is inverted. Default is YES.
+/**
+ YES if the main table view is inverted. Default is YES.
  @discussion This allows the table view to start from the bottom like any typical messaging interface.
  If inverted, you must assign the same transform property to your cells to match the orientation (ie: cell.transform = tableView.transform;)
  Inverting the table view will enable some great features such as content offset corrections automatically when resizing the text input and/or showing autocompletion.
@@ -55,6 +56,9 @@
  Updating this value also changes 'edgesForExtendedLayout' value. When inverted, it must be UIRectEdgeNone, to display correctly all the elements. Otherwise, UIRectEdgeAll is set.
  */
 @property (nonatomic, assign, getter = isInverted) BOOL inverted;
+
+/** YES if the view controller is presented inside of a popover controller. If YES, the keyboard won't move the text input bar and tapping on the tableView/collectionView will not cause the keyboard to be dismissed. This doesn't do anything on iPhone. */
+@property (nonatomic, getter = isPresentedInPopover) BOOL presentedInPopover;
 
 /** Convenience accessors (accessed through the text input bar) */
 @property (nonatomic, readonly) SLKTextView *textView;
@@ -122,7 +126,7 @@
 
 /**
  Notifies the view controller when the left button's action has been triggered, manually.
- @discussion You can override this method to perform additional tasks associated with the left button. You MUST call super at some point in your implementation.
+ @discussion You can override this method to perform additional tasks associated with the left button. You don't need call super since this method doesn't do anything.
  
  @param sender The object calling this method.
  */
@@ -207,7 +211,7 @@
 ///------------------------------------------------
 
 /** The table view used to display autocompletion results. */
-@property (nonatomic, readonly) UITableView *autoCompletionView;
+@property (nonatomic, readonly) IBOutlet UITableView *autoCompletionView;
 
 /** The recently found prefix symbol used as prefix for autocompletion mode. */
 @property (nonatomic, readonly) NSString *foundPrefix;

@@ -15,25 +15,33 @@
 //
 
 #import "SLKTextViewController.h"
+#import "SLKUIConstants.h"
+
+#import <objc/runtime.h>
 
 @interface SLKTextViewController () <UIGestureRecognizerDelegate, UIAlertViewDelegate>
 {
     CGPoint _draggingOffset;
 }
 
-// Used for Auto-Layout constraints, and update its constants
+// Auto-Layout height constraints used for updating their constants
 @property (nonatomic, strong) NSLayoutConstraint *scrollViewHC;
 @property (nonatomic, strong) NSLayoutConstraint *textInputbarHC;
 @property (nonatomic, strong) NSLayoutConstraint *typingIndicatorViewHC;
 @property (nonatomic, strong) NSLayoutConstraint *autoCompletionViewHC;
 @property (nonatomic, strong) NSLayoutConstraint *keyboardHC;
 
+// The single tap gesture used to dismiss the keyboard
 @property (nonatomic, strong) UIGestureRecognizer *singleTapGesture;
 
-@property (nonatomic, readonly, getter = isPanningKeyboard) BOOL panningKeyboard;
+// YES if the user is moving the keyboard with a gesture
+@property (nonatomic, readonly, getter = isMovingKeyboard) BOOL movingKeyboard;
 
 // Used for Auto-Completion
 @property (nonatomic, readonly) NSRange foundPrefixRange;
+
+// The current QuicktypeBar mode (hidden, collapsed or expanded)
+@property (nonatomic) SLKQuicktypeBarMode quicktypeBarMode;
 
 @end
 
@@ -44,8 +52,14 @@
 @synthesize textInputbar = _textInputbar;
 @synthesize autoCompletionView = _autoCompletionView;
 @synthesize autoCompleting = _autoCompleting;
+@synthesize presentedInPopover = _presentedInPopover;
 
 #pragma mark - Initializer
+
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    return [self init];
+}
 
 - (instancetype)init
 {
@@ -54,7 +68,7 @@
 
 - (instancetype)initWithTableViewStyle:(UITableViewStyle)style
 {
-    if (self = [super init]) {
+    if (self = [super initWithNibName:nil bundle:nil]) {
         [self tableViewWithStyle:style];
         [self commonInit];
     }
@@ -63,7 +77,7 @@
 
 - (instancetype)initWithCollectionViewLayout:(UICollectionViewLayout *)layout
 {
-    if (self = [super init]) {
+    if (self = [super initWithNibName:nil bundle:nil]) {
         [self collectionViewWithLayout:layout];
         [self commonInit];
     }
@@ -78,6 +92,14 @@
     self.inverted = YES;
     self.undoShakingEnabled = NO;
     self.keyboardPanningEnabled = YES;
+}
+
+
+#pragma mark - View lifecycle
+
+- (void)loadView
+{
+    [super loadView];
     
     self.view.backgroundColor = [UIColor whiteColor];
     
@@ -88,9 +110,6 @@
     
     [self setupViewConstraints];
 }
-
-
-#pragma mark - View lifecycle
 
 - (void)viewWillAppear:(BOOL)animated
 {
@@ -150,7 +169,7 @@
     if (_tableView) {
         return _tableView;
     }
-    else if (_collectionView) {
+    if (_collectionView) {
         return _collectionView;
     }
     return nil;
@@ -215,7 +234,25 @@
 
 - (BOOL)isEditing
 {
-    return self.textInputbar.isEditing;
+    if (_tableView.isEditing) {
+        return YES;
+    }
+    
+    if (self.textInputbar.isEditing) {
+        return YES;
+    }
+    
+    return NO;
+}
+
+- (BOOL)isPresentedInPopover
+{
+    return _presentedInPopover && UI_IS_IPAD;
+}
+
++ (BOOL)accessInstanceVariablesDirectly
+{
+    return NO;
 }
 
 - (SLKTextView *)textView
@@ -288,6 +325,28 @@
     return roundf(height);
 }
 
+- (CGFloat)appropriateKeyboardHeight:(NSNotification *)notification
+{
+    CGRect endFrame = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    
+    CGFloat keyboardHeight = 0.0;
+    CGFloat tabBarHeight = (![self.tabBarController.tabBar isHidden]) ? CGRectGetHeight(self.tabBarController.tabBar.frame) : 0.0;
+    
+    // The height of the keyboard if showing
+    if ([notification.name isEqualToString:UIKeyboardWillShowNotification]) {
+        keyboardHeight = MIN(CGRectGetWidth(endFrame), CGRectGetHeight(endFrame));
+        keyboardHeight -= tabBarHeight;
+    }
+    
+    // The height of the keyboard if sliding
+    if ([notification.name isEqualToString:SCKInputAccessoryViewKeyboardFrameDidChangeNotification]) {
+        keyboardHeight = CGRectGetHeight([UIScreen mainScreen].bounds)-endFrame.origin.y;
+        keyboardHeight -= tabBarHeight;
+    }
+    
+    return keyboardHeight;
+}
+
 - (CGFloat)appropriateScrollViewHeight
 {
     CGFloat height = self.view.bounds.size.height;
@@ -318,6 +377,34 @@
     _autoCompleting = autoCompleting;
     
     self.scrollViewProxy.scrollEnabled = !autoCompleting;
+    
+    // Updates the iOS8 QuickType bar mode based on the keyboard height constant
+    if (UI_IS_IOS8_AND_HIGHER) {
+        [self updateQuicktypeBarMode];
+    }
+}
+
+- (void)updateQuicktypeBarMode
+{
+    CGFloat quicktypeBarHeight = self.keyboardHC.constant-minimumKeyboardHeight();
+    
+    // Updates the QuickType bar mode based on the keyboard height constant
+    self.quicktypeBarMode = SLKQuicktypeBarModeForHeight(quicktypeBarHeight);
+}
+
+- (void)setQuicktypeBarMode:(SLKQuicktypeBarMode)quicktypeBarMode
+{
+    _quicktypeBarMode = quicktypeBarMode;
+    
+    BOOL shouldHide = quicktypeBarMode == SLKQuicktypeBarModeExpanded  && self.autoCompleting;
+    
+    // Skips if the QuickType Bar is minimised
+    if (quicktypeBarMode == SLKQuicktypeBarModeCollapsed) {
+        return;
+    }
+    
+    // Hides the iOS8 QuicktypeBar if visible and auto-completing mode is on
+    [self.textView disableQuicktypeBar:shouldHide];
 }
 
 - (void)setKeyboardPanningEnabled:(BOOL)enabled
@@ -350,6 +437,10 @@
     
     self.scrollViewProxy.transform = CGAffineTransformMake(1, 0, 0, inverted ? -1 : 1, 0, 0);
     self.edgesForExtendedLayout = inverted ? UIRectEdgeNone : UIRectEdgeAll;
+    
+    if (!inverted && ((self.edgesForExtendedLayout & UIRectEdgeBottom) > 0)) {
+        self.edgesForExtendedLayout = self.edgesForExtendedLayout & ~UIRectEdgeBottom;
+    }
 }
 
 
@@ -544,6 +635,11 @@
 
 - (void)didTapScrollView
 {
+    // Skips if it is presented inside of a popover
+    if (self.isPresentedInPopover) {
+        return;
+    }
+    
     [self dismissKeyboard:YES];
 }
 
@@ -602,17 +698,24 @@
 
 - (void)willShowOrHideKeyboard:(NSNotification *)notification
 {
+    // Skips if it is presented inside of a popover
+    if (self.isPresentedInPopover) {
+        return;
+    }
+    
+    // Skips if textview did refresh only
+    if (self.textView.didNotResignFirstResponder) {
+        return;
+    }
+    
     // Skips this if it's not the expected textView.
     if (![self.textView isFirstResponder]) {
         return;
     }
     
-    CGRect endFrame = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
     NSInteger curve = [notification.userInfo[UIKeyboardAnimationCurveUserInfoKey] integerValue];
     NSTimeInterval duration = [notification.userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
 
-    CGFloat keyboardHeight = MIN(CGRectGetWidth(endFrame), CGRectGetHeight(endFrame));
-    
     // Checks if it's showing or hidding the keyboard
     BOOL show = [notification.name isEqualToString:UIKeyboardWillShowNotification];
     
@@ -620,7 +723,7 @@
     [self.scrollViewProxy stopScrolling];
     
     // Updates the height constraints' constants
-    self.keyboardHC.constant = show ? keyboardHeight : 0.0;
+    self.keyboardHC.constant = [self appropriateKeyboardHeight:notification];
     self.scrollViewHC.constant = [self appropriateScrollViewHeight];
     
     if (!show && self.isAutoCompleting) {
@@ -636,6 +739,16 @@
 
 - (void)didShowOrHideKeyboard:(NSNotification *)notification
 {
+    // Skips if it is presented inside of a popover
+    if (self.isPresentedInPopover) {
+        return;
+    }
+    
+    // Skips if textview did refresh only
+    if (self.textView.didNotResignFirstResponder) {
+        return;
+    }
+    
     // Checks if it's showing or hidding the keyboard
     BOOL show = [notification.name isEqualToString:UIKeyboardDidShowNotification];
     
@@ -647,20 +760,29 @@
 
 - (void)didChangeKeyboardFrame:(NSNotification *)notification
 {
+    // Skips if it is presented inside of a popover
+    if (self.isPresentedInPopover) {
+        return;
+    }
+    
     // Skips this if it's not the expected textView.
     // Checking the keyboard height constant helps to disable the view constraints update on iPad when the keyboard is undocked.
     if (![self.textView isFirstResponder] || self.keyboardHC.constant == 0) {
         return;
     }
     
-    CGRect endFrame = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    CGFloat keyboardHeight = [self appropriateKeyboardHeight:notification];
     
-    self.keyboardHC.constant = CGRectGetHeight([UIScreen mainScreen].bounds)-endFrame.origin.y;
+    if (keyboardHeight < 0) {
+        keyboardHeight = 0.0;
+    }
+    
+    self.keyboardHC.constant = keyboardHeight;
     self.scrollViewHC.constant = [self appropriateScrollViewHeight];
     
-    _panningKeyboard = self.scrollViewProxy.isDragging;
+    _movingKeyboard = self.scrollViewProxy.isDragging;
     
-    if (self.isInverted && self.isPanningKeyboard && !CGPointEqualToPoint(self.scrollViewProxy.contentOffset, _draggingOffset)) {
+    if (self.isInverted && self.isMovingKeyboard && !CGPointEqualToPoint(self.scrollViewProxy.contentOffset, _draggingOffset)) {
         self.scrollViewProxy.contentOffset = _draggingOffset;
     }
 
@@ -671,7 +793,7 @@
 {
     SLKTextView *textView = (SLKTextView *)notification.object;
     
-    // If it's not the expected textView, return.
+    // Skips this it's not the expected textView.
     if (![textView isEqual:self.textView]) {
         return;
     }
@@ -715,6 +837,11 @@
 
 - (void)didChangeTextViewContentSize:(NSNotification *)notification
 {
+    // Skips this it's not the expected textView.
+    if (![self.textView isEqual:notification.object]) {
+        return;
+    }
+    
     [self textDidUpdate:YES];
 }
 
@@ -950,7 +1077,7 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    if (!self.isPanningKeyboard) {
+    if (!self.isMovingKeyboard) {
         _draggingOffset = scrollView.contentOffset;
     }
 }
@@ -1116,11 +1243,6 @@
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-}
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
 }
 
 - (void)dealloc

@@ -17,6 +17,8 @@
 #import "SLKTextView.h"
 #import "UITextView+SLKAdditions.h"
 
+#import "SLKUIConstants.h"
+
 NSString * const SLKTextViewTextWillChangeNotification = @"com.slack.TextViewController.TextView.WillChangeText";
 NSString * const SLKTextViewSelectionDidChangeNotification = @"com.slack.TextViewController.TextView.DidChangeSelection";
 NSString * const SLKTextViewContentSizeDidChangeNotification = @"com.slack.TextViewController.TextView.DidChangeContentSize";
@@ -120,8 +122,7 @@ NSString * const SLKTextViewDidShakeNotification = @"com.slack.TextViewControlle
 // Returns a different number of lines when landscape and only on iPhone
 - (NSUInteger)maxNumberOfLines
 {
-    if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation) &&
-        [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+    if (UI_IS_IPHONE && UI_IS_LANDSCAPE) {
         return 2.0;
     }
     return _maxNumberOfLines;
@@ -241,6 +242,32 @@ NSString * const SLKTextViewDidShakeNotification = @"com.slack.TextViewControlle
     }
 }
 
+- (void)disableQuicktypeBar:(BOOL)disable
+{
+    if ((disable && self.autocorrectionType == UITextAutocorrectionTypeNo) ||
+        (!disable && self.autocorrectionType == UITextAutocorrectionTypeDefault)) {
+        return;
+    }
+    
+    self.autocorrectionType = disable ? UITextAutocorrectionTypeNo : UITextAutocorrectionTypeDefault;
+    self.spellCheckingType = disable ? UITextSpellCheckingTypeNo : UITextSpellCheckingTypeDefault;
+    
+    [self refreshFirstResponder];
+}
+
+- (void)refreshFirstResponder
+{
+    if (!self.isFirstResponder) {
+        return;
+    }
+    
+    _didNotResignFirstResponder = YES;
+    [self resignFirstResponder];
+    
+    _didNotResignFirstResponder = NO;
+    [self becomeFirstResponder];
+}
+
 
 #pragma mark - Observers & Notifications
 
@@ -276,11 +303,11 @@ NSString * const SLKTextViewDidShakeNotification = @"com.slack.TextViewControlle
 
 - (void)dealloc
 {
-    _placeholderLabel = nil;
-    
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UITextViewTextDidChangeNotification object:nil];
     
     [self removeObserver:self forKeyPath:NSStringFromSelector(@selector(contentSize))];
+    
+    _placeholderLabel = nil;
 }
 
 @end
