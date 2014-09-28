@@ -719,7 +719,7 @@
     BOOL show = YES;
     
     // Programatically stops scrolling before updating the view constraints (to avoid scrolling glitch)
-    [self.scrollViewProxy stopScrolling];
+    [self.scrollViewProxy slk_stopScrolling];
     
     // Updates the height constraints' constants
     self.keyboardHC.constant = size.height;
@@ -730,7 +730,7 @@
     }
     
     // Only for this animation, we set bo to bounce since we want to give the impression that the text input is glued to the keyboard.
-    [self.view animateLayoutIfNeededWithDuration:duration
+    [self.view slk_animateLayoutIfNeededWithDuration:duration
                                           bounce:NO
                                          options:(curve<<16)|UIViewAnimationOptionLayoutSubviews|UIViewAnimationOptionBeginFromCurrentState
                                       animations:NULL];
@@ -746,7 +746,7 @@
     BOOL show = NO;
     
     // Programatically stops scrolling before updating the view constraints (to avoid scrolling glitch)
-    [self.scrollViewProxy stopScrolling];
+    [self.scrollViewProxy slk_stopScrolling];
     
     // Updates the height constraints' constants
     self.keyboardHC.constant = 0;
@@ -757,7 +757,7 @@
     }
     
     // Only for this animation, we set bo to bounce since we want to give the impression that the text input is glued to the keyboard.
-    [self.view animateLayoutIfNeededWithDuration:duration
+    [self.view slk_animateLayoutIfNeededWithDuration:duration
                                           bounce:NO
                                          options:(curve<<16)|UIViewAnimationOptionLayoutSubviews|UIViewAnimationOptionBeginFromCurrentState
                                       animations:NULL];
