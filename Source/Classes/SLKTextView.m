@@ -119,6 +119,11 @@ NSString * const SLKTextViewDidShakeNotification = @"com.slack.TextViewControlle
     return self.placeholderLabel.textColor;
 }
 
+- (NSUInteger)numberOfLines
+{
+    return abs(self.contentSize.height/self.font.lineHeight);
+}
+
 // Returns a different number of lines when landscape and only on iPhone
 - (NSUInteger)maxNumberOfLines
 {
@@ -206,7 +211,7 @@ NSString * const SLKTextViewDidShakeNotification = @"com.slack.TextViewControlle
         
         // Inserting the text fixes a UITextView bug whitch automatically scrolls to the bottom
         // and beyond scroll content size sometimes when the text is too long
-        [self insertTextAtCaretRange:item];
+        [self slk_insertTextAtCaretRange:item];
     }
 }
 

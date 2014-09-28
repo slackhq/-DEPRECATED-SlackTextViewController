@@ -112,7 +112,7 @@ static NSString *AutoCompletionCellIdentifier = @"AutoCompletionCell";
         self.textView.text = [LoremIpsum sentencesWithNumber:sentences];
     }
     else {
-        [self.textView insertTextAtCaretRange:[LoremIpsum word]];
+        [self.textView slk_insertTextAtCaretRange:[LoremIpsum word]];
     }
 }
 
@@ -146,7 +146,7 @@ static NSString *AutoCompletionCellIdentifier = @"AutoCompletionCell";
     NSString *lastMessage = [self.messages firstObject];
     [self editText:lastMessage];
     
-    [self.tableView scrollToTopAnimated:YES];
+    [self.tableView slk_scrollToTopAnimated:YES];
 }
 
 - (void)didSaveLastMessageEditing:(id)sender
@@ -237,7 +237,7 @@ static NSString *AutoCompletionCellIdentifier = @"AutoCompletionCell";
     [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationBottom];
     [self.tableView endUpdates];
     
-    [self.tableView scrollToTopAnimated:YES];
+    [self.tableView slk_scrollToTopAnimated:YES];
     
     [super didPressRightButton:sender];
 }
