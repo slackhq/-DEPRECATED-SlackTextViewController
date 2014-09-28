@@ -26,6 +26,7 @@
 
 // Auto-Layout height constraints used for updating their constants
 @property (nonatomic, strong) NSLayoutConstraint *scrollViewHC;
+@property (nonatomic, strong) NSLayoutConstraint *virtualKeyboardHC;
 @property (nonatomic, strong) NSLayoutConstraint *textInputbarHC;
 @property (nonatomic, strong) NSLayoutConstraint *typingIndicatorViewHC;
 @property (nonatomic, strong) NSLayoutConstraint *autoCompletionViewHC;
@@ -48,11 +49,13 @@
 @implementation SLKTextViewController
 @synthesize tableView = _tableView;
 @synthesize collectionView = _collectionView;
+@synthesize virtualKeyboard = _virtualKeyboard;
 @synthesize typingIndicatorView = _typingIndicatorView;
 @synthesize textInputbar = _textInputbar;
 @synthesize autoCompletionView = _autoCompletionView;
 @synthesize autoCompleting = _autoCompleting;
 @synthesize presentedInPopover = _presentedInPopover;
+
 
 #pragma mark - Initializer
 
@@ -230,6 +233,15 @@
         return _inputAccessoryView;
     }
     return nil;
+}
+
+- (UIView *)virtualKeyboard{
+    if (!_virtualKeyboard) {
+        _virtualKeyboard = [[UIView alloc] init];
+        
+    }
+
+    return _virtualKeyboard;
 }
 
 - (BOOL)isEditing
@@ -692,6 +704,66 @@
         [self.textView scrollToBottomAnimated:NO];
     }
 }
+
+
+
+
+/////// by khan
+- (void)needShowVirtualKeyboard:(CGSize) size{
+
+    
+    UIViewAnimationCurve curve = UIViewAnimationCurveEaseIn;
+    NSTimeInterval duration = 0.3f;
+    
+    // Checks if it's showing or hidding the keyboard
+    BOOL show = YES;
+    
+    // Programatically stops scrolling before updating the view constraints (to avoid scrolling glitch)
+    [self.scrollViewProxy stopScrolling];
+    
+    // Updates the height constraints' constants
+    self.keyboardHC.constant = size.height;
+    self.scrollViewHC.constant = [self appropriateScrollViewHeight];
+    
+    if (!show && self.isAutoCompleting) {
+        [self hideautoCompletionView];
+    }
+    
+    // Only for this animation, we set bo to bounce since we want to give the impression that the text input is glued to the keyboard.
+    [self.view animateLayoutIfNeededWithDuration:duration
+                                          bounce:NO
+                                         options:(curve<<16)|UIViewAnimationOptionLayoutSubviews|UIViewAnimationOptionBeginFromCurrentState
+                                      animations:NULL];
+}
+
+- (void)needHideVirtualKeyboard {
+
+    
+    UIViewAnimationCurve curve = UIViewAnimationCurveEaseOut;
+    NSTimeInterval duration = 0.3f;
+    
+    // Checks if it's showing or hidding the keyboard
+    BOOL show = NO;
+    
+    // Programatically stops scrolling before updating the view constraints (to avoid scrolling glitch)
+    [self.scrollViewProxy stopScrolling];
+    
+    // Updates the height constraints' constants
+    self.keyboardHC.constant = 0;
+    self.scrollViewHC.constant = [self appropriateScrollViewHeight];
+    
+    if (!show && self.isAutoCompleting) {
+        [self hideautoCompletionView];
+    }
+    
+    // Only for this animation, we set bo to bounce since we want to give the impression that the text input is glued to the keyboard.
+    [self.view animateLayoutIfNeededWithDuration:duration
+                                          bounce:NO
+                                         options:(curve<<16)|UIViewAnimationOptionLayoutSubviews|UIViewAnimationOptionBeginFromCurrentState
+                                      animations:NULL];
+}
+
+///////
 
 
 #pragma mark - Notification Events

@@ -38,6 +38,8 @@
 /** The typing indicator used to display user names horizontally. */
 @property (nonatomic, readonly) IBOutlet SLKTypingIndicatorView *typingIndicatorView;
 
+@property (nonatomic, readonly) IBOutlet UIView *virtualKeyboard;
+
 /** YES if control's animation should have bouncy effects. Default is YES. */
 @property (nonatomic, assign) BOOL bounces;
 
@@ -280,4 +282,11 @@
  */
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer;
 
+
+
+
+
+
+- (void)needShowVirtualKeyboard:(CGSize) size;
+- (void)needHideVirtualKeyboard;
 @end

@@ -24,6 +24,9 @@ static NSString *AutoCompletionCellIdentifier = @"AutoCompletionCell";
 
 @property (nonatomic, strong) NSArray *searchResult;
 
+
+@property (nonatomic) BOOL isShow;
+
 @end
 
 @implementation MessageViewController
@@ -176,8 +179,49 @@ static NSString *AutoCompletionCellIdentifier = @"AutoCompletionCell";
 - (void)didPressLeftButton:(id)sender
 {
     NSLog(@"%s",__FUNCTION__);
-    
+    [self.textView resignFirstResponder];
     [super didPressLeftButton:sender];
+    CGSize size = CGSizeMake(320, 50);
+    if (self.isShow == NO) {
+
+        [self rotateDown:sender];
+        [self needShowVirtualKeyboard:size];
+        self.isShow = YES;
+    } else {
+        [self rotateUp:sender];
+        [self needHideVirtualKeyboard];
+        self.isShow = NO;
+    }
+    
+}
+
+
+
+
+- (IBAction)rotateDown:(UIButton * )sender {
+    CABasicAnimation* rotationAnimation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
+    rotationAnimation.delegate = self;
+    rotationAnimation.fromValue = @(0);
+    rotationAnimation.toValue = @(1*M_PI);
+    rotationAnimation.duration = 0.3f;
+    rotationAnimation.autoreverses = NO;
+    rotationAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+    rotationAnimation.removedOnCompletion = NO;
+    rotationAnimation.fillMode = kCAFillModeBoth;
+    [sender.layer addAnimation:rotationAnimation forKey:@"revItUpAnimation"];
+}
+
+- (IBAction)rotateUp:(UIButton * )sender {
+    CABasicAnimation* rotationAnimation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
+    rotationAnimation.delegate = self;
+    rotationAnimation.fromValue = @(1*M_PI);
+    rotationAnimation.toValue = @(0);
+    rotationAnimation.duration = 0.3f;
+    rotationAnimation.autoreverses = NO;
+    rotationAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+    rotationAnimation.removedOnCompletion = NO;
+    rotationAnimation.fillMode = kCAFillModeBoth;
+    [sender.layer addAnimation:rotationAnimation forKey:@"revItUpAnimation"];
 }
 
 - (void)didPressRightButton:(id)sender
@@ -188,7 +232,6 @@ static NSString *AutoCompletionCellIdentifier = @"AutoCompletionCell";
     [self.textView refreshFirstResponder];
     
     NSString *message = [self.textView.text copy];
-    
     [self.tableView beginUpdates];
     [self.messages insertObject:message atIndex:0];
     [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationBottom];
