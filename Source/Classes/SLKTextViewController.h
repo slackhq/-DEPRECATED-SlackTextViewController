@@ -47,6 +47,9 @@
 /** YES if keyboard can be dismissed gradually with a vertical panning gesture. Default is YES. */
 @property (nonatomic, assign) BOOL keyboardPanningEnabled;
 
+/** YES if the input text bar moves sticked to the keyboard. Othewrise it'll be always at the bottom of the view*/
+@property (nonatomic, assign) BOOL stickyBar;
+
 /**
  YES if the main table view is inverted. Default is YES.
  @discussion This allows the table view to start from the bottom like any typical messaging interface.

@@ -327,6 +327,10 @@
 
 - (CGFloat)appropriateKeyboardHeight:(NSNotification *)notification
 {
+    if (!self.stickyBar) {
+        return 0;
+    }
+    
     CGRect endFrame = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
     
     CGFloat keyboardHeight = 0.0;
