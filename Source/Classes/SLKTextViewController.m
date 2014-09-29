@@ -327,7 +327,7 @@
 
 - (CGFloat)appropriateKeyboardHeight:(NSNotification *)notification
 {
-    if (self.stickyBar) {
+    if (!self.stickyBar) {
         return 0;
     }
     
