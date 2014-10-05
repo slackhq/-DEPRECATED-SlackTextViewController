@@ -26,20 +26,24 @@ extern NSString * const SLKTextViewDidShakeNotification;
 @interface SLKTextView : UITextView
 
 /** The placeholder text string. */
-@property (nonatomic, readwrite) NSString *placeholder;
+@property (nonatomic, copy) NSString *placeholder;
 
 /** The placeholder color. */
-@property (nonatomic, readwrite) UIColor *placeholderColor;
+@property (nonatomic, copy) UIColor *placeholderColor;
 
 /** The maximum number of lines before enabling scrolling. Default is 0 wich means limitless. */
 @property (nonatomic, readwrite) NSUInteger maxNumberOfLines;
+
+/** The current displayed number of lines. */
+@property (nonatomic, readonly) NSUInteger numberOfLines;
 
 /** YES if the text view is and can still expand it self, depending if the maximum number of lines are reached. */
 @property (nonatomic, readonly) BOOL isExpanding;
 
 /** YES if quickly refreshed the textview without the intension to dismiss the keyboard. @view -disableQuicktypeBar: for more details. */
-@property (nonatomic, readonly) BOOL didNotResignFirstResponder;
+@property (nonatomic, readwrite) BOOL didNotResignFirstResponder;
 
+/** YES if the magnifying glass is visible. */
 @property (nonatomic, getter=isLoupeVisible) BOOL loupeVisible;
 
 /**

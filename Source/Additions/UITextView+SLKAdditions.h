@@ -19,34 +19,31 @@
 /** @name UITextView additional features used for SlackTextViewController. */
 @interface UITextView (SLKAdditions)
 
-/** The current displayed number of lines. */
-@property (nonatomic, readonly) NSUInteger numberOfLines;
-
 /**
  Scrolls to the very end of the content size, animated.
  
  @param animated YES if the scrolling should be animated.
  */
-- (void)scrollToBottomAnimated:(BOOL)animated;
+- (void)slk_scrollToBottomAnimated:(BOOL)animated;
 
 /**
  Scrolls to the caret position, animated.
  
  @param animated YES if the scrolling should be animated.
  */
-- (void)scrollToCaretPositonAnimated:(BOOL)animated;
+- (void)slk_scrollToCaretPositonAnimated:(BOOL)animated;
 
 /**
  Inserts a line break at the caret's position.
  */
-- (void)insertNewLineBreak;
+- (void)slk_insertNewLineBreak;
 
 /**
  Inserts a string at the caret's position.
  
  @param text The string to be appended to the current text.
  */
-- (void)insertTextAtCaretRange:(NSString *)text;
+- (void)slk_insertTextAtCaretRange:(NSString *)text;
 
 /**
  Adds a string to a specific range.
@@ -56,7 +53,7 @@
  
  @return The range of the newly inserted text.
  */
-- (NSRange)insertText:(NSString *)text inRange:(NSRange)range;
+- (NSRange)slk_insertText:(NSString *)text inRange:(NSRange)range;
 
 /**
  Finds the word close to the caret's position, if any.
@@ -64,6 +61,6 @@
  @param range Returns the range of the found word.
  @returns The found word.
  */
-- (NSString *)wordAtCaretRange:(NSRangePointer)range;
+- (NSString *)slk_wordAtCaretRange:(NSRangePointer)range;
 
 @end

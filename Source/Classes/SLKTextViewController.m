@@ -35,13 +35,13 @@
 @property (nonatomic, strong) UIGestureRecognizer *singleTapGesture;
 
 // YES if the user is moving the keyboard with a gesture
-@property (nonatomic, readonly, getter = isMovingKeyboard) BOOL movingKeyboard;
-
-// Used for Auto-Completion
-@property (nonatomic, readonly) NSRange foundPrefixRange;
+@property (nonatomic, getter = isMovingKeyboard) BOOL movingKeyboard;
 
 // The current QuicktypeBar mode (hidden, collapsed or expanded)
 @property (nonatomic) SLKQuicktypeBarMode quicktypeBarMode;
+
+// The current keyboard status (hidden, showing, etc.)
+@property (nonatomic) SLKKeyboardStatus keyboardStatus;
 
 @end
 
@@ -114,6 +114,8 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
+    self.textView.didNotResignFirstResponder = NO;
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -121,6 +123,19 @@
     [super viewDidAppear:animated];
     
     [self.scrollViewProxy flashScrollIndicators];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    
+    // Stops the keyboard from being dismissed during the navigation controller's "swipe-to-pop"
+    self.textView.didNotResignFirstResponder = self.isMovingFromParentViewController;
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
 }
 
 
@@ -280,22 +295,12 @@
     return self.textInputbar.intrinsicContentSize.height;
 }
 
-- (CGFloat)maximumInputbarHeight
+- (CGFloat)inputBarHeightForLines:(NSUInteger)numberOfLines
 {
     CGFloat height = [self deltaInputbarHeight];
     
-    height += roundf(self.textView.font.lineHeight*self.textView.maxNumberOfLines);
-    height += (kTextViewVerticalPadding*2.0);
-    
-    return height;
-}
-
-- (CGFloat)currentInputbarHeight
-{
-    CGFloat height = [self deltaInputbarHeight];
-    
-    height += roundf(self.textView.font.lineHeight*self.textView.numberOfLines);
-    height += (kTextViewVerticalPadding*2.0);
+    height += roundf(self.textView.font.lineHeight*numberOfLines);
+    height += self.textInputbar.contentInset.top+self.textInputbar.contentInset.bottom;
     
     return height;
 }
@@ -308,10 +313,10 @@
         height = [self minimumInputbarHeight];
     }
     else if (self.textView.numberOfLines < self.textView.maxNumberOfLines) {
-        height += [self currentInputbarHeight];
+        height += [self inputBarHeightForLines:self.textView.numberOfLines];
     }
     else {
-        height += [self maximumInputbarHeight];
+        height += [self inputBarHeightForLines:self.textView.maxNumberOfLines];
     }
     
     if (height < [self minimumInputbarHeight]) {
@@ -319,7 +324,7 @@
     }
     
     if (self.isEditing) {
-        height += kAccessoryViewHeight;
+        height += self.textInputbar.accessoryViewHeight;
     }
     
     return roundf(height);
@@ -330,7 +335,7 @@
     CGRect endFrame = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
     
     CGFloat keyboardHeight = 0.0;
-    CGFloat tabBarHeight = (![self.tabBarController.tabBar isHidden]) ? CGRectGetHeight(self.tabBarController.tabBar.frame) : 0.0;
+    CGFloat tabBarHeight = ([self.tabBarController.tabBar isHidden] || self.hidesBottomBarWhenPushed) ? 0.0 : CGRectGetHeight(self.tabBarController.tabBar.frame);
     
     // The height of the keyboard if showing
     if ([notification.name isEqualToString:UIKeyboardWillShowNotification]) {
@@ -342,6 +347,10 @@
     if ([notification.name isEqualToString:SCKInputAccessoryViewKeyboardFrameDidChangeNotification]) {
         keyboardHeight = CGRectGetHeight([UIScreen mainScreen].bounds)-endFrame.origin.y;
         keyboardHeight -= tabBarHeight;
+    }
+    
+    if (keyboardHeight < 0) {
+        keyboardHeight = 0.0;
     }
     
     return keyboardHeight;
@@ -443,6 +452,24 @@
     }
 }
 
+- (void)setKeyboardStatus:(SLKKeyboardStatus)status
+{
+    // Skips if trying to update the same status
+    if (self.keyboardStatus == status) {
+        return;
+    }
+    
+    // Skips illogical conditions
+    if ((self.keyboardStatus == SLKKeyboardStatusDidShow && status == SLKKeyboardStatusWillShow) ||
+        (self.keyboardStatus == SLKKeyboardStatusDidHide && status == SLKKeyboardStatusWillHide)) {
+        return;
+    }
+    
+    _keyboardStatus = status;
+    
+    [self didChangeKeyboardStatus:status];
+}
+
 
 #pragma mark - Subclassable Methods
 
@@ -488,6 +515,11 @@
     }
 }
 
+- (void)didChangeKeyboardStatus:(SLKKeyboardStatus)status
+{
+    // No implementation here. Meant to be overriden in subclass.
+}
+
 - (void)textWillUpdate
 {
     // No implementation here. Meant to be overriden in subclass.
@@ -509,13 +541,13 @@
             
             BOOL bounces = self.bounces && [self.textView isFirstResponder];
             
-            [self.view animateLayoutIfNeededWithBounce:bounces
-                                                 options:UIViewAnimationOptionCurveEaseInOut|UIViewAnimationOptionLayoutSubviews|UIViewAnimationOptionBeginFromCurrentState
-                                            animations:^{
-                                                if (self.isEditing) {
-                                                    [self.textView scrollToCaretPositonAnimated:NO];
-                                                }
-                                            }];
+			[self.view slk_animateLayoutIfNeededWithBounce:bounces
+												   options:UIViewAnimationOptionCurveEaseInOut|UIViewAnimationOptionLayoutSubviews|UIViewAnimationOptionBeginFromCurrentState
+												animations:^{
+													if (self.isEditing) {
+														[self.textView slk_scrollToCaretPositonAnimated:NO];
+													}
+												}];
         }
         else {
             [self.view layoutIfNeeded];
@@ -526,7 +558,12 @@
 - (BOOL)canPressRightButton
 {
     NSString *text = [self.textView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    return text.length > 0 ? YES : NO;
+    
+    if (text.length > 0 && ![self.textInputbar limitExceeded]) {
+        return YES;
+    }
+    
+    return NO;
 }
 
 - (void)didPressLeftButton:(id)sender
@@ -567,7 +604,7 @@
     }
     
     // Don't show if the content offset is not at top (when inverted) or at bottom (when not inverted)
-    if ((self.isInverted && ![self.scrollViewProxy isAtTop]) || (!self.isInverted && ![self.scrollViewProxy isAtBottom])) {
+    if ((self.isInverted && ![self.scrollViewProxy slk_isAtTop]) || (!self.isInverted && ![self.scrollViewProxy slk_isAtBottom])) {
         return NO;
     }
     
@@ -655,7 +692,7 @@
     }
 
     [self.textView setText:text];
-    [self.textView scrollToCaretPositonAnimated:YES];
+    [self.textView slk_scrollToCaretPositonAnimated:YES];
     
     // Updates the constraints after inserting text, if already first responder
     if ([self.textView isFirstResponder]) {
@@ -678,7 +715,7 @@
 
 - (void)insertNewLineBreak
 {
-    [self.textView insertNewLineBreak];
+    [self.textView slk_insertNewLineBreak];
 }
 
 - (void)prepareForInterfaceRotation
@@ -686,10 +723,10 @@
     [self.view layoutIfNeeded];
     
     if ([self.textView isFirstResponder]) {
-        [self.textView scrollToCaretPositonAnimated:NO];
+        [self.textView slk_scrollToCaretPositonAnimated:NO];
     }
     else {
-        [self.textView scrollToBottomAnimated:NO];
+        [self.textView slk_scrollToBottomAnimated:NO];
     }
 }
 
@@ -717,24 +754,28 @@
     NSTimeInterval duration = [notification.userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
 
     // Checks if it's showing or hidding the keyboard
-    BOOL show = [notification.name isEqualToString:UIKeyboardWillShowNotification];
+    BOOL willShow = [notification.name isEqualToString:UIKeyboardWillShowNotification];
     
     // Programatically stops scrolling before updating the view constraints (to avoid scrolling glitch)
-    [self.scrollViewProxy stopScrolling];
+    [self.scrollViewProxy slk_stopScrolling];
     
     // Updates the height constraints' constants
     self.keyboardHC.constant = [self appropriateKeyboardHeight:notification];
     self.scrollViewHC.constant = [self appropriateScrollViewHeight];
     
-    if (!show && self.isAutoCompleting) {
-        [self hideautoCompletionView];
+    // Hides autocompletion mode if the keyboard is being dismissed
+    if (!willShow && self.isAutoCompleting) {
+        [self hideAutoCompletionView];
     }
     
     // Only for this animation, we set bo to bounce since we want to give the impression that the text input is glued to the keyboard.
-    [self.view animateLayoutIfNeededWithDuration:duration
-                                          bounce:NO
-                                         options:(curve<<16)|UIViewAnimationOptionLayoutSubviews|UIViewAnimationOptionBeginFromCurrentState
-                                      animations:NULL];
+	[self.view slk_animateLayoutIfNeededWithDuration:duration
+											  bounce:NO
+											 options:(curve<<16)|UIViewAnimationOptionLayoutSubviews|UIViewAnimationOptionBeginFromCurrentState
+										  animations:NULL];
+    
+    // Updates and notifies about the keyboard status update
+    self.keyboardStatus = willShow ? SLKKeyboardStatusWillShow : SLKKeyboardStatusWillHide;
 }
 
 - (void)didShowOrHideKeyboard:(NSNotification *)notification
@@ -750,12 +791,15 @@
     }
     
     // Checks if it's showing or hidding the keyboard
-    BOOL show = [notification.name isEqualToString:UIKeyboardDidShowNotification];
+    BOOL didShow = [notification.name isEqualToString:UIKeyboardDidShowNotification];
     
     // After showing keyboard, check if the current cursor position could diplay autocompletion
-    if (show) {
+    if (didShow) {
         [self processTextForAutoCompletion];
     }
+    
+    // Updates and notifies about the keyboard status update
+    self.keyboardStatus = didShow ? SLKKeyboardStatusDidShow : SLKKeyboardStatusDidHide;
 }
 
 - (void)didChangeKeyboardFrame:(NSNotification *)notification
@@ -771,16 +815,10 @@
         return;
     }
     
-    CGFloat keyboardHeight = [self appropriateKeyboardHeight:notification];
-    
-    if (keyboardHeight < 0) {
-        keyboardHeight = 0.0;
-    }
-    
-    self.keyboardHC.constant = keyboardHeight;
+    self.keyboardHC.constant = [self appropriateKeyboardHeight:notification];
     self.scrollViewHC.constant = [self appropriateScrollViewHeight];
     
-    _movingKeyboard = self.scrollViewProxy.isDragging;
+    self.movingKeyboard = self.scrollViewProxy.isDragging;
     
     if (self.isInverted && self.isMovingKeyboard && !CGPointEqualToPoint(self.scrollViewProxy.contentOffset, _draggingOffset)) {
         self.scrollViewProxy.contentOffset = _draggingOffset;
@@ -830,9 +868,9 @@
     self.typingIndicatorViewHC.constant = indicatorView.isVisible ?  0.0 : indicatorView.height;
     self.scrollViewHC.constant -= self.typingIndicatorViewHC.constant;
     
-    [self.view animateLayoutIfNeededWithBounce:self.bounces
-                               options:UIViewAnimationOptionCurveEaseInOut|UIViewAnimationOptionLayoutSubviews|UIViewAnimationOptionBeginFromCurrentState
-                          animations:NULL];
+	[self.view slk_animateLayoutIfNeededWithBounce:self.bounces
+										   options:UIViewAnimationOptionCurveEaseInOut|UIViewAnimationOptionLayoutSubviews|UIViewAnimationOptionBeginFromCurrentState
+										animations:NULL];
 }
 
 - (void)didChangeTextViewContentSize:(NSNotification *)notification
@@ -925,7 +963,7 @@
     }
 
     NSRange range;
-    NSString *word = [self.textView wordAtCaretRange:&range];
+    NSString *word = [self.textView slk_wordAtCaretRange:&range];
     
     for (NSString *sign in self.registeredPrefixes) {
         
@@ -997,16 +1035,16 @@
     SLKTextView *textView = self.textView;
     
     NSRange range = NSMakeRange(self.foundPrefixRange.location+1, self.foundWord.length);
-    NSRange insertionRange = [textView insertText:string inRange:range];
+    NSRange insertionRange = [textView slk_insertText:string inRange:range];
     
     textView.selectedRange = NSMakeRange(insertionRange.location, 0);
     
     [self cancelAutoCompletion];
     
-    [textView scrollToCaretPositonAnimated:NO];
+    [textView slk_scrollToCaretPositonAnimated:NO];
 }
 
-- (void)hideautoCompletionView
+- (void)hideAutoCompletionView
 {
     [self showAutoCompletionView:NO];
 }
@@ -1041,9 +1079,9 @@
     
     self.autoCompletionViewHC.constant = viewHeight;
     
-    [self.view animateLayoutIfNeededWithBounce:self.bounces
-                                         options:UIViewAnimationOptionCurveEaseInOut|UIViewAnimationOptionLayoutSubviews|UIViewAnimationOptionBeginFromCurrentState
-                                    animations:NULL];
+	[self.view slk_animateLayoutIfNeededWithBounce:self.bounces
+										   options:UIViewAnimationOptionCurveEaseInOut|UIViewAnimationOptionLayoutSubviews|UIViewAnimationOptionBeginFromCurrentState
+										animations:NULL];
 }
 
 
@@ -1121,8 +1159,8 @@
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[typingIndicatorView]|" options:0 metrics:nil views:views]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[textInputbar]|" options:0 metrics:nil views:views]];
 
-    NSArray *bottomConstraints = [self.view constraintsForAttribute:NSLayoutAttributeBottom];
-    NSArray *heightConstraints = [self.view constraintsForAttribute:NSLayoutAttributeHeight];
+    NSArray *bottomConstraints = [self.view slk_constraintsForAttribute:NSLayoutAttributeBottom];
+    NSArray *heightConstraints = [self.view slk_constraintsForAttribute:NSLayoutAttributeHeight];
     
     self.scrollViewHC = heightConstraints[0];
     self.autoCompletionViewHC = heightConstraints[1];
@@ -1134,7 +1172,7 @@
     self.scrollViewHC.constant = [self appropriateScrollViewHeight];
     
     if (self.isEditing) {
-        self.textInputbarHC.constant += kAccessoryViewHeight;
+        self.textInputbarHC.constant += self.textInputbar.accessoryViewHeight;
     }
 }
 
