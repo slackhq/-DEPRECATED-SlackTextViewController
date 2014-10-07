@@ -620,12 +620,7 @@ NSString * const SCKInputAccessoryViewKeyboardFrameDidChangeNotification = @"com
 
 - (NSString *)keyPathForKeyboardHandling
 {
-    if (UI_IS_IOS8_AND_HIGHER) {
-        return NSStringFromSelector(@selector(center));
-    }
-    else {
-        return NSStringFromSelector(@selector(frame));
-    }
+    return NSStringFromSelector(@selector(center));
 }
 
 - (void)willMoveToSuperview:(UIView *)newSuperview
