@@ -1,5 +1,5 @@
-SlackTextViewController
-=============================================
+#SlackTextViewController
+
 [![Pod Version](http://img.shields.io/cocoapods/v/SlackTextViewController.svg)](https://cocoadocs.org/docsets/SlackTextViewController)
 [![License](http://img.shields.io/badge/license-Apache%202.0-blue.svg)](http://opensource.org/licenses/Apache2.0)
 
@@ -12,28 +12,29 @@ This library is used in Slack's iOS app. It was built to fit our needs, but is f
 ## Features
 
 ### Core
-- iOS 7 and iOS 8
-- iPhone 6 compatible
-- iPad compatible
-- Support for UITableView and UICollectionView
-- Built with Auto Layout
-- Customizable: provides left and right button, and toolbar outlets
+- Works out of the box with UITableView or UICollectionView
 - Growing text view, with line count limit support
-- Autocomplete mode by registering any prefix key (`@`, `#`, `/`)
+- Customizable: provides left and right button, and toolbar outlets
 - Tap gesture for dismissing the keyboard
+- Pan gesture for sliding down the keyboard
+- Flexible UI Built with Auto Layout
 - Text append APIs
-- External keyboard support for basic commands
-- Rotation support
-- Localization support
 
 ### Optional
+- Autocomplete mode by registering any prefix key (`@`, `#`, `/`)
 - Edit mode
-- "User is typing..." indicator display
-- Pan gesture for sliding down the keyboard
+- Typing indicator display
 - Shake gesture for undo
 - Image pasting support
 - Inverted mode for displaying cells upside-down (using CATransform) -- a necessary hack for some messaging apps (including ours)
 - Bouncy animations
+
+### Compatibility
+- iOS 7 & iOS 8
+- iPhone & iPad
+- UIPopOverController & UITabBarController support
+- Auto-Rotation & Localization support
+- External keyboard support for basic commands
 
 ## Installation
 
@@ -45,9 +46,9 @@ pod 'SlackTextViewController'
 ##How to use
 
 ###Subclassing
-`SCKChatViewController` is meant to be subclassed, like you would normally do with UITableViewController or UICollectionViewController. This pattern is a convenient way of extending UIViewController. SlackTextViewController manages a lot behind the scenes while still providing the ability to add custom behaviours. You may override methods, and decide to call super and  perform additional logic, or not to call super and override default logic.
+`SLKTextViewController` is meant to be subclassed, like you would normally do with UITableViewController or UICollectionViewController. This pattern is a convenient way of extending UIViewController. SlackTextViewController manages a lot behind the scenes while still providing the ability to add custom behaviours. You may override methods, and decide to call super and  perform additional logic, or not to call super and override default logic.
 
-Start by creating a new subclass of `SCKChatViewController`.
+Start by creating a new subclass of `SLKTextViewController`.
 
 In the init overriding method, if you wish to use the `UITableView` version, call:
 ```
@@ -161,7 +162,7 @@ You can always call `-cancelAutoCompletion` to exit the autocompletion mode.
 
 ![Edit Mode](Screenshots/screenshot_edit-mode.png)
 
-To enable edit mode, you simply need to call `[self editText:@"hello"];`, and the text input will automatically adjust to the edit mode, removing both left and right buttons, extending the view a bit higher with "Accept" and "Cancel" buttons. Both of this buttons are accessible under `SCKChatToolbar` for customisation.
+To enable edit mode, you simply need to call `[self editText:@"hello"];`, and the text input will automatically adjust to the edit mode, removing both left and right buttons, extending the view a bit higher with "Accept" and "Cancel" buttons. Both of this buttons are accessible under `SLKTextInputbar` for customisation.
 
 To capture the "Accept" or "Cancel" events, you must override the following methods.
 
@@ -251,6 +252,19 @@ To add additional key commands, simply override `-keyCommands` and append `super
 }
 ````
 
-##Sample project
+
+##Sample Project
 
 Check out the sample project, everything is demo'd there.
+
+
+##XCode Templates
+
+![Template](Screenshots/screenshot_template.png)
+
+We have prepared a set of useful XCode templates so you can quickly start using SlackTextViewController.
+
+To install them, open up your terminal and type:
+```sh ./SlackTextViewController/Template/install.sh```
+
+These templates are also available in [Alcatraz](https://github.com/supermarin/Alcatraz).

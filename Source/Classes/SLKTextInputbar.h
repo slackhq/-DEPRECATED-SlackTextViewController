@@ -19,10 +19,11 @@
 @class SLKTextViewController;
 @class SLKTextView;
 
-#define kTextInputbarMinimumHeight 44.0
-#define kAccessoryViewHeight 38.0
-#define kTextViewVerticalPadding 5.0
-#define kTextViewHorizontalPadding 8.0
+typedef NS_ENUM(NSUInteger, SLKCounterStyle) {
+    SLKCounterStyleNone,
+    SLKCounterStyleSplit,
+    SLKCounterStyleCountdown
+};
 
 extern NSString * const SCKInputAccessoryViewKeyboardFrameDidChangeNotification;
 
@@ -52,6 +53,19 @@ extern NSString * const SCKInputAccessoryViewKeyboardFrameDidChangeNotification;
 /** YES if the right button should be hidden animatedly in case the text view has no text in it. Default is YES. */
 @property (nonatomic, readwrite) BOOL autoHideRightButton;
 
+/** The inner padding to use when laying out content in the view. Default is {5, 8, 5, 8}. */
+@property (nonatomic, assign) UIEdgeInsets contentInset;
+
+/** The maximum character count allowed. If larger than 0, a character count label will be displayed on top of the right button. Default is 0, which means infinite.*/
+@property (nonatomic, readwrite) NSUInteger maxCharCount;
+
+/** The character counter formatting. Ignored if maxCharCount is 0. Default is Split mode. */
+@property (nonatomic, assign) SLKCounterStyle counterStyle;
+
+/** YES if the maxmimum character count has been exceeded. */
+@property (nonatomic, readonly) BOOL limitExceeded;
+
+
 ///------------------------------------------------
 /// @name Text Editing
 ///------------------------------------------------
@@ -67,6 +81,9 @@ extern NSString * const SCKInputAccessoryViewKeyboardFrameDidChangeNotification;
 
 /** The 'accept' button displayed right in the accessoryView. */
 @property (nonatomic, strong) UIButton *editortRightButton;
+
+/** The accessory view's maximum height. Default is 38. */
+@property (nonatomic, assign) CGFloat accessoryViewHeight;
 
 /** A Boolean value indicating whether the control is in edit mode. */
 @property (nonatomic, getter = isEditing) BOOL editing;

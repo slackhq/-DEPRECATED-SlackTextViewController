@@ -24,9 +24,6 @@ static NSString *AutoCompletionCellIdentifier = @"AutoCompletionCell";
 
 @property (nonatomic, strong) NSArray *searchResult;
 
-
-@property (nonatomic) BOOL isShow;
-
 @end
 
 @implementation MessageViewController
@@ -75,24 +72,27 @@ static NSString *AutoCompletionCellIdentifier = @"AutoCompletionCell";
     
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.tableView registerClass:[MessageTableViewCell class] forCellReuseIdentifier:MessengerCellIdentifier];
-    [self.autoCompletionView registerClass:[MessageTableViewCell class] forCellReuseIdentifier:AutoCompletionCellIdentifier];
-
-    self.textInputbar.autoHideRightButton = YES;
-    self.typingIndicatorView.canResignByTouch = YES;
 
     self.textView.placeholder = NSLocalizedString(@"Message", nil);
     self.textView.placeholderColor = [UIColor lightGrayColor];
-    self.textInputbar.backgroundColor = [UIColor colorWithRed:240.0/255.0 green:240.0/255.0 blue:240.0/255.0 alpha:1.0];
     self.textView.layer.borderColor = [UIColor colorWithRed:217.0/255.0 green:217.0/255.0 blue:217.0/255.0 alpha:1.0].CGColor;
     
     [self.leftButton setImage:[UIImage imageNamed:@"icn_upload"] forState:UIControlStateNormal];
-
+    [self.leftButton setTintColor:[UIColor grayColor]];
+    
     [self.rightButton setTitle:NSLocalizedString(@"Send", nil) forState:UIControlStateNormal];
     
     [self.textInputbar.editorTitle setTextColor:[UIColor darkGrayColor]];
     [self.textInputbar.editortLeftButton setTintColor:[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0]];
     [self.textInputbar.editortRightButton setTintColor:[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0]];
     
+    self.textInputbar.autoHideRightButton = YES;
+    self.textInputbar.maxCharCount = 140;
+    self.textInputbar.counterStyle = SLKCounterStyleSplit;
+    
+    self.typingIndicatorView.canResignByTouch = YES;
+    
+    [self.autoCompletionView registerClass:[MessageTableViewCell class] forCellReuseIdentifier:AutoCompletionCellIdentifier];
     [self registerPrefixesForAutoCompletion:@[@"@", @"#", @":"]];
 }
 
@@ -112,7 +112,7 @@ static NSString *AutoCompletionCellIdentifier = @"AutoCompletionCell";
         self.textView.text = [LoremIpsum sentencesWithNumber:sentences];
     }
     else {
-        [self.textView slk_insertTextAtCaretRange:[LoremIpsum word]];
+        [self.textView slk_insertTextAtCaretRange:[NSString stringWithFormat:@" %@", [LoremIpsum word]]];
     }
 }
 
@@ -143,6 +143,10 @@ static NSString *AutoCompletionCellIdentifier = @"AutoCompletionCell";
 
 - (void)editLastMessage:(id)sender
 {
+    if (self.textView.text > 0) {
+        return;
+    }
+    
     NSString *lastMessage = [self.messages firstObject];
     [self editText:lastMessage];
     
@@ -162,76 +166,41 @@ static NSString *AutoCompletionCellIdentifier = @"AutoCompletionCell";
 
 #pragma mark - Overriden Methods
 
+- (void)didChangeKeyboardStatus:(SLKKeyboardStatus)status
+{
+    // Notifies the view controller that the keyboard changed status.
+}
+
 - (void)textWillUpdate
 {
+    // Notifies the view controller that the text will update.
+
     [super textWillUpdate];
-    
-    // Useful for notifying when user will type some text
 }
 
 - (void)textDidUpdate:(BOOL)animated
 {
+    // Notifies the view controller that the text did update.
+
     [super textDidUpdate:animated];
-    
-    // Useful for notifying when user did type some text
 }
 
 - (void)didPressLeftButton:(id)sender
 {
-    NSLog(@"%s",__FUNCTION__);
-    [self.textView resignFirstResponder];
-    [super didPressLeftButton:sender];
-    CGSize size = CGSizeMake(320, 50);
-    if (self.isShow == NO) {
-
-        [self rotateDown:sender];
-        [self needShowVirtualKeyboard:size];
-        self.isShow = YES;
-    } else {
-        [self rotateUp:sender];
-        [self needHideVirtualKeyboard];
-        self.isShow = NO;
-    }
+    // Notifies the view controller when the left button's action has been triggered, manually.
     
-}
-
-
-
-
-- (IBAction)rotateDown:(UIButton * )sender {
-    CABasicAnimation* rotationAnimation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
-    rotationAnimation.delegate = self;
-    rotationAnimation.fromValue = @(0);
-    rotationAnimation.toValue = @(1*M_PI);
-    rotationAnimation.duration = 0.3f;
-    rotationAnimation.autoreverses = NO;
-    rotationAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-    rotationAnimation.removedOnCompletion = NO;
-    rotationAnimation.fillMode = kCAFillModeBoth;
-    [sender.layer addAnimation:rotationAnimation forKey:@"revItUpAnimation"];
-}
-
-- (IBAction)rotateUp:(UIButton * )sender {
-    CABasicAnimation* rotationAnimation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
-    rotationAnimation.delegate = self;
-    rotationAnimation.fromValue = @(1*M_PI);
-    rotationAnimation.toValue = @(0);
-    rotationAnimation.duration = 0.3f;
-    rotationAnimation.autoreverses = NO;
-    rotationAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-    rotationAnimation.removedOnCompletion = NO;
-    rotationAnimation.fillMode = kCAFillModeBoth;
-    [sender.layer addAnimation:rotationAnimation forKey:@"revItUpAnimation"];
+    [super didPressLeftButton:sender];
 }
 
 - (void)didPressRightButton:(id)sender
 {
-    NSLog(@"%s",__FUNCTION__);
+    // Notifies the view controller when the right button's action has been triggered, manually or by using the keyboard return key.
     
     // This little trick validates any pending auto-correction or auto-spelling just after hitting the 'Send' button
     [self.textView refreshFirstResponder];
     
     NSString *message = [self.textView.text copy];
+    
     [self.tableView beginUpdates];
     [self.messages insertObject:message atIndex:0];
     [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationBottom];
@@ -244,18 +213,22 @@ static NSString *AutoCompletionCellIdentifier = @"AutoCompletionCell";
 
 - (void)didPasteImage:(UIImage *)image
 {
-    // Useful for sending an image
+    // Notifies the view controller when the user has pasted an image inside of the text view.
     
     NSLog(@"%s",__FUNCTION__);
 }
 
 - (void)willRequestUndo
 {
+    // Notifies the view controller when a user did shake the device to undo the typed text
+    
     [super willRequestUndo];
 }
 
 - (void)didCommitTextEditing:(id)sender
 {
+    // Notifies the view controller when tapped on the right "Accept" button for commiting the edited text
+    
     NSString *message = [self.textView.text copy];
     
     [self.messages removeObjectAtIndex:0];
@@ -267,6 +240,8 @@ static NSString *AutoCompletionCellIdentifier = @"AutoCompletionCell";
 
 - (void)didCancelTextEditing:(id)sender
 {
+    // Notifies the view controller when tapped on the left "Cancel" button
+
     [super didCancelTextEditing:sender];
 }
 

@@ -67,12 +67,10 @@ NSString * const SLKTextViewDidShakeNotification = @"com.slack.TextViewControlle
 - (void)drawRect:(CGRect)rect
 {
     [super drawRect:rect];
-
-    if (self.text.length == 0 && self.placeholder.length > 0) {
-        self.placeholderLabel.frame = CGRectInset(rect, 5.0, 5.0);
-        self.placeholderLabel.hidden = NO;
-        [self sendSubviewToBack:self.placeholderLabel];
-    }
+    
+    self.placeholderLabel.hidden = [self shouldHidePlaceholder];
+    self.placeholderLabel.frame = [self placeholderRectForBounds:self.bounds];
+    [self sendSubviewToBack:self.placeholderLabel];
 }
 
 
@@ -159,6 +157,24 @@ NSString * const SLKTextViewDidShakeNotification = @"com.slack.TextViewControlle
     return NO;
 }
 
+- (BOOL)shouldHidePlaceholder
+{
+    if (self.placeholder.length == 0 || self.text.length > 0) {
+        return YES;
+    }
+    return NO;
+}
+
+- (CGRect)placeholderRectForBounds:(CGRect)bounds
+{
+    CGRect rect = UIEdgeInsetsInsetRect(bounds, self.textContainerInset);
+    CGFloat padding = self.textContainer.lineFragmentPadding;
+    rect.origin.x += padding;
+    rect.size.width -= padding * 2.0f;
+    
+    return rect;
+}
+
 
 #pragma mark - Setters
 
@@ -177,6 +193,9 @@ NSString * const SLKTextViewDidShakeNotification = @"com.slack.TextViewControlle
 
 - (void)setText:(NSString *)text
 {
+    // Registers for undo management
+    [self prepareForUndo:@"Text Set"];
+    
     [super setText:text];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:UITextViewTextDidChangeNotification object:self];
@@ -184,6 +203,9 @@ NSString * const SLKTextViewDidShakeNotification = @"com.slack.TextViewControlle
 
 - (void)setAttributedText:(NSAttributedString *)attributedText
 {
+    // Registers for undo management
+    [self prepareForUndo:@"Attributed Text Set"];
+    
     [super setAttributedText:attributedText];
 }
 
@@ -194,6 +216,11 @@ NSString * const SLKTextViewDidShakeNotification = @"com.slack.TextViewControlle
     }
     
     if (action == @selector(paste:) && [self pasteboardItem]) {
+        return YES;
+    }
+    
+    if ((action == @selector(undo:) && [self.undoManager canUndo]) ||
+        (action == @selector(redo:) && [self.undoManager canRedo])) {
         return YES;
     }
     
@@ -213,6 +240,16 @@ NSString * const SLKTextViewDidShakeNotification = @"com.slack.TextViewControlle
         // and beyond scroll content size sometimes when the text is too long
         [self slk_insertTextAtCaretRange:item];
     }
+}
+
+- (void)undo:(id)sender
+{
+    [self.undoManager undo];
+}
+
+- (void)redo:(id)sender
+{
+    [self.undoManager redo];
 }
 
 - (void)setFont:(UIFont *)font
@@ -278,8 +315,7 @@ NSString * const SLKTextViewDidShakeNotification = @"com.slack.TextViewControlle
 
 - (void)didChangeTextView:(NSNotification *)notification
 {
-    if (self.placeholder.length > 0) {
-        self.placeholderLabel.hidden = (self.text.length > 0) ? YES : NO;
+    if (self.placeholderLabel.hidden != [self shouldHidePlaceholder]) {
         [self setNeedsDisplay];
     }
     

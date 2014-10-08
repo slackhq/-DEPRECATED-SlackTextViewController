@@ -23,6 +23,13 @@
 #import "UITextView+SLKAdditions.h"
 #import "UIView+SLKAdditions.h"
 
+typedef NS_ENUM(NSUInteger, SLKKeyboardStatus) {
+    SLKKeyboardStatusDidHide,
+    SLKKeyboardStatusWillShow,
+    SLKKeyboardStatusDidShow,
+    SLKKeyboardStatusWillHide
+};
+
 /** @name A drop-in UIViewController subclass with a growing text input view and other useful messaging features. */
 @interface SLKTextViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource>
 
@@ -48,6 +55,9 @@
 
 /** YES if keyboard can be dismissed gradually with a vertical panning gesture. Default is YES. */
 @property (nonatomic, assign) BOOL keyboardPanningEnabled;
+
+/** YES if an external keyboard has been detected (this value only changes when the text view becomes first responder). */
+@property (nonatomic, readonly, getter=isExternalKeyboard) BOOL externalKeyboard;
 
 /**
  YES if the main table view is inverted. Default is YES.
@@ -107,6 +117,14 @@
  */
 - (void)dismissKeyboard:(BOOL)animated;
 
+/**
+ Notifies the view controller that the keyboard changed status.
+ @discussion You can override this method to perform additional tasks associated with presenting the view. You don't need call super since this method doesn't do anything.
+ 
+ @param status The new keyboard status.
+ */
+- (void)didChangeKeyboardStatus:(SLKKeyboardStatus)status;
+
 
 ///------------------------------------------------
 /// @name Text Typing Notifications
@@ -114,7 +132,7 @@
 
 /**
  Notifies the view controller that the text will update.
- @discussion You can override this method to perform additional tasks associated with presenting the view. You MUST call super at some point in your implementation.
+ @discussion You can override this method to perform additional tasks associated with presenting the view. You don't need call super since this method doesn't do anything.
  */
 - (void)textWillUpdate;
 
@@ -122,7 +140,7 @@
  Notifies the view controller that the text did update.
  @discussion You can override this method to perform additional tasks associated with presenting the view. You MUST call super at some point in your implementation.
  
- @param If YES, the text input bar was resized using an animation.
+ @param If YES, the text input bar will be resized using an animation.
  */
 - (void)textDidUpdate:(BOOL)animated;
 
@@ -217,6 +235,9 @@
 
 /** The recently found prefix symbol used as prefix for autocompletion mode. */
 @property (nonatomic, readonly) NSString *foundPrefix;
+
+/** The range of the found prefix in the text view content. */
+@property (nonatomic, readonly) NSRange foundPrefixRange;
 
 /** The recently found word at the textView caret position. */
 @property (nonatomic, readonly) NSString *foundWord;
