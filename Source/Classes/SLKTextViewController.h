@@ -307,7 +307,17 @@ typedef NS_ENUM(NSUInteger, SLKKeyboardStatus) {
 
 
 
+//The virtual keyboard status
+@property(nonatomic) BOOL isVKeyboardShow;
 
-- (void)needShowVirtualKeyboard:(CGSize) size;
-- (void)needHideVirtualKeyboard;
+
+- (void) virtualkeyboardWillShow;
+- (void) virtualkeyboardDidShow;
+- (void) virtualkeyboardWillDissmis;
+- (void) virtualkeyboardDidDissmis;
+
+- (void) showVirtualKeyboard;
+- (void) dissmisVirtualKeyboard;
+
+- (CGFloat) getVirtualKeyboardHight;
 @end
