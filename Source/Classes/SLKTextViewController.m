@@ -24,6 +24,9 @@
     CGPoint _draggingOffset;
 }
 
+// The shared scrollView pointer, either a tableView or collectionView
+@property (nonatomic, weak) UIScrollView *scrollViewProxy;
+
 // Auto-Layout height constraints used for updating their constants
 @property (nonatomic, strong) NSLayoutConstraint *scrollViewHC;
 @property (nonatomic, strong) NSLayoutConstraint *textInputbarHC;
@@ -52,6 +55,7 @@
 @synthesize textInputbar = _textInputbar;
 @synthesize autoCompletionView = _autoCompletionView;
 @synthesize autoCompleting = _autoCompleting;
+@synthesize scrollViewProxy = _scrollViewProxy;
 @synthesize presentedInPopover = _presentedInPopover;
 
 #pragma mark - Initializer
@@ -154,9 +158,7 @@
         
         _tableView.tableFooterView = [UIView new];
 
-        _singleTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapScrollView)];
-        _singleTapGesture.delegate = self;
-        [_tableView addGestureRecognizer:self.singleTapGesture];
+        [self setScrollViewProxy:self.tableView];
     }
     return _tableView;
 }
@@ -172,22 +174,9 @@
         _collectionView.dataSource = self;
         _collectionView.delegate = self;
         
-        _singleTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapScrollView)];
-        _singleTapGesture.delegate = self;
-        [_collectionView addGestureRecognizer:self.singleTapGesture];
+        [self setScrollViewProxy:self.collectionView];
     }
     return _collectionView;
-}
-
-- (UIScrollView *)scrollViewProxy
-{
-    if (_tableView) {
-        return _tableView;
-    }
-    if (_collectionView) {
-        return _collectionView;
-    }
-    return nil;
 }
 
 - (UITableView *)autoCompletionView
@@ -334,6 +323,13 @@
 {
     CGRect endFrame = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
     
+    [self checkForExternalKeyboardInNotification:notification];
+    
+    // Return 0 if an external keyboard has been detected
+    if (self.isExternalKeyboard) {
+        return 0.0;
+    }
+    
     CGFloat keyboardHeight = 0.0;
     CGFloat tabBarHeight = ([self.tabBarController.tabBar isHidden] || self.hidesBottomBarWhenPushed) ? 0.0 : CGRectGetHeight(self.tabBarController.tabBar.frame);
     
@@ -342,10 +338,17 @@
         keyboardHeight = MIN(CGRectGetWidth(endFrame), CGRectGetHeight(endFrame));
         keyboardHeight -= tabBarHeight;
     }
-    
     // The height of the keyboard if sliding
-    if ([notification.name isEqualToString:SCKInputAccessoryViewKeyboardFrameDidChangeNotification]) {
-        keyboardHeight = CGRectGetHeight([UIScreen mainScreen].bounds)-endFrame.origin.y;
+    else if ([notification.name isEqualToString:SCKInputAccessoryViewKeyboardFrameDidChangeNotification]) {
+        
+        if (UI_IS_IOS8_AND_HIGHER || !UI_IS_LANDSCAPE) {
+            keyboardHeight = CGRectGetHeight([UIScreen mainScreen].bounds);
+        }
+        else {
+            keyboardHeight = MIN(CGRectGetWidth([UIScreen mainScreen].bounds), CGRectGetHeight([UIScreen mainScreen].bounds));
+        }
+        
+        keyboardHeight -= endFrame.origin.y;
         keyboardHeight -= tabBarHeight;
     }
     
@@ -371,6 +374,19 @@
 
 
 #pragma mark - Setters
+
+- (void)setScrollViewProxy:(UIScrollView *)scrollView
+{
+    if (self.scrollViewProxy) {
+        return;
+    }
+    
+    _scrollViewProxy = scrollView;
+    
+    _singleTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapScrollView:)];
+    _singleTapGesture.delegate = self;
+    [_scrollViewProxy addGestureRecognizer:self.singleTapGesture];
+}
 
 - (void)setbounces:(BOOL)bounces
 {
@@ -468,6 +484,29 @@
     _keyboardStatus = status;
     
     [self didChangeKeyboardStatus:status];
+}
+
+- (void)checkForExternalKeyboardInNotification:(NSNotification *)notification
+{
+    CGRect beginFrame = [notification.userInfo[UIKeyboardFrameBeginUserInfoKey] CGRectValue];
+    CGRect endFrame = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    
+    CGRect keyboardFrame = CGRectZero;
+    
+    if ([notification.name isEqualToString:UIKeyboardWillShowNotification]) {
+        keyboardFrame = [self.view convertRect:[self.view.window convertRect:endFrame fromWindow:nil] fromView:nil];
+    }
+    else if ([notification.name isEqualToString:UIKeyboardWillHideNotification]) {
+        keyboardFrame = [self.view convertRect:[self.view.window convertRect:beginFrame fromWindow:nil] fromView:nil];
+    }
+    
+    if (!self.isMovingKeyboard) {
+        _externalKeyboard = keyboardFrame.origin.y + keyboardFrame.size.height > self.view.bounds.size.height;
+    }
+    
+    if (CGRectIsNull(keyboardFrame)) {
+        _externalKeyboard = NO;
+    }
 }
 
 
@@ -636,6 +675,21 @@
     [self performRightAction];
 }
 
+- (void)didPressCommandZKeys:(id)sender
+{
+    UIKeyCommand *keyComamnd = (UIKeyCommand *)sender;
+    
+    if ((keyComamnd.modifierFlags & UIKeyModifierShift) > 0) {
+        
+        if ([self.textView.undoManager canRedo]) {
+            [self.textView.undoManager redo];
+        }
+    }
+    else if ([self.textView.undoManager canUndo]) {
+        [self.textView.undoManager undo];
+    }
+}
+
 - (void)didPressEscapeKey:(id)sender
 {
     if (self.isAutoCompleting) {
@@ -670,10 +724,15 @@
 
 #pragma mark - Private Actions
 
-- (void)didTapScrollView
+- (void)didTapScrollView:(UIGestureRecognizer *)gesture
 {
     // Skips if it is presented inside of a popover
     if (self.isPresentedInPopover) {
+        return;
+    }
+    
+    // Skips if using an external keyboard
+    if (self.isExternalKeyboard) {
         return;
     }
     
@@ -815,10 +874,10 @@
         return;
     }
     
+    self.movingKeyboard = self.scrollViewProxy.isDragging;
+    
     self.keyboardHC.constant = [self appropriateKeyboardHeight:notification];
     self.scrollViewHC.constant = [self appropriateScrollViewHeight];
-    
-    self.movingKeyboard = self.scrollViewProxy.isDragging;
     
     if (self.isInverted && self.isMovingKeyboard && !CGPointEqualToPoint(self.scrollViewProxy.contentOffset, _draggingOffset)) {
         self.scrollViewProxy.contentOffset = _draggingOffset;
@@ -1195,6 +1254,14 @@
              [UIKeyCommand keyCommandWithInput:@"\r"
                                  modifierFlags:UIKeyModifierControl
                                         action:@selector(insertNewLineBreak)],
+             
+             // Undo/Redo
+             [UIKeyCommand keyCommandWithInput:@"z"
+                                 modifierFlags:UIKeyModifierCommand
+                                        action:@selector(didPressCommandZKeys:)],
+             [UIKeyCommand keyCommandWithInput:@"z"
+                                 modifierFlags:UIKeyModifierShift|UIKeyModifierCommand
+                                        action:@selector(didPressCommandZKeys:)],
              
              // Pressing Esc key
              [UIKeyCommand keyCommandWithInput:UIKeyInputEscape
