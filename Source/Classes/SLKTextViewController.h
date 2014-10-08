@@ -45,6 +45,8 @@ typedef NS_ENUM(NSUInteger, SLKKeyboardStatus) {
 /** The typing indicator used to display user names horizontally. */
 @property (nonatomic, readonly) IBOutlet SLKTypingIndicatorView *typingIndicatorView;
 
+@property (nonatomic, readonly) IBOutlet UIView *virtualKeyboard;
+
 /** YES if control's animation should have bouncy effects. Default is YES. */
 @property (nonatomic, assign) BOOL bounces;
 
@@ -301,4 +303,21 @@ typedef NS_ENUM(NSUInteger, SLKKeyboardStatus) {
  */
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer;
 
+
+
+
+
+//The virtual keyboard status
+@property(nonatomic) BOOL isVKeyboardShow;
+
+
+- (void) virtualkeyboardWillShow;
+- (void) virtualkeyboardDidShow;
+- (void) virtualkeyboardWillDissmis;
+- (void) virtualkeyboardDidDissmis;
+
+- (void) showVirtualKeyboard;
+- (void) dissmisVirtualKeyboard;
+
+- (CGFloat) getVirtualKeyboardHight;
 @end

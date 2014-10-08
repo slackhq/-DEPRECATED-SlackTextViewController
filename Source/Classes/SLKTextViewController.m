@@ -51,12 +51,16 @@
 @implementation SLKTextViewController
 @synthesize tableView = _tableView;
 @synthesize collectionView = _collectionView;
+@synthesize virtualKeyboard = _virtualKeyboard;
 @synthesize typingIndicatorView = _typingIndicatorView;
 @synthesize textInputbar = _textInputbar;
 @synthesize autoCompletionView = _autoCompletionView;
 @synthesize autoCompleting = _autoCompleting;
 @synthesize scrollViewProxy = _scrollViewProxy;
 @synthesize presentedInPopover = _presentedInPopover;
+
+@synthesize isVKeyboardShow;
+
 
 #pragma mark - Initializer
 
@@ -234,6 +238,16 @@
         return _inputAccessoryView;
     }
     return nil;
+}
+
+- (UIView *)virtualKeyboard{
+    if (!_virtualKeyboard) {
+        _virtualKeyboard = [[UIView alloc] init];
+        _virtualKeyboard.backgroundColor = [UIColor grayColor];
+        
+    }
+
+    return _virtualKeyboard;
 }
 
 - (BOOL)isEditing
@@ -608,6 +622,7 @@
 - (void)didPressLeftButton:(id)sender
 {
     // No implementation here. Meant to be overriden in subclass.
+    [self.textView resignFirstResponder];
 }
 
 - (void)didPressRightButton:(id)sender
@@ -703,6 +718,14 @@
     }
 
     [self dismissKeyboard:YES];
+    
+    if (self.isVKeyboardShow) {
+        [self virtualkeyboardWillDissmis];
+        
+        [self dissmisVirtualKeyboard];
+        
+        [self virtualkeyboardDidDissmis];
+    }
 }
 
 - (void)didPasteImage:(UIImage *)image
@@ -737,6 +760,14 @@
     }
     
     [self dismissKeyboard:YES];
+    
+    if (self.isVKeyboardShow) {
+        [self virtualkeyboardWillDissmis];
+        
+        [self dissmisVirtualKeyboard];
+        
+        [self virtualkeyboardDidDissmis];
+    }
 }
 
 - (void)editText:(NSString *)text
@@ -790,6 +821,171 @@
 }
 
 
+
+
+
+
+/////// by khan
+
+- (UIWindow *) getMainWindow {
+    for (UIView *view = self.view; view; view = view.superview) {
+        if ([view isKindOfClass:[UIWindow class]] ) {
+            return (UIWindow *)view;
+        }
+    }
+    
+    return nil;
+}
+
+
+- (void) virtualkeyboardWillShow{}
+- (void) virtualkeyboardDidShow{}
+- (void) virtualkeyboardWillDissmis{}
+- (void) virtualkeyboardDidDissmis{}
+
+- (void) showVirtualKeyboard{
+    if (self.isVKeyboardShow) {
+        return;
+    }
+    
+    
+    UIWindow *window = [self getMainWindow];
+    if (window != nil) {
+        [self virtualkeyboardWillShow];
+        __block CGRect r = [[UIScreen mainScreen] applicationFrame];
+        CGFloat yoffset = [UIApplication sharedApplication].statusBarFrame.size.height;
+        
+        CGFloat y1 = r.size.height - [self virtualKeyboardHight] + yoffset;
+        CGFloat y2 = r.size.height + yoffset;
+        r.size.height = [self virtualKeyboardHight];
+        r.origin.y = y2;
+        [self.virtualKeyboard setFrame:r];
+        [window addSubview: self.virtualKeyboard];
+        
+        __block __typeof(self) weakSelf = self;
+        
+        [UIView animateWithDuration:0.3f animations:^{
+            r.origin.y = y1;
+            [weakSelf.virtualKeyboard setFrame:r];
+        } completion:^(BOOL finished) {
+            
+            [self virtualkeyboardDidShow];
+        }];
+        
+        
+        [self needShowVirtualKeyboard:r.size];
+        
+        self.isVKeyboardShow = YES;
+        
+        
+    }
+    
+}
+
+- (void) dissmisVirtualKeyboard{
+    if (self.isVKeyboardShow == NO) {
+        return;
+    }
+    
+    [self virtualkeyboardWillDissmis];
+    
+    __block CGRect r = [[UIScreen mainScreen] applicationFrame];
+    CGFloat yoffset = [UIApplication sharedApplication].statusBarFrame.size.height  ;
+    CGFloat y1 = r.size.height - [self virtualKeyboardHight] + yoffset;
+    CGFloat y2 = r.size.height + yoffset;
+    r.size.height = [self virtualKeyboardHight];
+    
+    r.origin.y = y1;
+    [self.virtualKeyboard setFrame:r];
+    
+    __block __typeof(self) weakSelf = self;
+    
+    [UIView animateWithDuration:0.3f animations:^{
+        
+        r.origin.y = y2;
+        [weakSelf.virtualKeyboard setFrame:r];
+        
+    } completion:^(BOOL finished) {
+        
+        [self.virtualKeyboard removeFromSuperview];
+        [self virtualkeyboardWillDissmis];
+    }];
+    
+    [self needHideVirtualKeyboard];
+    
+    self.isVKeyboardShow = NO;
+}
+
+
+- (CGFloat) getVirtualKeyboardHight{
+    return 0.0f;
+}
+
+
+- (CGFloat) virtualKeyboardHight{
+    return [self getVirtualKeyboardHight];
+}
+
+
+
+- (void)needShowVirtualKeyboard:(CGSize) size{
+    
+    
+    UIViewAnimationCurve curve = UIViewAnimationCurveEaseIn;
+    NSTimeInterval duration = 0.3f;
+    
+    // Checks if it's showing or hidding the keyboard
+    BOOL show = YES;
+    
+    // Programatically stops scrolling before updating the view constraints (to avoid scrolling glitch)
+    [self.scrollViewProxy slk_stopScrolling];
+    
+    // Updates the height constraints' constants
+    self.keyboardHC.constant = size.height;
+    self.scrollViewHC.constant = [self appropriateScrollViewHeight];
+    
+    if (!show && self.isAutoCompleting) {
+        [self hideAutoCompletionView];
+    }
+    
+    // Only for this animation, we set bo to bounce since we want to give the impression that the text input is glued to the keyboard.
+    [self.view slk_animateLayoutIfNeededWithDuration:duration
+                                              bounce:NO
+                                             options:(curve<<16)|UIViewAnimationOptionLayoutSubviews|UIViewAnimationOptionBeginFromCurrentState
+                                          animations:NULL];
+}
+
+- (void)needHideVirtualKeyboard {
+    
+    
+    UIViewAnimationCurve curve = UIViewAnimationCurveEaseOut;
+    NSTimeInterval duration = 0.3f;
+    
+    // Checks if it's showing or hidding the keyboard
+    BOOL show = NO;
+    
+    // Programatically stops scrolling before updating the view constraints (to avoid scrolling glitch)
+    [self.scrollViewProxy slk_stopScrolling];
+    
+    // Updates the height constraints' constants
+    self.keyboardHC.constant = 0;
+    self.scrollViewHC.constant = [self appropriateScrollViewHeight];
+    
+    if (!show && self.isAutoCompleting) {
+        [self hideAutoCompletionView];
+    }
+    
+    // Only for this animation, we set bo to bounce since we want to give the impression that the text input is glued to the keyboard.
+    [self.view slk_animateLayoutIfNeededWithDuration:duration
+                                              bounce:NO
+                                             options:(curve<<16)|UIViewAnimationOptionLayoutSubviews|UIViewAnimationOptionBeginFromCurrentState
+                                          animations:NULL];
+}
+
+///////
+
+
+
 #pragma mark - Notification Events
 
 - (void)willShowOrHideKeyboard:(NSNotification *)notification
@@ -808,6 +1004,15 @@
     if (![self.textView isFirstResponder]) {
         return;
     }
+    
+    if (self.isVKeyboardShow) {
+        [self virtualkeyboardWillDissmis];
+        
+        [self dissmisVirtualKeyboard];
+        
+        [self virtualkeyboardDidDissmis];
+    }
+    
     
     NSInteger curve = [notification.userInfo[UIKeyboardAnimationCurveUserInfoKey] integerValue];
     NSTimeInterval duration = [notification.userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
@@ -1180,10 +1385,27 @@
 }
 
 
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    if (self.isVKeyboardShow) {
+        [self virtualkeyboardWillDissmis];
+        
+        [self dissmisVirtualKeyboard];
+        
+        [self virtualkeyboardDidDissmis];
+    }
+}
+
+
+
 #pragma mark - UIGestureRecognizerDelegate Methods
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
 {
+    if (self.isVKeyboardShow) {
+        return YES;
+    }
+    
     if ([self.singleTapGesture isEqual:gestureRecognizer]) {
         return [self.textInputbar.textView isFirstResponder];
     }
@@ -1321,16 +1543,22 @@
 // iOS7 only
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
+#if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_7_1
     if (![self respondsToSelector:@selector(willTransitionToTraitCollection:withTransitionCoordinator:)]) {
+#endif
         [self prepareForInterfaceRotation];
+#if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_7_1
     }
+#endif
 }
 
 // iOS8 only
+#if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_7_0
 - (void)willTransitionToTraitCollection:(UITraitCollection *)newCollection withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
 {
     [self prepareForInterfaceRotation];
 }
+#endif
 
 - (NSUInteger)supportedInterfaceOrientations
 {
@@ -1376,6 +1604,9 @@
     _typingIndicatorViewHC = nil;
     _autoCompletionViewHC = nil;
     _keyboardHC = nil;
+    
+    [self.virtualKeyboard removeFromSuperview];
+    _virtualKeyboard = nil;
     
     [self unregisterNotifications];
 }

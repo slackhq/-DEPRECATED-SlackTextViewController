@@ -24,6 +24,11 @@ static NSString *AutoCompletionCellIdentifier = @"AutoCompletionCell";
 
 @property (nonatomic, strong) NSArray *searchResult;
 
+
+@property (nonatomic) BOOL isShow;
+
+@property(nonatomic, strong) UIButton *btnPhoto;
+
 @end
 
 @implementation MessageViewController
@@ -75,17 +80,22 @@ static NSString *AutoCompletionCellIdentifier = @"AutoCompletionCell";
 
     self.textView.placeholder = NSLocalizedString(@"Message", nil);
     self.textView.placeholderColor = [UIColor lightGrayColor];
+    self.textInputbar.backgroundColor = [UIColor colorWithRed:240.0/255.0 green:240.0/255.0 blue:240.0/255.0 alpha:1.0];
     self.textView.layer.borderColor = [UIColor colorWithRed:217.0/255.0 green:217.0/255.0 blue:217.0/255.0 alpha:1.0].CGColor;
+
+    self.textView.keyboardType = UIKeyboardTypeDefault;
+    self.textView.returnKeyType = UIReturnKeyDefault;
     
-    [self.leftButton setImage:[UIImage imageNamed:@"icn_upload"] forState:UIControlStateNormal];
+    [self.leftButton setImage:[UIImage imageNamed:@"icn_vkeyboard"] forState:UIControlStateNormal];
     [self.leftButton setTintColor:[UIColor grayColor]];
     
     [self.rightButton setTitle:NSLocalizedString(@"Send", nil) forState:UIControlStateNormal];
     
     [self.textInputbar.editorTitle setTextColor:[UIColor darkGrayColor]];
+//    [self.textInputbar.editortLeftButton setTintColor:[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0]];
+//    [self.textInputbar.editortRightButton setTintColor:[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0]];
     [self.textInputbar.editortLeftButton setTintColor:[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0]];
     [self.textInputbar.editortRightButton setTintColor:[UIColor colorWithRed:0.0/255.0 green:122.0/255.0 blue:255.0/255.0 alpha:1.0]];
-    
     self.textInputbar.autoHideRightButton = YES;
     self.textInputbar.maxCharCount = 140;
     self.textInputbar.counterStyle = SLKCounterStyleSplit;
@@ -94,12 +104,26 @@ static NSString *AutoCompletionCellIdentifier = @"AutoCompletionCell";
     
     [self.autoCompletionView registerClass:[MessageTableViewCell class] forCellReuseIdentifier:AutoCompletionCellIdentifier];
     [self registerPrefixesForAutoCompletion:@[@"@", @"#", @":"]];
+    
+    
+    self.btnPhoto = [UIButton buttonWithType:UIButtonTypeSystem];
+//    [self.btnPhoto setBackgroundImage:[UIImage imageNamed:@"icn_upload"] forState:UIControlStateNormal];
+    [self.btnPhoto setImage:[UIImage imageNamed:@"icn_upload"]  forState:UIControlStateNormal];
+    [self.btnPhoto setFrame: CGRectMake(10, 10, 45, 45)];
+    [self.virtualKeyboard addSubview:self.btnPhoto];
+    [self.btnPhoto addTarget:self action:@selector(clickBtnPhoto:) forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
 }
+
+
+-(IBAction)clickBtnPhoto:(id)sender{
+    NSLog(@"clickBtnPhoto");
+}
+
 
 #pragma mark - Action Methods
 
@@ -171,6 +195,11 @@ static NSString *AutoCompletionCellIdentifier = @"AutoCompletionCell";
     // Notifies the view controller that the keyboard changed status.
 }
 
+- (void) virtualkeyboardDidDissmis {
+    [self rotateUp: self.leftButton];
+    self.isShow = NO;
+}
+
 - (void)textWillUpdate
 {
     // Notifies the view controller that the text will update.
@@ -187,9 +216,48 @@ static NSString *AutoCompletionCellIdentifier = @"AutoCompletionCell";
 
 - (void)didPressLeftButton:(id)sender
 {
-    // Notifies the view controller when the left button's action has been triggered, manually.
-    
+    NSLog(@"%s",__FUNCTION__);
+   
     [super didPressLeftButton:sender];
+    //    CGSize size = CGSizeMake(320, 50);
+    if (self.isShow == NO) {
+        
+        [self rotateDown:sender];
+        [self showVirtualKeyboard];
+        self.isShow = YES;
+    } else {
+        [self rotateUp:sender];
+        [self dissmisVirtualKeyboard];
+        self.isShow = NO;
+    }
+    
+}
+
+
+- (IBAction)rotateDown:(UIButton * )sender {
+    CABasicAnimation* rotationAnimation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
+    rotationAnimation.delegate = self;
+    rotationAnimation.fromValue = @(0);
+    rotationAnimation.toValue = @(1*M_PI);
+    rotationAnimation.duration = 0.3f;
+    rotationAnimation.autoreverses = NO;
+    rotationAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+    rotationAnimation.removedOnCompletion = NO;
+    rotationAnimation.fillMode = kCAFillModeBoth;
+    [sender.layer addAnimation:rotationAnimation forKey:@"revItUpAnimation"];
+}
+
+- (IBAction)rotateUp:(UIButton * )sender {
+    CABasicAnimation* rotationAnimation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
+    rotationAnimation.delegate = self;
+    rotationAnimation.fromValue = @(1*M_PI);
+    rotationAnimation.toValue = @(0);
+    rotationAnimation.duration = 0.3f;
+    rotationAnimation.autoreverses = NO;
+    rotationAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+    rotationAnimation.removedOnCompletion = NO;
+    rotationAnimation.fillMode = kCAFillModeBoth;
+    [sender.layer addAnimation:rotationAnimation forKey:@"revItUpAnimation"];
 }
 
 - (void)didPressRightButton:(id)sender
@@ -292,6 +360,11 @@ static NSString *AutoCompletionCellIdentifier = @"AutoCompletionCell";
     return cellHeight*self.searchResult.count;
 }
 
+- (CGFloat) getVirtualKeyboardHight{
+    return 217;   //by khan.lau
+}
+
+
 - (NSArray *)keyCommands
 {
     NSMutableArray *commands = [NSMutableArray arrayWithArray:[super keyCommands]];
@@ -351,11 +424,11 @@ static NSString *AutoCompletionCellIdentifier = @"AutoCompletionCell";
         cell.needsPlaceholder = NO;
         
         CGFloat scale = [UIScreen mainScreen].scale;
-        
+#if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_7_1
         if ([[UIScreen mainScreen] respondsToSelector:@selector(nativeScale)]) {
             scale = [UIScreen mainScreen].nativeScale;
         }
-        
+#endif
         CGSize imgSize = CGSizeMake(kAvatarSize*scale, kAvatarSize*scale);
         
         [LoremIpsum asyncPlaceholderImageWithSize:imgSize
