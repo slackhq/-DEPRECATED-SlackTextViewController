@@ -266,15 +266,7 @@
 - (UIView *)inputAccessoryView
 {
     if (_keyboardPanningEnabled) {
-        
-        static dispatch_once_t onceToken;
-        static SCKInputAccessoryView *_inputAccessoryView = nil;
-        
-        dispatch_once(&onceToken, ^{
-            _inputAccessoryView = [SCKInputAccessoryView new];
-        });
-        
-        return _inputAccessoryView;
+        return [[SCKInputAccessoryView alloc] initWithFrame:self.textInputbar.bounds];
     }
     return nil;
 }
@@ -376,24 +368,18 @@
     CGFloat keyboardHeight = 0.0;
     CGFloat tabBarHeight = ([self.tabBarController.tabBar isHidden] || self.hidesBottomBarWhenPushed) ? 0.0 : CGRectGetHeight(self.tabBarController.tabBar.frame);
     
-    // The height of the keyboard if showing
-    if ([notification.name isEqualToString:UIKeyboardWillShowNotification]) {
-        keyboardHeight = MIN(CGRectGetWidth(endFrame), CGRectGetHeight(endFrame));
-        keyboardHeight -= tabBarHeight;
+    // The height of the keyboard
+    if (UI_IS_IOS8_AND_HIGHER || !UI_IS_LANDSCAPE) {
+        keyboardHeight = CGRectGetHeight([UIScreen mainScreen].bounds);
     }
-    // The height of the keyboard if sliding
-    else if ([notification.name isEqualToString:SCKInputAccessoryViewKeyboardFrameDidChangeNotification]) {
-        
-        if (UI_IS_IOS8_AND_HIGHER || !UI_IS_LANDSCAPE) {
-            keyboardHeight = CGRectGetHeight([UIScreen mainScreen].bounds);
-        }
-        else {
-            keyboardHeight = MIN(CGRectGetWidth([UIScreen mainScreen].bounds), CGRectGetHeight([UIScreen mainScreen].bounds));
-        }
-        
-        keyboardHeight -= endFrame.origin.y;
-        keyboardHeight -= tabBarHeight;
+    else {
+        keyboardHeight = MIN(CGRectGetWidth([UIScreen mainScreen].bounds), CGRectGetHeight([UIScreen mainScreen].bounds));
     }
+    
+    keyboardHeight -= endFrame.origin.y;
+
+    keyboardHeight -= tabBarHeight;
+    keyboardHeight -= self.textView.inputAccessoryView.bounds.size.height;
     
     if (keyboardHeight < 0) {
         keyboardHeight = 0.0;
@@ -558,6 +544,20 @@
     }
 }
 
+- (void)updateInputAccessoryView
+{
+    if (self.keyboardPanningEnabled) {
+        UIView *inputAccessoryView = [self inputAccessoryView];
+        if (!CGRectEqualToRect(self.textView.inputAccessoryView.frame, inputAccessoryView.frame)) {
+            self.textView.inputAccessoryView = inputAccessoryView;
+            
+            if (self.textView.isFirstResponder) {
+                [self.textView reloadInputViews];
+            }
+        }
+    }
+}
+
 
 #pragma mark - Subclassable Methods
 
@@ -641,6 +641,8 @@
             [self.view layoutIfNeeded];
         }
     }
+    
+    [self updateInputAccessoryView];
 }
 
 - (BOOL)canPressRightButton
@@ -902,7 +904,7 @@
     
     // Skips this if it's not the expected textView.
     // Checking the keyboard height constant helps to disable the view constraints update on iPad when the keyboard is undocked.
-    if (![self.textView isFirstResponder] || self.keyboardHC.constant == 0) {
+    if (![self.textView isFirstResponder] || (self.keyboardHC.constant == 0 && self.keyboardStatus == SLKKeyboardStatusDidHide)) {
         return;
     }
     
