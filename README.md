@@ -1,5 +1,7 @@
 #SlackTextViewController
 
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/slackhq/SlackTextViewController?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Pod Version](http://img.shields.io/cocoapods/v/SlackTextViewController.svg)](https://cocoadocs.org/docsets/SlackTextViewController)
 [![License](http://img.shields.io/badge/license-Apache%202.0-blue.svg)](http://opensource.org/licenses/Apache2.0)
 
