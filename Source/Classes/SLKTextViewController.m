@@ -476,10 +476,10 @@ NSString * const SLKKeyboardDidHideNotification =   @"SLKKeyboardDidHideNotifica
 {
     UIWindow *window = [UIApplication sharedApplication].keyWindow;
     
-    CGRect windowFrame = [window convertRect:window.frame fromView:self.view];
+    CGRect windowFrame = [window convertRect:window.frame fromView:window];
     windowFrame.origin = CGPointZero;
     
-    CGRect viewRect = [window convertRect:self.view.frame fromView:nil];
+    CGRect viewRect = [window convertRect:self.view.frame fromView:self.view];
     
     CGFloat bottomWindow = CGRectGetMaxY(windowFrame);
     CGFloat bottomView = CGRectGetMaxY(viewRect);
