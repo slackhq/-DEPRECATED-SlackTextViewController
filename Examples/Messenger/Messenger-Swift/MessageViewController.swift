@@ -16,6 +16,10 @@ class MessageViewController: SLKTextViewController {
         
         // In progress in branch 'swift-example'
         super.viewDidLoad()
+        textView.placeholder = "我要评论:"
+
+        textInputbar.autoHideRightButton = false
+        
     }
 
     override func didReceiveMemoryWarning() {

@@ -18,6 +18,8 @@
 #import "SLKInputAccessoryView.h"
 #import "SLKUIConstants.h"
 
+#import <ExternalAccessory/ExternalAccessory.h>
+
 NSString * const SLKKeyboardWillShowNotification =  @"SLKKeyboardWillShowNotification";
 NSString * const SLKKeyboardDidShowNotification =   @"SLKKeyboardDidShowNotification";
 NSString * const SLKKeyboardWillHideNotification =  @"SLKKeyboardWillHideNotification";
@@ -1314,6 +1316,16 @@ NSString * const SLKKeyboardDidHideNotification =   @"SLKKeyboardDidHideNotifica
     [self cacheTextView];
 }
 
+- (void)didConnectExternalAccessory:(NSNotification *)note
+{
+    NSLog(@"%s: %@",__FUNCTION__, note);
+}
+
+- (void)didDisconnectExternalAccessory:(NSNotification *)note
+{
+    NSLog(@"%s: %@",__FUNCTION__, note);
+}
+
 
 #pragma mark - Auto-Completion Text Processing
 
@@ -1820,7 +1832,7 @@ NSString * const SLKKeyboardDidHideNotification =   @"SLKKeyboardDidHideNotifica
     
     // Keyboard Accessory View notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeKeyboardFrame:) name:SLKInputAccessoryViewKeyboardFrameDidChangeNotification object:nil];
-
+    
     // TextView notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willChangeTextViewText:) name:SLKTextViewTextWillChangeNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeTextViewText:) name:UITextViewTextDidChangeNotification object:nil];
@@ -1836,6 +1848,11 @@ NSString * const SLKKeyboardDidHideNotification =   @"SLKKeyboardDidHideNotifica
     // Application notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willTerminateApplication:) name:UIApplicationWillTerminateNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willTerminateApplication:) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
+    
+    // External Accessory notifications
+    [[EAAccessoryManager sharedAccessoryManager] registerForLocalNotifications];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didConnectExternalAccessory:) name:EAAccessoryDidConnectNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didDisconnectExternalAccessory:) name:EAAccessoryDidDisconnectNotification object:nil];
 }
 
 - (void)unregisterNotifications
@@ -1853,9 +1870,9 @@ NSString * const SLKKeyboardDidHideNotification =   @"SLKKeyboardDidHideNotifica
     [[NSNotificationCenter defaultCenter] removeObserver:self name:SLKKeyboardDidHideNotification object:nil];
 #endif
     
-    // TextView notifications
+    // Keyboard Accessory View notifications
     [[NSNotificationCenter defaultCenter] removeObserver:self name:SLKInputAccessoryViewKeyboardFrameDidChangeNotification object:nil];
-    
+
     // TextView notifications
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UITextViewTextDidBeginEditingNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UITextViewTextDidEndEditingNotification object:nil];
@@ -1873,6 +1890,11 @@ NSString * const SLKKeyboardDidHideNotification =   @"SLKKeyboardDidHideNotifica
     // Application notifications
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillTerminateNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
+    
+    // External Accessory notifications
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:EAAccessoryDidConnectNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:EAAccessoryDidDisconnectNotification object:nil];
+    [[EAAccessoryManager sharedAccessoryManager] unregisterForLocalNotifications];
 }
 
 
