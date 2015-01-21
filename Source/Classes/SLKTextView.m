@@ -35,9 +35,6 @@ static NSTimeInterval kDeleteMaxTimeInterval = 0.5;
     NSTimeInterval _lastDeletionTimeInterval;
 }
 
-// The label used as placeholder
-@property (nonatomic, strong) UILabel *placeholderLabel;
-
 // The keyboard commands available for external keyboards
 @property (nonatomic, strong) NSArray *keyboardCommands;
 
@@ -51,6 +48,21 @@ static NSTimeInterval kDeleteMaxTimeInterval = 0.5;
 
 // Used to refresh the first responder's
 @property (nonatomic, strong) NSTimer *deletionTimer;
+
+/**
+ The attributed string that is displayed when there is no other text in the text view.
+ 
+ The default value is `nil`.
+ */
+@property (nonatomic, strong) NSAttributedString *attributedPlaceholder;
+
+/**
+ Returns the drawing rectangle for the text views’s placeholder text.
+ 
+ @param bounds The bounding rectangle of the receiver.
+ @return The computed drawing rectangle for the placeholder text.
+ */
+- (CGRect)placeholderRectForBounds:(CGRect)bounds;
 
 @end
 
@@ -99,15 +111,15 @@ static NSTimeInterval kDeleteMaxTimeInterval = 0.5;
 
 #pragma mark - Rendering
 
-- (void)drawRect:(CGRect)rect
-{
+- (void)drawRect:(CGRect)rect {
     [super drawRect:rect];
     
-    self.placeholderLabel.hidden = [self shouldHidePlaceholder];
-    self.placeholderLabel.frame = [self placeholderRectThatFits:self.bounds];
-    [self sendSubviewToBack:self.placeholderLabel];
+    // Draw placeholder if necessary
+    if (self.text.length == 0 && self.attributedPlaceholder) {
+        CGRect placeholderRect = [self placeholderRectForBounds:self.bounds];
+        [self.attributedPlaceholder drawInRect:placeholderRect];
+    }
 }
-
 
 #pragma mark - UIView Overrides
 
@@ -120,37 +132,12 @@ static NSTimeInterval kDeleteMaxTimeInterval = 0.5;
 {
     return YES;
 }
-
-
 #pragma mark - Getters
 
-- (UILabel *)placeholderLabel
-{
-    if (!_placeholderLabel)
-    {
-        _placeholderLabel = [UILabel new];
-        _placeholderLabel.clipsToBounds = NO;
-        _placeholderLabel.autoresizesSubviews = NO;
-        _placeholderLabel.numberOfLines = 1;
-        _placeholderLabel.font = self.font;
-        _placeholderLabel.backgroundColor = [UIColor clearColor];
-        _placeholderLabel.textColor = self.placeholderColor;
-        _placeholderLabel.hidden = YES;
-        
-        [self addSubview:_placeholderLabel];
-    }
-    return _placeholderLabel;
+- (NSString *)placeholder {
+    return self.attributedPlaceholder.string;
 }
 
-- (NSString *)placeholder
-{
-    return self.placeholderLabel.text;
-}
-
-- (UIColor *)placeholderColor
-{
-    return self.placeholderLabel.textColor;
-}
 
 - (NSUInteger)numberOfLines
 {
@@ -316,14 +303,20 @@ SLKPastableMediaType SLKPastableMediaTypeFromNSString(NSString *string)
     return NO;
 }
 
-- (CGRect)placeholderRectThatFits:(CGRect)bounds
-{
-    CGRect rect = CGRectZero;
-    rect.size = [self.placeholderLabel sizeThatFits:bounds.size];
-    rect.origin = UIEdgeInsetsInsetRect(bounds, self.textContainerInset).origin;
+- (CGRect)placeholderRectForBounds:(CGRect)bounds {
+    CGRect rect = UIEdgeInsetsInsetRect(bounds, self.contentInset);
     
-    CGFloat padding = self.textContainer.lineFragmentPadding;
-    rect.origin.x += padding;
+    if ([self respondsToSelector:@selector(textContainer)]) {
+        rect = UIEdgeInsetsInsetRect(rect, self.textContainerInset);
+        CGFloat padding = self.textContainer.lineFragmentPadding;
+        rect.origin.x += padding;
+        rect.size.width -= padding * 2.0f;
+    } else {
+        if (self.contentInset.left == 0.0f) {
+            rect.origin.x += 8.0f;
+        }
+        rect.origin.y += 8.0f;
+    }
     
     return rect;
 }
@@ -339,16 +332,6 @@ SLKPastableMediaType SLKPastableMediaTypeFromNSString(NSString *string)
 
 
 #pragma mark - Setters
-
-- (void)setPlaceholder:(NSString *)placeholder
-{
-    self.placeholderLabel.text = placeholder;
-}
-
-- (void)setPlaceholderColor:(UIColor *)color
-{
-    self.placeholderLabel.textColor = color;
-}
 
 - (void)setUndoManagerEnabled:(BOOL)enabled
 {
@@ -389,6 +372,9 @@ SLKPastableMediaType SLKPastableMediaTypeFromNSString(NSString *string)
     
     [super setText:text];
     
+    // Update placeholder if needed
+    [self setNeedsDisplay];
+    
     [[NSNotificationCenter defaultCenter] postNotificationName:UITextViewTextDidChangeNotification object:self];
 }
 
@@ -398,6 +384,8 @@ SLKPastableMediaType SLKPastableMediaTypeFromNSString(NSString *string)
     [self prepareForUndo:@"Attributed Text Set"];
     
     [super setAttributedText:attributedText];
+    
+    [self setNeedsDisplay];
 }
 
 // Safer cursor range (it sometimes exceeds the lenght of the text property).
@@ -417,22 +405,78 @@ SLKPastableMediaType SLKPastableMediaTypeFromNSString(NSString *string)
     return range;
 }
 
-- (void)setFont:(UIFont *)font
-{
+- (void)setContentInset:(UIEdgeInsets)contentInset {
+    [super setContentInset:contentInset];
+    [self setNeedsDisplay];
+}
+
+
+- (void)setFont:(UIFont *)font {
     [super setFont:font];
-    
-    // Updates the placeholder font too
-    self.placeholderLabel.font = self.font;
+    [self setNeedsDisplay];
 }
 
-- (void)setTextAlignment:(NSTextAlignment)textAlignment
-{
+
+- (void)setTextAlignment:(NSTextAlignment)textAlignment {
     [super setTextAlignment:textAlignment];
-    
-    // Updates the placeholder text alignment too
-    self.placeholderLabel.textAlignment = textAlignment;
+    [self setNeedsDisplay];
 }
 
+- (void)setPlaceholder:(NSString *)string {
+    if ([string isEqualToString:self.attributedPlaceholder.string]) {
+        return;
+    }
+    
+    NSMutableDictionary *attributes = [[NSMutableDictionary alloc] init];
+    if (self.typingAttributes) {
+        [attributes addEntriesFromDictionary:self.typingAttributes];
+    } else {
+        attributes[NSFontAttributeName] = self.font;
+        attributes[NSForegroundColorAttributeName] = [UIColor colorWithWhite:0.702f alpha:1.0f];
+        
+        if (self.textAlignment != NSTextAlignmentLeft) {
+            NSMutableParagraphStyle *paragraph = [[NSMutableParagraphStyle alloc] init];
+            paragraph.alignment = self.textAlignment;
+            attributes[NSParagraphStyleAttributeName] = paragraph;
+        }
+    }
+    
+    if (self.placeholderColor) {
+        attributes[NSForegroundColorAttributeName] = self.placeholderColor;
+    }
+    
+    self.attributedPlaceholder = [[NSAttributedString alloc] initWithString:string attributes:attributes];
+}
+
+- (void)setPlaceholderColor:(UIColor *)placeholderColor
+{
+    if (![_placeholderColor isEqual:placeholderColor]) {
+        _placeholderColor = placeholderColor;
+        
+        NSMutableDictionary *attributes = [[NSMutableDictionary alloc] init];
+        if (self.typingAttributes) {
+            [attributes addEntriesFromDictionary:self.typingAttributes];
+        }
+        if (placeholderColor) {
+            attributes[NSForegroundColorAttributeName] = placeholderColor;
+        } else {
+            [attributes removeObjectForKey:NSForegroundColorAttributeName];
+        }
+        if (self.placeholder) {
+            self.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.placeholder attributes:attributes];
+        }
+    }
+}
+
+- (void)setAttributedPlaceholder:(NSAttributedString *)attributedPlaceholder {
+    if ([_attributedPlaceholder isEqualToAttributedString:attributedPlaceholder]) {
+        return;
+    }
+    
+    _attributedPlaceholder = attributedPlaceholder;
+    
+    [self setNeedsDisplay];
+}
 
 #pragma mark - UITextInputTraits Overrides
 
@@ -441,6 +485,9 @@ SLKPastableMediaType SLKPastableMediaTypeFromNSString(NSString *string)
     [super insertText:text];
     
     [self invalidateFastDeletion];
+    
+    [self setNeedsDisplay];
+
 }
 
 - (void)deleteBackward
@@ -663,9 +710,7 @@ SLKPastableMediaType SLKPastableMediaTypeFromNSString(NSString *string)
         return;
     }
     
-    if (self.placeholderLabel.hidden != [self shouldHidePlaceholder]) {
-        [self setNeedsDisplay];
-    }
+    [self setNeedsDisplay];
     
     [self flashScrollIndicatorsIfNeeded];
 }
@@ -867,7 +912,6 @@ SLKPastableMediaType SLKPastableMediaTypeFromNSString(NSString *string)
     
     [self removeObserver:self forKeyPath:NSStringFromSelector(@selector(contentSize))];
     
-    _placeholderLabel = nil;
 }
 
 @end

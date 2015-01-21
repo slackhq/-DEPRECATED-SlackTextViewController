@@ -16,6 +16,9 @@ class MessageViewController: SLKTextViewController {
         
         // In progress in branch 'swift-example'
         super.viewDidLoad()
+//        textView.placeholderColor = UIColor .redColor()
+//        textView.font = UIFont.systemFontOfSize(11)
+        textView.placeholder = "匿名评论:"
     }
 
     override func didReceiveMemoryWarning() {
