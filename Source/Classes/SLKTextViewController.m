@@ -593,8 +593,18 @@ NSString * const SLKKeyboardDidHideNotification =   @"SLKKeyboardDidHideNotifica
     
     _inverted = inverted;
     
-    self.scrollViewProxy.transform = CGAffineTransformMake(1, 0, 0, inverted ? -1 : 1, 0, 0);
-    self.edgesForExtendedLayout = inverted ? UIRectEdgeNone : UIRectEdgeAll;
+    if (inverted) {
+        
+        self.scrollViewProxy.transform = CGAffineTransformMake(1, 0, 0, -1, 0, 0);
+        
+        self.automaticallyAdjustsScrollViewInsets = NO;
+        
+        UIEdgeInsets oldInset = self.scrollViewProxy.contentInset;
+        UIEdgeInsets newInset = UIEdgeInsetsMake(oldInset.top, oldInset.left, oldInset.bottom + 64, oldInset.right);
+        
+        self.scrollViewProxy.contentInset = newInset;
+        self.scrollViewProxy.scrollIndicatorInsets = newInset;
+    }
     
     if (!inverted && ((self.edgesForExtendedLayout & UIRectEdgeBottom) > 0)) {
         self.edgesForExtendedLayout = self.edgesForExtendedLayout & ~UIRectEdgeBottom;
