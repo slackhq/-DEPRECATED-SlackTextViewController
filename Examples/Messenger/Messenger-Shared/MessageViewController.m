@@ -81,7 +81,7 @@ static NSString *AutoCompletionCellIdentifier = @"AutoCompletionCell";
 
     [self.leftButton setImage:[UIImage imageNamed:@"icn_upload"] forState:UIControlStateNormal];
     [self.leftButton setTintColor:[UIColor grayColor]];
-    
+
     [self.rightButton setTitle:NSLocalizedString(@"Send", nil) forState:UIControlStateNormal];
     
     [self.textInputbar.editorTitle setTextColor:[UIColor darkGrayColor]];
@@ -194,10 +194,12 @@ static NSString *AutoCompletionCellIdentifier = @"AutoCompletionCell";
     [super textDidUpdate:animated];
 }
 
-- (void)didPressLeftButton:(id)sender
+- (void)didPressLeftButton:(UIButton *)sender
 {
     // Notifies the view controller when the left button's action has been triggered, manually.
-    
+	sender.superview.layer.transform = sender.tag? CATransform3DIdentity : CATransform3DMakeRotation(M_PI_4, 0, 0, 1);
+	sender.tag = 1 - sender.tag;
+	
     [super didPressLeftButton:sender];
 }
 

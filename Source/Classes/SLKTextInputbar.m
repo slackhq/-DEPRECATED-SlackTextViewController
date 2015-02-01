@@ -73,7 +73,7 @@
     self.contentInset = UIEdgeInsetsMake(5.0, 8.0, 5.0, 8.0);
 
     [self addSubview:self.editorContentView];
-    [self addSubview:self.leftButton];
+    [self addSubview:[self makeContainerForControl:self.leftButton]];
     [self addSubview:self.rightButton];
     [self addSubview:self.textView];
     [self addSubview:self.charCountLabel];
@@ -85,6 +85,22 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeTextViewContentSize:) name:SLKTextViewContentSizeDidChangeNotification object:nil];
     
     [self.leftButton.imageView addObserver:self forKeyPath:NSStringFromSelector(@selector(image)) options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:NULL];
+}
+
+
+#pragma mark - Helpers
+
+- (UIView *)makeContainerForControl:(UIView *)control
+{
+	UIView *result = [[UIView alloc] init];
+	[result addSubview:control];
+	result.translatesAutoresizingMaskIntoConstraints = NO;
+	
+	NSDictionary *views = NSDictionaryOfVariableBindings(control);
+	[result addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(0)-[control(0)]-(0)-|" options:0 metrics:nil views:views]];
+	[result addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(0)-[control(0)]-(0)-|" options:0 metrics:nil views:views]];
+	
+	return result;
 }
 
 
@@ -497,7 +513,7 @@
     CGFloat rightVerMargin = (self.intrinsicContentSize.height - CGRectGetHeight(self.rightButton.frame)) / 2.0;
 
     NSDictionary *views = @{@"textView": self.textView,
-                            @"leftButton": self.leftButton,
+                            @"leftButton": self.leftButton.superview,
                             @"rightButton": self.rightButton,
                             @"contentView": self.editorContentView,
                             @"charCountLabel": self.charCountLabel
@@ -512,8 +528,8 @@
                               @"minTextViewHeight" : @(self.textView.intrinsicContentSize.height),
                               };
 
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(left)-[leftButton(0)]-(<=left)-[textView]-(right)-[rightButton(0)]-(right)-|" options:0 metrics:metrics views:views]];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=0)-[leftButton(0)]-(0@750)-|" options:0 metrics:metrics views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(left)-[leftButton]-(<=left)-[textView]-(right)-[rightButton(0)]-(right)-|" options:0 metrics:metrics views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=0)-[leftButton]-(0@750)-|" options:0 metrics:metrics views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=rightVerMargin)-[rightButton]-(<=rightVerMargin)-|" options:0 metrics:metrics views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(<=top)-[charCountLabel]-(>=0)-|" options:0 metrics:metrics views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(left@250)-[charCountLabel(<=50@1000)]-(right@750)-|" options:0 metrics:metrics views:views]];
@@ -523,11 +539,11 @@
     
     self.editorContentViewHC = [self slk_constraintForAttribute:NSLayoutAttributeHeight firstItem:self.editorContentView secondItem:nil];
     
-    self.leftButtonWC = [self slk_constraintForAttribute:NSLayoutAttributeWidth firstItem:self.leftButton secondItem:nil];
-    self.leftButtonHC = [self slk_constraintForAttribute:NSLayoutAttributeHeight firstItem:self.leftButton secondItem:nil];
+    self.leftButtonWC = [self.leftButton.superview slk_constraintForAttribute:NSLayoutAttributeWidth firstItem:self.leftButton secondItem:nil];
+    self.leftButtonHC = [self.leftButton.superview slk_constraintForAttribute:NSLayoutAttributeHeight firstItem:self.leftButton secondItem:nil];
     
     self.leftMarginWC = [self slk_constraintsForAttribute:NSLayoutAttributeLeading][0];
-    self.bottomMarginWC = [self slk_constraintForAttribute:NSLayoutAttributeBottom firstItem:self secondItem:self.leftButton];
+    self.bottomMarginWC = [self slk_constraintForAttribute:NSLayoutAttributeBottom firstItem:self secondItem:self.leftButton.superview];
 
     self.rightButtonWC = [self slk_constraintForAttribute:NSLayoutAttributeWidth firstItem:self.rightButton secondItem:nil];
     self.rightMarginWC = [self slk_constraintsForAttribute:NSLayoutAttributeTrailing][0];
