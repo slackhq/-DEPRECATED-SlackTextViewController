@@ -20,6 +20,7 @@
 #import "SLKTextView+SLKAdditions.h"
 #import "SLKUIConstants.h"
 #import "UIView+SLKAdditions.h"
+#import "SLKTextView+Attachments.h"
 
 @interface SLKTextInputbar ()
 
@@ -69,6 +70,7 @@
 - (void)_commonInit
 {
     self.autoHideRightButton = YES;
+    self.enableRightButtonWithAttachment = NO;
     self.editorContentViewHeight = 38.0;
     self.contentInset = UIEdgeInsetsMake(5.0, 8.0, 5.0, 8.0);
 
@@ -262,24 +264,32 @@
 {
     NSString *title = [self.rightButton titleForState:UIControlStateNormal];
     CGSize rigthButtonSize = [title sizeWithAttributes:@{NSFontAttributeName: self.rightButton.titleLabel.font}];
-    
     if (self.autoHideRightButton) {
-        if (self.textView.text.length == 0) {
+        if ([self shouldHideRightButton]) {
             return 0.0;
         }
     }
+    
     return rigthButtonSize.width+self.contentInset.right;
 }
 
-- (CGFloat)_appropriateRightButtonMargin
-{
+- (CGFloat)_appropriateRightButtonMargin {
     if (self.autoHideRightButton) {
-        if (self.textView.text.length == 0) {
+        if ([self shouldHideRightButton]) {
             return 0.0;
         }
     }
     
     return self.contentInset.right;
+}
+
+- (BOOL)shouldHideRightButton {
+    if((!self.enableRightButtonWithAttachment && [self.textView slk_hasImageAttachment] && self.textView.text.length == 1)
+       || ![self.textView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length) {
+        return YES;
+    }
+    
+    return NO;
 }
 
 - (BOOL)isViewVisible
@@ -439,7 +449,7 @@
     SLKTextView *textView = (SLKTextView *)notification.object;
     
     // Skips this it's not the expected textView.
-    if (![textView isEqual:self.textView]) {
+    if (![textView isEqual:self.textView] && ![self.textView isFirstResponder]) {
         return;
     }
     
