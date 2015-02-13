@@ -433,7 +433,7 @@ NSString * const SLKKeyboardDidHideNotification =   @"SLKKeyboardDidHideNotifica
     }
     else {
         if ([notification.name isEqualToString:UIKeyboardWillShowNotification] || [notification.name isEqualToString:UIKeyboardDidShowNotification]) {
-            CGRect convertedRect = [self.view convertRect:endFrame toView:self.view.window];
+			CGRect convertedRect = [self.view.window convertRect:endFrame fromWindow:nil];
             keyboardHeight = CGRectGetHeight(convertedRect);
         }
         else {
@@ -468,11 +468,15 @@ NSString * const SLKKeyboardDidHideNotification =   @"SLKKeyboardDidHideNotifica
 {
     UIWindow *window = [UIApplication sharedApplication].keyWindow;
     
-    CGRect windowFrame = [window convertRect:window.frame fromView:self.view];
-    windowFrame.origin = CGPointZero;
-    
-    CGRect viewRect = [window convertRect:self.view.frame fromView:nil];
-    
+	// screen coords
+	CGRect windowFrame = [window convertRect:window.bounds toWindow:nil];
+	windowFrame.origin = CGPointZero;
+	
+	// in window coords
+	CGRect viewRect = [window convertRect:self.view.bounds fromView:self.view];
+	// screen coords
+	viewRect = [window convertRect:viewRect toWindow:nil];
+	
     CGFloat bottomWindow = CGRectGetMaxY(windowFrame);
     CGFloat bottomView = CGRectGetMaxY(viewRect);
     
