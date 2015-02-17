@@ -48,6 +48,9 @@ typedef NS_ENUM(NSUInteger, SLKCounterStyle) {
 /** YES if the right button should be hidden animatedly in case the text view has no text in it. Default is YES. */
 @property (nonatomic, readwrite) BOOL autoHideRightButton;
 
+//** Enable right button when NSAttributedString contains a NSTextAttachment. Default is NO. */
+@property (nonatomic, readwrite) BOOL enableRightButtonWithAttachment;
+
 /** The inner padding to use when laying out content in the view. Default is {5, 8, 5, 8}. */
 @property (nonatomic, assign) UIEdgeInsets contentInset;
 

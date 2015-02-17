@@ -21,6 +21,7 @@
 		8F5BA9F9A9F63765DF7557C3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC63CBC9F24B7ED7A971F799 /* Foundation.framework */; };
 		A1474BD275A5738DE678B2CB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC63CBC9F24B7ED7A971F799 /* Foundation.framework */; };
 		B2D4D6316C72F373C34FFA68 /* SLKTypingIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = CD1809A1AA52E4893C5B4354 /* SLKTypingIndicatorView.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+		BD8C8AED1A89FBEF003B683F /* SLKTextView+Attachments.m in Sources */ = {isa = PBXBuildFile; fileRef = BD8C8AEC1A89FBEF003B683F /* SLKTextView+Attachments.m */; };
 		C67BF7584A83FBDE5ACD1853 /* SLKUIConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = E64BB6B4EA5BD7B64F79133A /* SLKUIConstants.h */; };
 		CBE8401BC93B584AE64C65F2 /* UIScrollView+SLKAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 4E7F80DC69440D5A05CFCEF2 /* UIScrollView+SLKAdditions.h */; };
 		D5870E78EC10E1D0C8C869AF /* UIScrollView+SLKAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = DD10209C67C0570F212053B3 /* UIScrollView+SLKAdditions.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
@@ -83,6 +84,8 @@
 		B58DB8F386A9916306EC4643 /* SLKInputAccessoryView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SLKInputAccessoryView.h; path = Source/Classes/SLKInputAccessoryView.h; sourceTree = "<group>"; };
 		BB76D79F6CA293113845DAF6 /* LoremIpsum.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = LoremIpsum.h; path = LoremIpsum/LoremIpsum.h; sourceTree = "<group>"; };
 		BC63CBC9F24B7ED7A971F799 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.1.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		BD8C8AEB1A89FBEF003B683F /* SLKTextView+Attachments.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "SLKTextView+Attachments.h"; path = "Source/Classes/SLKTextView+Attachments.h"; sourceTree = "<group>"; };
+		BD8C8AEC1A89FBEF003B683F /* SLKTextView+Attachments.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "SLKTextView+Attachments.m"; path = "Source/Classes/SLKTextView+Attachments.m"; sourceTree = "<group>"; };
 		CD1809A1AA52E4893C5B4354 /* SLKTypingIndicatorView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = SLKTypingIndicatorView.m; path = Source/Classes/SLKTypingIndicatorView.m; sourceTree = "<group>"; };
 		D24A3A93BF66BC097ECF3A5C /* Pods-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-acknowledgements.markdown"; sourceTree = "<group>"; };
 		D6D645D36CB11DAD0636F2A3 /* UIView+SLKAdditions.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "UIView+SLKAdditions.m"; path = "Source/Additions/UIView+SLKAdditions.m"; sourceTree = "<group>"; };
@@ -190,6 +193,8 @@
 				DD10209C67C0570F212053B3 /* UIScrollView+SLKAdditions.m */,
 				7254A2F2DAFFA0219293AB10 /* UIView+SLKAdditions.h */,
 				D6D645D36CB11DAD0636F2A3 /* UIView+SLKAdditions.m */,
+				BD8C8AEB1A89FBEF003B683F /* SLKTextView+Attachments.h */,
+				BD8C8AEC1A89FBEF003B683F /* SLKTextView+Attachments.m */,
 			);
 			name = Additions;
 			sourceTree = "<group>";
@@ -383,6 +388,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0BDC6542829D33831A1FF842 /* Pods-dummy.m in Sources */,
+				BD8C8AED1A89FBEF003B683F /* SLKTextView+Attachments.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
