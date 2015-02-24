@@ -153,7 +153,7 @@ NSString * const SLKKeyboardDidHideNotification =   @"SLKKeyboardDidHideNotifica
     [self slk_registerNotifications];
     
     self.bounces = YES;
-    self.inverted = YES;
+    self.inverted = NO;
     self.shakeToClearEnabled = NO;
     self.keyboardPanningEnabled = YES;
     self.shouldClearTextAtRightButtonPress = YES;
