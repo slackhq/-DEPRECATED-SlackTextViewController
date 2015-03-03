@@ -514,12 +514,10 @@ NSString * const SLKKeyboardDidHideNotification =   @"SLKKeyboardDidHideNotifica
 {
     UIWindow *window = [UIApplication sharedApplication].keyWindow;
     
-    CGRect windowFrame = [window convertRect:window.frame fromView:self.view];
-    windowFrame.origin = CGPointZero;
+    CGRect windowRect = window.bounds;
+    CGRect viewRect = [window convertRect:self.view.frame fromView:self.view];
     
-    CGRect viewRect = [window convertRect:self.view.frame fromView:nil];
-    
-    CGFloat bottomWindow = CGRectGetMaxY(windowFrame);
+    CGFloat bottomWindow = CGRectGetMaxY(windowRect);
     CGFloat bottomView = CGRectGetMaxY(viewRect);
     
     // Retrieve the status bar's height when the in-call status bar is displayed
