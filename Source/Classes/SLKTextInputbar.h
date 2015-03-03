@@ -22,7 +22,8 @@
 typedef NS_ENUM(NSUInteger, SLKCounterStyle) {
     SLKCounterStyleNone,
     SLKCounterStyleSplit,
-    SLKCounterStyleCountdown
+    SLKCounterStyleCountdown,
+    SLKCounterStyleCountdownReversed
 };
 
 /** @name A custom tool bar encapsulating messaging controls. */
@@ -113,6 +114,9 @@ typedef NS_ENUM(NSUInteger, SLKCounterStyle) {
 /// @name Text Counting
 ///------------------------------------------------
 
+/** The label used to display the char count. */
+@property (nonatomic, readonly) UILabel *charCountLabel;
+
 /** The maximum character count allowed. If larger than 0, a character count label will be displayed on top of the right button. Default is 0, which means limitless.*/
 @property (nonatomic, readwrite) NSUInteger maxCharCount;
 
@@ -121,5 +125,11 @@ typedef NS_ENUM(NSUInteger, SLKCounterStyle) {
 
 /** YES if the maxmimum character count has been exceeded. */
 @property (nonatomic, readonly) BOOL limitExceeded;
+
+/** Color used for char count label. Default is [UIColor lightGrayColor] */
+@property (nonatomic, strong, readwrite) UIColor *charCountLabelDefaultColor;
+
+/** Color used for char count label when it has exceeded the limit. Default is [UIColor redColor] */
+@property (nonatomic, strong, readwrite) UIColor *charCountLabelLimitExceededColor;
 
 @end

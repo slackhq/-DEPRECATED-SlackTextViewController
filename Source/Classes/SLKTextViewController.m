@@ -60,6 +60,9 @@ NSString * const SLKKeyboardDidHideNotification =   @"SLKKeyboardDidHideNotifica
 // The setter of isExternalKeyboardDetected, for private use.
 @property (nonatomic, getter = isRotating) BOOL rotating;
 
+// The subclass of SLKTextInputbar class to use
+@property (nonatomic, strong) Class textInputbarClass;
+
 // The subclass of SLKTextView class to use
 @property (nonatomic, strong) Class textViewClass;
 
@@ -291,8 +294,9 @@ NSString * const SLKKeyboardDidHideNotification =   @"SLKKeyboardDidHideNotifica
 - (SLKTextInputbar *)textInputbar
 {
     if (!_textInputbar)
-    {        
-        _textInputbar = [[SLKTextInputbar alloc] initWithTextViewClass:self.textViewClass];
+    {
+        Class class = self.textInputbarClass ? : [SLKTextInputbar class];
+        _textInputbar = [[class alloc] initWithTextViewClass:self.textViewClass];
         _textInputbar.translatesAutoresizingMaskIntoConstraints = NO;
         _textInputbar.controller = self;
         
@@ -1647,6 +1651,16 @@ NSString * const SLKKeyboardDidHideNotification =   @"SLKKeyboardDidHideNotifica
 
 
 #pragma mark - Customization
+
+- (void)registerClassForTextInputbar:(Class)textInputbarClass
+{
+    if (textInputbarClass == nil) {
+        return;
+    }
+    
+    NSAssert([textInputbarClass isSubclassOfClass:[SLKTextInputbar class]], @"The registered class is invalid, it must be a subclass of SLKTextInputbar.");
+    self.textInputbarClass = textInputbarClass;
+}
 
 - (void)registerClassForTextView:(Class)textViewClass
 {
