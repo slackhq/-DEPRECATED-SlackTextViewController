@@ -67,13 +67,13 @@
     self.autoHideRightButton = YES;
     self.editorContentViewHeight = 38.0;
     self.contentInset = UIEdgeInsetsMake(5.0, 8.0, 5.0, 8.0);
-
+    
     [self addSubview:self.editorContentView];
     [self addSubview:self.leftButton];
     [self addSubview:self.rightButton];
     [self addSubview:self.textView];
     [self addSubview:self.charCountLabel];
-
+    
     [self slk_setupViewConstraints];
     [self slk_updateConstraintConstants];
     
@@ -149,7 +149,7 @@
         _leftButton.translatesAutoresizingMaskIntoConstraints = NO;
         _leftButton.titleLabel.font = [UIFont systemFontOfSize:16.0];
         _leftButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-        _leftButton.contentEdgeInsets = UIEdgeInsetsMake(0, 6, 0, 6);
+        _leftButton.contentEdgeInsets = UIEdgeInsetsMake(0, 8, 0, 8);
     }
     return _leftButton;
 }
@@ -271,11 +271,6 @@
     return rigthButtonSize.width+self.contentInset.right+self.rightButton.contentEdgeInsets.left+self.rightButton.contentEdgeInsets.right;
 }
 
-- (CGFloat)slk_appropriateRightButtonMargin
-{
-    return 0.0
-}
-
 - (BOOL)isViewVisible
 {
     SEL selector = NSSelectorFromString(@"isViewVisible");
@@ -354,7 +349,7 @@
     if (self.isEditing && [self.textView.text isEqualToString:text]) {
         return NO;
     }
-
+    
     return YES;
 }
 
@@ -451,7 +446,6 @@
         }
         
         self.rightButtonWC.constant = rightButtonNewWidth;
-        self.rightMarginWC.constant = [self slk_appropriateRightButtonMargin];
         
         if (rightButtonNewWidth > 0) {
             [self.rightButton sizeToFit];
@@ -489,7 +483,7 @@
     
     CGFloat leftVerMargin = (self.intrinsicContentSize.height - leftButtonImg.size.height) / 2.0;
     CGFloat rightVerMargin = (self.intrinsicContentSize.height - CGRectGetHeight(self.rightButton.frame)) / 2.0;
-
+    
     NSDictionary *views = @{@"textView": self.textView,
                             @"leftButton": self.leftButton,
                             @"rightButton": self.rightButton,
@@ -505,29 +499,28 @@
                               @"rightVerMargin" : @(rightVerMargin),
                               @"minTextViewHeight" : @(self.textView.intrinsicContentSize.height),
                               };
-
+    
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[leftButton][textView][rightButton]|" options:0 metrics:metrics views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=0)-[leftButton(44.0)]|" options:0 metrics:metrics views:views]];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=0)-[rightButton(44.0)]|" options:0]]
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=0)-[rightButton(44.0)]|" options:0 metrics:metrics views:views]];
     
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=rightVerMargin)-[rightButton]-(<=rightVerMargin)-|" options:0 metrics:metrics views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(<=top)-[charCountLabel]-(>=0)-|" options:0 metrics:metrics views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(left@250)-[charCountLabel(<=50@1000)]-(right@750)-|" options:0 metrics:metrics views:views]];
-
+    
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[contentView(0)]-(<=top)-[textView(minTextViewHeight@250)]-(bottom)-|" options:0 metrics:metrics views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[contentView]|" options:0 metrics:metrics views:views]];
     
     self.editorContentViewHC = [self slk_constraintForAttribute:NSLayoutAttributeHeight firstItem:self.editorContentView secondItem:nil];
     
     self.leftButtonWC = [self slk_constraintForAttribute:NSLayoutAttributeWidth firstItem:self.leftButton secondItem:nil];
-
+    
     self.rightButtonWC = [self slk_constraintForAttribute:NSLayoutAttributeWidth firstItem:self.rightButton secondItem:nil];
 }
 
 - (void)slk_updateConstraintConstants
 {
     CGFloat zero = 0.0;
-
+    
     if (self.isEditing)
     {
         self.editorContentViewHC.constant = self.editorContentViewHeight;
@@ -537,7 +530,7 @@
     else
     {
         self.editorContentViewHC.constant = zero;
-
+        
         CGSize leftButtonSize = [self.leftButton imageForState:self.leftButton.state].size;
         
         self.leftButtonWC.constant = roundf(leftButtonSize.width);
