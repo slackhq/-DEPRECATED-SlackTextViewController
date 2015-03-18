@@ -24,11 +24,7 @@
 @interface SLKTextInputbar ()
 
 @property (nonatomic, strong) NSLayoutConstraint *leftButtonWC;
-@property (nonatomic, strong) NSLayoutConstraint *leftButtonHC;
-@property (nonatomic, strong) NSLayoutConstraint *leftMarginWC;
-@property (nonatomic, strong) NSLayoutConstraint *bottomMarginWC;
 @property (nonatomic, strong) NSLayoutConstraint *rightButtonWC;
-@property (nonatomic, strong) NSLayoutConstraint *rightMarginWC;
 @property (nonatomic, strong) NSLayoutConstraint *editorContentViewHC;
 
 @property (nonatomic, strong) UILabel *charCountLabel;
@@ -151,7 +147,9 @@
     {
         _leftButton = [UIButton buttonWithType:UIButtonTypeSystem];
         _leftButton.translatesAutoresizingMaskIntoConstraints = NO;
-        _leftButton.titleLabel.font = [UIFont systemFontOfSize:15.0];
+        _leftButton.titleLabel.font = [UIFont systemFontOfSize:16.0];
+        _leftButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+        _leftButton.contentEdgeInsets = UIEdgeInsetsMake(0, 6, 0, 6);
     }
     return _leftButton;
 }
@@ -162,8 +160,10 @@
     {
         _rightButton = [UIButton buttonWithType:UIButtonTypeSystem];
         _rightButton.translatesAutoresizingMaskIntoConstraints = NO;
-        _rightButton.titleLabel.font = [UIFont boldSystemFontOfSize:15.0];
+        _rightButton.titleLabel.font = [UIFont boldSystemFontOfSize:16.0];
         _rightButton.enabled = NO;
+        _rightButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+        _rightButton.contentEdgeInsets = UIEdgeInsetsMake(0, 6, 0, 6);
         
         [_rightButton setTitle:NSLocalizedString(@"Send", nil) forState:UIControlStateNormal];
     }
@@ -268,18 +268,12 @@
             return 0.0;
         }
     }
-    return rigthButtonSize.width+self.contentInset.right;
+    return rigthButtonSize.width+self.contentInset.right+self.rightButton.contentEdgeInsets.left+self.rightButton.contentEdgeInsets.right;
 }
 
 - (CGFloat)slk_appropriateRightButtonMargin
 {
-    if (self.autoHideRightButton) {
-        if (self.textView.text.length == 0) {
-            return 0.0;
-        }
-    }
-    
-    return self.contentInset.right;
+    return 0.0
 }
 
 - (BOOL)isViewVisible
@@ -512,8 +506,10 @@
                               @"minTextViewHeight" : @(self.textView.intrinsicContentSize.height),
                               };
 
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(left)-[leftButton(0)]-(<=left)-[textView]-(right)-[rightButton(0)]-(right)-|" options:0 metrics:metrics views:views]];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=0)-[leftButton(0)]-(0@750)-|" options:0 metrics:metrics views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[leftButton][textView][rightButton]|" options:0 metrics:metrics views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=0)-[leftButton(44.0)]|" options:0 metrics:metrics views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=0)-[rightButton(44.0)]|" options:0]]
+    
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=rightVerMargin)-[rightButton]-(<=rightVerMargin)-|" options:0 metrics:metrics views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(<=top)-[charCountLabel]-(>=0)-|" options:0 metrics:metrics views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(left@250)-[charCountLabel(<=50@1000)]-(right@750)-|" options:0 metrics:metrics views:views]];
@@ -524,13 +520,8 @@
     self.editorContentViewHC = [self slk_constraintForAttribute:NSLayoutAttributeHeight firstItem:self.editorContentView secondItem:nil];
     
     self.leftButtonWC = [self slk_constraintForAttribute:NSLayoutAttributeWidth firstItem:self.leftButton secondItem:nil];
-    self.leftButtonHC = [self slk_constraintForAttribute:NSLayoutAttributeHeight firstItem:self.leftButton secondItem:nil];
-    
-    self.leftMarginWC = [self slk_constraintsForAttribute:NSLayoutAttributeLeading][0];
-    self.bottomMarginWC = [self slk_constraintForAttribute:NSLayoutAttributeBottom firstItem:self secondItem:self.leftButton];
 
     self.rightButtonWC = [self slk_constraintForAttribute:NSLayoutAttributeWidth firstItem:self.rightButton secondItem:nil];
-    self.rightMarginWC = [self slk_constraintsForAttribute:NSLayoutAttributeTrailing][0];
 }
 
 - (void)slk_updateConstraintConstants
@@ -541,11 +532,7 @@
     {
         self.editorContentViewHC.constant = self.editorContentViewHeight;
         self.leftButtonWC.constant = zero;
-        self.leftButtonHC.constant = zero;
-        self.leftMarginWC.constant = zero;
-        self.bottomMarginWC.constant = zero;
         self.rightButtonWC.constant = zero;
-        self.rightMarginWC.constant = zero;
     }
     else
     {
@@ -553,16 +540,8 @@
 
         CGSize leftButtonSize = [self.leftButton imageForState:self.leftButton.state].size;
         
-        if (leftButtonSize.width > 0) {
-            self.leftButtonHC.constant = roundf(leftButtonSize.height);
-            self.bottomMarginWC.constant = roundf((self.intrinsicContentSize.height - leftButtonSize.height) / 2.0);
-        }
-        
         self.leftButtonWC.constant = roundf(leftButtonSize.width);
-        self.leftMarginWC.constant = (leftButtonSize.width > 0) ? self.contentInset.left : zero;
-        
         self.rightButtonWC.constant = [self slk_appropriateRightButtonWidth];
-        self.rightMarginWC.constant = [self slk_appropriateRightButtonMargin];
     }
 }
 
@@ -607,11 +586,7 @@
     _editortRightButton = nil;
     
     _leftButtonWC = nil;
-    _leftButtonHC = nil;
-    _leftMarginWC = nil;
-    _bottomMarginWC = nil;
     _rightButtonWC = nil;
-    _rightMarginWC = nil;
     _editorContentViewHC = nil;
 }
 
