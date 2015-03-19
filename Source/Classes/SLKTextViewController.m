@@ -1172,7 +1172,7 @@ NSString * const SLKKeyboardDidHideNotification =   @"SLKKeyboardDidHideNotifica
 
     // Scroll self.tableView to bottom (or make sure that it stays there if already at the bottom)
     if(self.inverted == NO && self.shouldScrollToBottomAfterKeyboardShows && [notification.userInfo[UIKeyboardFrameBeginUserInfoKey] CGRectValue].origin.y == [UIScreen mainScreen].bounds.size.height ) {
-        [self.tableView setContentOffset:CGPointMake(0, self.tableView.contentSize.height)];
+        [self.scrollViewProxy setContentOffset:CGPointMake(0, self.scrollViewProxy.contentSize.height)];
     }
     
     // Updates and notifies about the keyboard status update
@@ -1186,7 +1186,7 @@ NSString * const SLKKeyboardDidHideNotification =   @"SLKKeyboardDidHideNotifica
                                               bounce:NO
                                              options:(curve<<16)|UIViewAnimationOptionLayoutSubviews|UIViewAnimationOptionBeginFromCurrentState
                                           animations:^{
-                                              [self slk_scrollToBottomIfNeeded];
+                                              //[self slk_scrollToBottomIfNeeded];
                                           }];
 }
 
