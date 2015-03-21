@@ -30,8 +30,8 @@
 
 /* Begin PBXFileReference section */
 		48C64A031ABA215600021C91 /* SlackTextViewController.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SlackTextViewController.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		48C64A1F1ABA221E00021C91 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Source/Info.plist; sourceTree = SOURCE_ROOT; };
-		48C64A211ABA222C00021C91 /* SlackTextViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SlackTextViewController.h; path = Source/SlackTextViewController.h; sourceTree = SOURCE_ROOT; };
+		48C64A1F1ABA221E00021C91 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../Source/Info.plist; sourceTree = SOURCE_ROOT; };
+		48C64A211ABA222C00021C91 /* SlackTextViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SlackTextViewController.h; path = ../Source/SlackTextViewController.h; sourceTree = SOURCE_ROOT; };
 		48C64A231ABA222C00021C91 /* SLKTextView+SLKAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SLKTextView+SLKAdditions.h"; sourceTree = "<group>"; };
 		48C64A241ABA222C00021C91 /* SLKTextView+SLKAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SLKTextView+SLKAdditions.m"; sourceTree = "<group>"; };
 		48C64A251ABA222C00021C91 /* SLKUIConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLKUIConstants.h; sourceTree = "<group>"; };
@@ -109,7 +109,7 @@
 				48C64A291ABA222C00021C91 /* UIView+SLKAdditions.m */,
 			);
 			name = Additions;
-			path = Source/Additions;
+			path = ../Source/Additions;
 			sourceTree = SOURCE_ROOT;
 		};
 		48C64A2A1ABA222C00021C91 /* Classes */ = {
@@ -127,7 +127,7 @@
 				48C64A341ABA222C00021C91 /* SLKTypingIndicatorView.m */,
 			);
 			name = Classes;
-			path = Source/Classes;
+			path = ../Source/Classes;
 			sourceTree = SOURCE_ROOT;
 		};
 /* End PBXGroup section */
@@ -327,7 +327,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = Source/Info.plist;
+				INFOPLIST_FILE = ../Source/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -342,7 +342,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = Source/Info.plist;
+				INFOPLIST_FILE = ../Source/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
