@@ -92,7 +92,8 @@ NSString * const SLKKeyboardDidHideNotification =   @"SLKKeyboardDidHideNotifica
 {
     NSAssert([self class] != [SLKTextViewController class], @"Oops! You must subclass SLKTextViewController.");
     
-    if (self = [super initWithNibName:nil bundle:nil])
+    self = [super initWithNibName:nil bundle:nil];
+    if (self)
     {
         self.scrollViewProxy = [self tableViewWithStyle:style];
         [self slk_commonInit];
@@ -104,7 +105,8 @@ NSString * const SLKKeyboardDidHideNotification =   @"SLKKeyboardDidHideNotifica
 {
     NSAssert([self class] != [SLKTextViewController class], @"Oops! You must subclass SLKTextViewController.");
     
-    if (self = [super initWithNibName:nil bundle:nil])
+    self = [super initWithNibName:nil bundle:nil];
+    if (self)
     {
         self.scrollViewProxy = [self collectionViewWithLayout:layout];
         [self slk_commonInit];
@@ -116,12 +118,29 @@ NSString * const SLKKeyboardDidHideNotification =   @"SLKKeyboardDidHideNotifica
 {
     NSAssert([self class] != [SLKTextViewController class], @"Oops! You must subclass SLKTextViewController.");
 
-    if (self = [super initWithNibName:nil bundle:nil])
+    self = [super initWithNibName:nil bundle:nil];
+    if (self)
     {
         _scrollView = scrollView;
-        _scrollView.translatesAutoresizingMaskIntoConstraints = NO; // Makes sure the scrollView plays nice with auto-layout
-
+        
         self.scrollViewProxy = _scrollView;
+        [self slk_commonInit];
+    }
+    return self;
+}
+
+- (instancetype)initWithChildViewController:(UIViewController *)viewController
+{
+    NSAssert([self class] != [SLKTextViewController class], @"Oops! You must subclass SLKTextViewController.");
+    NSAssert(([viewController class] != [UITableViewController class] && [viewController class] != [UICollectionViewController class]), @"Oops! You must pass either a UITableViewController or UICollectionViewController instance.");
+    
+    self = [super initWithNibName:nil bundle:nil];
+    if (self)
+    {
+        _childViewController = viewController;
+        
+        self.scrollViewProxy = (UIScrollView *)viewController.view;
+        
         [self slk_commonInit];
     }
     return self;
@@ -131,7 +150,8 @@ NSString * const SLKKeyboardDidHideNotification =   @"SLKKeyboardDidHideNotifica
 {
     NSAssert([self class] != [SLKTextViewController class], @"Oops! You must subclass SLKTextViewController.");
     
-    if (self = [super initWithCoder:decoder])
+    self = [super initWithCoder:decoder];
+    if (self)
     {
         UITableViewStyle tableViewStyle = [[self class] tableViewStyleForCoder:decoder];
         UICollectionViewLayout *collectionViewLayout = [[self class] collectionViewLayoutForCoder:decoder];
@@ -167,7 +187,13 @@ NSString * const SLKKeyboardDidHideNotification =   @"SLKKeyboardDidHideNotifica
 - (void)loadView
 {
     [super loadView];
-        
+    
+    if (self.childViewController) {
+        [self addChildViewController:self.childViewController];
+        [self.view addSubview:self.childViewController.view];
+        [self.childViewController didMoveToParentViewController:self];
+    }
+    
     [self.view addSubview:self.scrollViewProxy];
     [self.view addSubview:self.autoCompletionView];
     [self.view addSubview:self.typingIndicatorView];
@@ -251,6 +277,7 @@ NSString * const SLKKeyboardDidHideNotification =   @"SLKKeyboardDidHideNotifica
 
 - (UITableView *)tableViewWithStyle:(UITableViewStyle)style
 {
+    
     if (!_tableView)
     {
         _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:style];
@@ -600,6 +627,9 @@ NSString * const SLKKeyboardDidHideNotification =   @"SLKKeyboardDidHideNotifica
     if ([_scrollViewProxy isEqual:scrollView]) {
         return;
     }
+    
+    // Makes sure the scrollView plays nice with auto-layout
+    scrollView.translatesAutoresizingMaskIntoConstraints = NO;
     
     _singleTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(slk_didTapScrollView:)];
     _singleTapGesture.delegate = self;

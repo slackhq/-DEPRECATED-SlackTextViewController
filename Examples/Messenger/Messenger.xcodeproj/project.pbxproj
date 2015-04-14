@@ -39,6 +39,15 @@
 		4F8ADA781A68C37400023752 /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F8ADA761A68C37400023752 /* Message.m */; };
 		4F8ADA791A68C37400023752 /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F8ADA761A68C37400023752 /* Message.m */; };
 		4F9DFA7F1AD4EDB900841D98 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F9DFA7D1AD4EDB100841D98 /* ViewController.m */; };
+		4FA47F641AC235D1004B0EA5 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FA47F5A1AC235D1004B0EA5 /* AppDelegate.m */; };
+		4FA47F691AC235D1004B0EA5 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FA47F611AC235D1004B0EA5 /* main.m */; };
+		4FA47F6A1AC235D1004B0EA5 /* ChildViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FA47F631AC235D1004B0EA5 /* ChildViewController.m */; };
+		4FA47F6D1AC2699A004B0EA5 /* MessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F86BF9219F01234007A3D4A /* MessageViewController.m */; };
+		4FA47F6E1AC2699D004B0EA5 /* MessageTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F86BF9019F01234007A3D4A /* MessageTableViewCell.m */; };
+		4FA47F6F1AC269A0004B0EA5 /* MessageTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F7C6BA41A6E208E006E3FAB /* MessageTextView.m */; };
+		4FA47F701AC26A83004B0EA5 /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F8ADA761A68C37400023752 /* Message.m */; };
+		4FA47F711AC27221004B0EA5 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4F86BF8E19F01234007A3D4A /* Images.xcassets */; };
+		5EEFA76ACE6B67749F5B2997 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DDFA9095EABC480682E6396C /* libPods.a */; };
 		71BE10281A72F3E50083EE32 /* MessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F86BF9219F01234007A3D4A /* MessageViewController.m */; };
 		71BE10291A72F3E50083EE32 /* MessageTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F86BF9019F01234007A3D4A /* MessageTableViewCell.m */; };
 		71BE102B1A72F3E50083EE32 /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F8ADA761A68C37400023752 /* Message.m */; };
@@ -92,6 +101,13 @@
 		4F8ADA761A68C37400023752 /* Message.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Message.m; sourceTree = "<group>"; };
 		4F9DFA7C1AD4EDB100841D98 /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		4F9DFA7D1AD4EDB100841D98 /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		4FA47F321AC23598004B0EA5 /* Messenger-Child-View-Controller.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Messenger-Child-View-Controller.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4FA47F591AC235D1004B0EA5 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		4FA47F5A1AC235D1004B0EA5 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		4FA47F601AC235D1004B0EA5 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4FA47F611AC235D1004B0EA5 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		4FA47F621AC235D1004B0EA5 /* ChildViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChildViewController.h; sourceTree = "<group>"; };
+		4FA47F631AC235D1004B0EA5 /* ChildViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChildViewController.m; sourceTree = "<group>"; };
 		622BF1F6C9CF013275EF6275 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		71BE10021A72F3130083EE32 /* Messenger-iPad-Sheet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Messenger-iPad-Sheet.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C905E5DB18A83F74BD092CDD /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
@@ -123,6 +139,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				35A4C7C11DE3FD17F022DC0C /* libPods.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4FA47F2F1AC23598004B0EA5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5EEFA76ACE6B67749F5B2997 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -174,8 +198,7 @@
 			children = (
 				4F3256151AA77386008C1DD9 /* AppDelegate.h */,
 				4F3256161AA77386008C1DD9 /* AppDelegate.m */,
-				4F3256171AA77386008C1DD9 /* Info.plist */,
-				4F3256181AA77386008C1DD9 /* main.m */,
+				4FA47F6B1AC23619004B0EA5 /* Supporting Files */,
 			);
 			name = "iPad Sheet Example";
 			path = "Messenger-iPad-Sheet";
@@ -199,6 +222,7 @@
 				4F86BF6519F011D0007A3D4A /* Messenger-Storyboard.app */,
 				4F86BFC319F050AF007A3D4A /* Messenger-Swift.app */,
 				71BE10021A72F3130083EE32 /* Messenger-iPad-Sheet.app */,
+				4FA47F321AC23598004B0EA5 /* Messenger-Child-View-Controller.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -265,6 +289,7 @@
 				4F3EDB52199ED00F004C15D6 /* Programatic Example */,
 				4F86BF6619F011D0007A3D4A /* Storyboard Example */,
 				4F3256141AA77386008C1DD9 /* iPad Sheet Example */,
+				4FA47F581AC235D1004B0EA5 /* Child View Controller Example */,
 				4F86BFC419F050AF007A3D4A /* Swift Example */,
 			);
 			name = Examples;
@@ -305,6 +330,37 @@
 			isa = PBXGroup;
 			children = (
 				4F86BFC619F050AF007A3D4A /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		4FA47F581AC235D1004B0EA5 /* Child View Controller Example */ = {
+			isa = PBXGroup;
+			children = (
+				4FA47F591AC235D1004B0EA5 /* AppDelegate.h */,
+				4FA47F5A1AC235D1004B0EA5 /* AppDelegate.m */,
+				4FA47F621AC235D1004B0EA5 /* ChildViewController.h */,
+				4FA47F631AC235D1004B0EA5 /* ChildViewController.m */,
+				4FA47F6C1AC23620004B0EA5 /* Supporting Files */,
+			);
+			name = "Child View Controller Example";
+			path = "Messenger-Child-View-Controller";
+			sourceTree = "<group>";
+		};
+		4FA47F6B1AC23619004B0EA5 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				4F3256171AA77386008C1DD9 /* Info.plist */,
+				4F3256181AA77386008C1DD9 /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		4FA47F6C1AC23620004B0EA5 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				4FA47F601AC235D1004B0EA5 /* Info.plist */,
+				4FA47F611AC235D1004B0EA5 /* main.m */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -378,6 +434,25 @@
 			productReference = 4F86BFC319F050AF007A3D4A /* Messenger-Swift.app */;
 			productType = "com.apple.product-type.application";
 		};
+		4FA47F311AC23598004B0EA5 /* Messenger-Child-View-Controller */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4FA47F561AC2359B004B0EA5 /* Build configuration list for PBXNativeTarget "Messenger-Child-View-Controller" */;
+			buildPhases = (
+				5F31F882B232E8CFC26A0355 /* Check Pods Manifest.lock */,
+				4FA47F2E1AC23598004B0EA5 /* Sources */,
+				4FA47F2F1AC23598004B0EA5 /* Frameworks */,
+				4FA47F301AC23598004B0EA5 /* Resources */,
+				3D1D997EEB527C120150E094 /* Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Messenger-Child-View-Controller";
+			productName = "Messenger-Child-View-Controller";
+			productReference = 4FA47F321AC23598004B0EA5 /* Messenger-Child-View-Controller.app */;
+			productType = "com.apple.product-type.application";
+		};
 		71BE10011A72F3130083EE32 /* Messenger-iPad-Sheet */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 71BE10221A72F3130083EE32 /* Build configuration list for PBXNativeTarget "Messenger-iPad-Sheet" */;
@@ -415,6 +490,9 @@
 					4F86BFC219F050AF007A3D4A = {
 						CreatedOnToolsVersion = 6.0.1;
 					};
+					4FA47F311AC23598004B0EA5 = {
+						CreatedOnToolsVersion = 6.2;
+					};
 					71BE10011A72F3130083EE32 = {
 						CreatedOnToolsVersion = 6.1.1;
 					};
@@ -437,6 +515,7 @@
 				4F86BF6419F011D0007A3D4A /* Messenger-Storyboard */,
 				4F86BFC219F050AF007A3D4A /* Messenger-Swift */,
 				71BE10011A72F3130083EE32 /* Messenger-iPad-Sheet */,
+				4FA47F311AC23598004B0EA5 /* Messenger-Child-View-Controller */,
 			);
 		};
 /* End PBXProject section */
@@ -470,6 +549,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		4FA47F301AC23598004B0EA5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4FA47F711AC27221004B0EA5 /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		71BE10001A72F3130083EE32 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -482,6 +569,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		3D1D997EEB527C120150E094 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		57A4299BBA1384EEA0F08157 /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -513,6 +615,21 @@
 			showEnvVarsInLog = 0;
 		};
 		5EA63F26E6C2C54F5E2EC192 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		5F31F882B232E8CFC26A0355 /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -639,6 +756,20 @@
 				4F86BFCA19F050AF007A3D4A /* MessageViewController.swift in Sources */,
 				4F8ADA791A68C37400023752 /* Message.m in Sources */,
 				4F86BFC819F050AF007A3D4A /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4FA47F2E1AC23598004B0EA5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4FA47F6A1AC235D1004B0EA5 /* ChildViewController.m in Sources */,
+				4FA47F691AC235D1004B0EA5 /* main.m in Sources */,
+				4FA47F6E1AC2699D004B0EA5 /* MessageTableViewCell.m in Sources */,
+				4FA47F701AC26A83004B0EA5 /* Message.m in Sources */,
+				4FA47F6D1AC2699A004B0EA5 /* MessageViewController.m in Sources */,
+				4FA47F641AC235D1004B0EA5 /* AppDelegate.m in Sources */,
+				4FA47F6F1AC269A0004B0EA5 /* MessageTextView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -888,6 +1019,45 @@
 			};
 			name = Release;
 		};
+		4FA47F521AC2359B004B0EA5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 622BF1F6C9CF013275EF6275 /* Pods.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "Messenger-Child-View-Controller/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		4FA47F531AC2359B004B0EA5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = C905E5DB18A83F74BD092CDD /* Pods.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				INFOPLIST_FILE = "Messenger-Child-View-Controller/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		71BE10231A72F3130083EE32 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 622BF1F6C9CF013275EF6275 /* Pods.debug.xcconfig */;
@@ -961,6 +1131,15 @@
 			buildConfigurations = (
 				4F86BFDF19F050AF007A3D4A /* Debug */,
 				4F86BFE019F050AF007A3D4A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4FA47F561AC2359B004B0EA5 /* Build configuration list for PBXNativeTarget "Messenger-Child-View-Controller" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4FA47F521AC2359B004B0EA5 /* Debug */,
+				4FA47F531AC2359B004B0EA5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
