@@ -1083,6 +1083,11 @@ NSInteger const SLKAlertViewClearTextTag = 1534347677; // absolute hash of 'SLKT
     // Updates the height constraints' constants
     self.keyboardHC.constant = [self slk_appropriateKeyboardHeight:notification];
     self.scrollViewHC.constant = [self slk_appropriateScrollViewHeight];
+
+    // Scroll self.tableView to bottom (or make sure that it stays there if already at the bottom)
+    if(self.inverted == NO && self.shouldScrollToBottomAfterKeyboardShows && [notification.userInfo[UIKeyboardFrameBeginUserInfoKey] CGRectValue].origin.y == [UIScreen mainScreen].bounds.size.height ) {
+        [self.scrollViewProxy setContentOffset:CGPointMake(0, self.scrollViewProxy.contentSize.height)];
+    }
     
     // Updates and notifies about the keyboard status update
     if ([self slk_updateKeyboardStatus:status]) {
@@ -1095,7 +1100,7 @@ NSInteger const SLKAlertViewClearTextTag = 1534347677; // absolute hash of 'SLKT
                                               bounce:NO
                                              options:(curve<<16)|UIViewAnimationOptionLayoutSubviews|UIViewAnimationOptionBeginFromCurrentState
                                           animations:^{
-                                              [self slk_scrollToBottomIfNeeded];
+                                              //[self slk_scrollToBottomIfNeeded];
                                           }];
 }
 
