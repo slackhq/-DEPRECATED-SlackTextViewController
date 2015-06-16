@@ -100,7 +100,6 @@ NSString * const SLKTypingIndicatorViewWillHideNotification =   @"SLKTypingIndic
         _textLabel.translatesAutoresizingMaskIntoConstraints = NO;
         _textLabel.backgroundColor = [UIColor clearColor];
         _textLabel.userInteractionEnabled = NO;
-        _textLabel.hidden = YES;
     }
     return _textLabel;
 }
@@ -175,18 +174,10 @@ NSString * const SLKTypingIndicatorViewWillHideNotification =   @"SLKTypingIndic
     
     NSString *notificationName = visible ? SLKTypingIndicatorViewWillShowNotification : SLKTypingIndicatorViewWillHideNotification;
     [[NSNotificationCenter defaultCenter] postNotificationName:notificationName object:self];
-    
-    if (visible) {
-        self.textLabel.hidden = NO;
-    }
-    else {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            self.textLabel.hidden = YES;
-        });
-    }
-    
+
     _visible = visible;
-    
+    self.hidden = !visible;
+
     if (!visible) {
         [self slk_cleanAll];
     }

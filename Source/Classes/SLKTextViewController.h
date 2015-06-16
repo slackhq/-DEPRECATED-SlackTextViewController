@@ -58,8 +58,11 @@ NS_CLASS_AVAILABLE_IOS(7_0) @interface SLKTextViewController : UIViewController 
 /** The bottom toolbar containing a text view and buttons. */
 @property (nonatomic, readonly) SLKTextInputbar *textInputbar;
 
-/** The typing indicator used to display user names horizontally. */
+/** The typing indicator used to display user names horizontally. If -registerClassForIndicatorView: has been called with another class, this returns nil. */
 @property (nonatomic, readonly) SLKTypingIndicatorView *typingIndicatorView;
+
+/** The indicator view. Will be a kind of SLKTypingIndicatorView by default. Override by calling -registerClassForIndicatorView: during init */
+@property (nonatomic, readonly) UIView *indicatorView;
 
 /** A single tap gesture used to dismiss the keyboard. */
 @property (nonatomic, readonly) UIGestureRecognizer *singleTapGesture;
@@ -445,6 +448,14 @@ NS_CLASS_AVAILABLE_IOS(7_0) @interface SLKTextViewController : UIViewController 
  @param textViewClass A SLKTextView subclass.
  */
 - (void)registerClassForTextView:(Class)textViewClass;
+
+/**
+ Registers a class for customizing the behavior and appearance of the indicator view.
+ You need to call this method inside of any initialization method.
+
+ @param indicatorViewClass A UIView subclass conforming to the SLKIndicatorView protocol.
+ */
+- (void)registerClassForIndicatorView:(Class)indicatorViewClass;
 
 
 #pragma mark - Delegate Methods Requiring Super
