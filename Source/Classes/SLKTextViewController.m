@@ -1307,7 +1307,7 @@ NSInteger const SLKAlertViewClearTextTag = 1534347677; // absolute hash of 'SLKT
         return;
     }
 
-    self.indicatorViewHC.constant = self.indicatorView.isHidden ?  0.0 : self.indicatorView.intrinsicContentSize.height;
+    self.indicatorViewHC.constant = self.indicatorView.isHidden ?  0.0 : [self.indicatorView systemLayoutSizeFittingSize:CGSizeZero].height;
     self.scrollViewHC.constant -= self.indicatorViewHC.constant;
 
     [self.view slk_animateLayoutIfNeededWithBounce:self.bounces
