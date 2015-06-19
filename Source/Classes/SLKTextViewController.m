@@ -1059,7 +1059,7 @@ NSInteger const SLKAlertViewClearTextTag = 1534347677; // absolute hash of 'SLKT
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
     if (object == _indicatorView && [keyPath isEqualToString:@"hidden"]) {
-        [self slk_willShowOrHideIndicatorView:nil];
+        [self slk_willShowOrHideIndicatorView];
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
@@ -1300,7 +1300,7 @@ NSInteger const SLKAlertViewClearTextTag = 1534347677; // absolute hash of 'SLKT
     }
 }
 
-- (void)slk_willShowOrHideIndicatorView:(NSNotification *)notification
+- (void)slk_willShowOrHideIndicatorView
 {
     // Skips if the typing indicator should not show. Ignores the checking if it's trying to hide.
     if (![self canShowTypeIndicator] && self.indicatorView.isHidden) {
