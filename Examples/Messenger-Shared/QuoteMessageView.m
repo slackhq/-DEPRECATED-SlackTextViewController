@@ -113,11 +113,4 @@
     }
 }
 
-#pragma mark - SLKCustomBarProtocol
-
-- (CGFloat)height
-{
-    return [self systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height;
-}
-
 @end

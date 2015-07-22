@@ -473,6 +473,13 @@ NS_CLASS_AVAILABLE_IOS(7_0) @interface SLKTextViewController : UIViewController 
  */
 - (void)registerClassForTypingIndicatorView:(Class)aClass;
 
+/**
+ Registers a class for a custom view above the text input bar.
+ You need to call this method inside of any initialization method.
+ Make sure to conform to SLKCustomBarProtocol and synthesize the required properties.
+ 
+ @param aClass A UIView subclass conforming to the SLKCustomBarProtocol.
+ */
 - (void)registerClassForCustomBarView:(Class)aClass;
 
 

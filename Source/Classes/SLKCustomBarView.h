@@ -17,6 +17,7 @@
 #import <UIKit/UIKit.h>
 #import "SLKCustomBarProtocol.h"
 
+/** @name A custom view above the text input bar. */
 @interface SLKCustomBarView : UIView <SLKCustomBarProtocol>
 
 @end

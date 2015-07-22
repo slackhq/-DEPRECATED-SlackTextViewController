@@ -1358,7 +1358,8 @@ NSInteger const SLKAlertViewClearTextTag = 1534347677; // absolute hash of 'SLKT
 
 - (void)slk_willShowOrHideCustomBarView:(UIView <SLKCustomBarProtocol> *)customBarView
 {
-    CGFloat height = customBarView.visible ? [customBarView height] : 0.0;
+    CGFloat systemLayoutSizeHeight = [customBarView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height;
+    CGFloat height = customBarView.visible ? systemLayoutSizeHeight : 0.0;
     
     self.customBarViewHC.constant = height;
     self.scrollViewHC.constant -= height;
@@ -1709,6 +1710,7 @@ NSInteger const SLKAlertViewClearTextTag = 1534347677; // absolute hash of 'SLKT
     }
     
     NSAssert([aClass isSubclassOfClass:[UIView class]], @"The registered class is invalid, it must be a subclass for UIView.");
+    NSAssert([aClass conformsToProtocol:@protocol(SLKCustomBarProtocol)], @"The registered class is invalid, it must conform to the SLKCustomBarProtocol protocol");
     self.customBarViewClass = aClass;
 }
 

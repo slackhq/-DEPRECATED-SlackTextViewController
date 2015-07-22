@@ -16,7 +16,7 @@
 
 #import <Foundation/Foundation.h>
 
-/** Generic protocol needed when creating your a custom bar for displaying above the keyboard. */
+/** Generic protocol needed when creating your a custom bar for displaying above the text input bar. */
 @protocol SLKCustomBarProtocol <NSObject>
 @required
 
@@ -26,7 +26,5 @@
  You can simply @synthesize this property to make it KVO compliant, or override its setter method and wrap its implementation with -willChangeValueForKey: and -didChangeValueForKey: methods, for more complex KVO compliance.
  */
 @property (nonatomic) BOOL visible;
-
-- (CGFloat)height;
 
 @end

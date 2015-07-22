@@ -19,9 +19,4 @@
 @implementation SLKCustomBarView
 @synthesize visible = _visible;
 
-- (CGFloat)height
-{
-    return [self systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height;
-}
-
 @end
