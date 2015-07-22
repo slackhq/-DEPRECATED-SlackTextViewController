@@ -10,16 +10,21 @@
 #import "MessageTableViewCell.h"
 #import "MessageTextView.h"
 #import "TypingIndicatorView.h"
+#import "QuoteMessageView.h"
 #import "Message.h"
 
 #import <LoremIpsum/LoremIpsum.h>
 
 #define DEBUG_CUSTOM_TYPING_INDICATOR 0
+#define DEBUG_CUSTOM_BAR 0
 
 static NSString *MessengerCellIdentifier = @"MessengerCell";
 static NSString *AutoCompletionCellIdentifier = @"AutoCompletionCell";
 
 @interface MessageViewController ()
+#if DEBUG_CUSTOM_BAR
+@property (nonatomic, readonly) QuoteMessageView *quoteView;
+#endif
 
 @property (nonatomic, strong) NSMutableArray *messages;
 
@@ -64,6 +69,20 @@ static NSString *AutoCompletionCellIdentifier = @"AutoCompletionCell";
 #if DEBUG_CUSTOM_TYPING_INDICATOR
     // Register a UIView subclass, conforming to SLKTypingIndicatorProtocol, to use a custom typing indicator view.
     [self registerClassForTypingIndicatorView:[TypingIndicatorView class]];
+#endif
+    
+#if DEBUG_CUSTOM_BAR
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        UIMenuController *menuController = [UIMenuController sharedMenuController];
+        UIMenuItem *quoteItem = [[UIMenuItem alloc] initWithTitle:@"Quote" action:@selector(quote:)];
+        menuController.menuItems = @[ quoteItem ];
+        [menuController update];
+    });
+    
+    [self registerClassForCustomBarView:[QuoteMessageView class]];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(quote:) name:kMessageShouldBeQuoted object:nil];
 #endif
 }
 
@@ -426,14 +445,41 @@ static NSString *AutoCompletionCellIdentifier = @"AutoCompletionCell";
     }
 }
 
+#if DEBUG_CUSTOM_BAR
+- (BOOL)tableView:(UITableView *)tableView canPerformAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
+{
+    return action == @selector(quote:);
+}
+
+- (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
+{
+}
+
+- (BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return YES;
+}
+
+- (void)quote:(NSNotification*)notification
+{
+    if (![notification.object isKindOfClass:[MessageTableViewCell class]]) {
+        return;
+    }
+    MessageTableViewCell *cell = notification.object;
+    [self.quoteView quote:cell.titleLabel.text withText:cell.bodyLabel.text];
+}
+#endif
+
 - (MessageTableViewCell *)messageCellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     MessageTableViewCell *cell = (MessageTableViewCell *)[self.tableView dequeueReusableCellWithIdentifier:MessengerCellIdentifier];
     
+#if !DEBUG_CUSTOM_BAR
     if (!cell.textLabel.text) {
         UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(editCellMessage:)];
         [cell addGestureRecognizer:longPress];
     }
+#endif
     
     Message *message = self.messages[indexPath.row];
     
@@ -571,5 +617,25 @@ static NSString *AutoCompletionCellIdentifier = @"AutoCompletionCell";
     return [super textView:textView shouldChangeTextInRange:range replacementText:text];
 }
 
+#if DEBUG_CUSTOM_BAR
+- (QuoteMessageView *)quoteView
+{
+    return (QuoteMessageView *)self.customBarView;
+}
+#endif
+
+#pragma mark - View lifeterm
+
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+}
+
+- (void)dealloc
+{
+#if DEBUG_CUSTOM_BAR
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kMessageShouldBeQuoted object:nil];
+#endif
+}
 
 @end
