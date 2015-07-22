@@ -1358,12 +1358,12 @@ NSInteger const SLKAlertViewClearTextTag = 1534347677; // absolute hash of 'SLKT
 
 - (void)slk_willShowOrHideCustomBarView:(UIView <SLKCustomBarProtocol> *)customBarView
 {
-    CGFloat height = customBarView.isVisible ? [customBarView height] : 0.0;
+    CGFloat height = customBarView.visible ? [customBarView height] : 0.0;
     
     self.customBarViewHC.constant = height;
     self.scrollViewHC.constant -= height;
     
-    if (customBarView.isVisible) {
+    if (customBarView.visible) {
         customBarView.hidden = NO;
     }
     
@@ -1371,7 +1371,7 @@ NSInteger const SLKAlertViewClearTextTag = 1534347677; // absolute hash of 'SLKT
                                            options:UIViewAnimationOptionCurveEaseInOut
                                         animations:NULL
                                         completion:^(BOOL finished) {
-                                            if (!customBarView.isVisible) {
+                                            if (!customBarView.visible) {
                                                 customBarView.hidden = YES;
                                             }
                                         }];

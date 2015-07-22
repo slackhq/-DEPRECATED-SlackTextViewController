@@ -25,7 +25,7 @@
  SLKTextViewController depends on this property internally, by observing its value changes to update the custom bar view's constraints automatically.
  You can simply @synthesize this property to make it KVO compliant, or override its setter method and wrap its implementation with -willChangeValueForKey: and -didChangeValueForKey: methods, for more complex KVO compliance.
  */
-@property (nonatomic, getter = isVisible) BOOL visible;
+@property (nonatomic) BOOL visible;
 
 - (CGFloat)height;
 

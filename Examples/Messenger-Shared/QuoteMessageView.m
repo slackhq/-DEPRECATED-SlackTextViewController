@@ -108,7 +108,7 @@
 
 - (void)dismiss:(id)sender
 {
-    if (self.isVisible) {
+    if (self.visible) {
         self.visible = NO;
     }
 }
