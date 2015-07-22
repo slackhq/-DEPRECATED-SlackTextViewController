@@ -7,262 +7,293 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		07DCED539CB32ADB33E26623 /* UIResponder+SLKAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = F104D04E48B514B2EDA45928 /* UIResponder+SLKAdditions.m */; };
-		08A5646171232B7A4CAAEF9C /* SLKInputAccessoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = A7B39C1D6E97FA16DCC5B70E /* SLKInputAccessoryView.m */; };
-		0A935C76C4D5ECC0D3DE47D5 /* Pods-SlackTextViewController-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D017D6946B68C64842D7FE0 /* Pods-SlackTextViewController-dummy.m */; };
-		0BE45E2168388B36663DCE34 /* LoremIpsum.h in Headers */ = {isa = PBXBuildFile; fileRef = 3EB7F0F44E0F2999C4E70702 /* LoremIpsum.h */; };
-		12C029D7C000A9359C99E1A3 /* Pods-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 436FE8AB6B57B4E127605D4B /* Pods-dummy.m */; };
-		17B35D5EAD9E13B336262F17 /* SLKTextView+SLKAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 8D4A7E88CEC138B84081A019 /* SLKTextView+SLKAdditions.h */; };
-		1FB676B15569E668469B1465 /* SLKTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B89821E6A1F4AA7530639A4 /* SLKTextView.m */; };
-		2D2961507D0BF5259520AA4A /* SLKUIConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 49563224580594265329BAE1 /* SLKUIConstants.h */; };
-		3A0A47A340D1C69253E0F6DF /* Pods-LoremIpsum-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 49E49E9823C137FB77D91FDE /* Pods-LoremIpsum-dummy.m */; };
-		3B0D0A66A1C700B5069DEE06 /* SLKTypingIndicatorProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = 21A1FF0414174976E7002D99 /* SLKTypingIndicatorProtocol.h */; };
-		3CB6E58015CB3E2EC0B98E8C /* SLKTypingIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5F4241418D735A8A9B3CB5A5 /* SLKTypingIndicatorView.m */; };
-		528E080619D6C4D012A5FC2F /* SLKInputAccessoryView.h in Headers */ = {isa = PBXBuildFile; fileRef = C9B2A3E62445817C163E167D /* SLKInputAccessoryView.h */; };
-		5717B313A0DF222C0CEEEEF1 /* SLKTextViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = BF691046CE4CB9FBEC57F0A1 /* SLKTextViewController.h */; };
-		636836E8E9905658C3AD957C /* LoremIpsum.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C0D977643B48E045986734B /* LoremIpsum.m */; settings = {COMPILER_FLAGS = "-DOS_OBJECT_USE_OBJC=0"; }; };
-		648CDB2AD7ECF88FC1EEA39E /* SLKTextInputbar.m in Sources */ = {isa = PBXBuildFile; fileRef = BFA6C3DE6F728267054BCB45 /* SLKTextInputbar.m */; };
-		6E3862A82C4809F2125229BC /* SLKTextView.h in Headers */ = {isa = PBXBuildFile; fileRef = E2C85D5121300F258BAA3AFA /* SLKTextView.h */; };
-		72A783C81D2522CE7FA43788 /* UIScrollView+SLKAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5E732072B25AC78BB42445E4 /* UIScrollView+SLKAdditions.h */; };
-		757663A9C4D928F9DF57C588 /* UIView+SLKAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = DC0F645D067315C02B840BEE /* UIView+SLKAdditions.h */; };
-		8C1AE0D21E878E0AA2DBCF9E /* SLKTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 48D7F7BB74694C4CE2050E6B /* SLKTextViewController.m */; };
-		B1602395C631ED99F15D0645 /* UIScrollView+SLKAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E3BBC7577A764FCA1FC0088 /* UIScrollView+SLKAdditions.m */; };
-		B2833C814087F234C21E6C5A /* SLKTextInputbar.h in Headers */ = {isa = PBXBuildFile; fileRef = 69B71855CCEDC7AF671BA663 /* SLKTextInputbar.h */; };
-		B2F774BD1C899CDF6BDC5C77 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB52428C02FBCE72D8777D95 /* Foundation.framework */; };
-		D1FCD7DAB01E587770429E3E /* SLKTypingIndicatorView.h in Headers */ = {isa = PBXBuildFile; fileRef = 40EF00E2F63F4A5AB8B7B0CE /* SLKTypingIndicatorView.h */; };
-		D5E0CF9AE8D234A05A4F38B5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB52428C02FBCE72D8777D95 /* Foundation.framework */; };
-		DD0A8CE4452FD641BAA0F74F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB52428C02FBCE72D8777D95 /* Foundation.framework */; };
-		DFFC9720322F466BD686BB17 /* UIResponder+SLKAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = FB78491DCFA59506794B7D53 /* UIResponder+SLKAdditions.h */; };
-		F11EA4056E845FF6B426E021 /* SLKTextView+SLKAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 413207C9265E5F7FA8C6A5F7 /* SLKTextView+SLKAdditions.m */; };
-		F750ABD089567CD368F33694 /* UIView+SLKAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 45AAEE0F82437B3B9C7E8A89 /* UIView+SLKAdditions.m */; };
+		019F4211D6139AC3D8B794B734B08DBA /* UIView+SLKAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 0F520B2EE457BDCB394223D93C2C0159 /* UIView+SLKAdditions.h */; };
+		02A3301D29AEB13B61C1E76D8491B4E8 /* SLKCustomBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 67D89AE4ABB452AC060A11B8E29D9D55 /* SLKCustomBarView.m */; };
+		0CC4E547A717481D155EE1F41F823BC6 /* LoremIpsum.m in Sources */ = {isa = PBXBuildFile; fileRef = 5052AFE17A5D72BD177AD75BA37C4444 /* LoremIpsum.m */; settings = {COMPILER_FLAGS = "-DOS_OBJECT_USE_OBJC=0"; }; };
+		184048306C93951B34633E9CE6CC94CA /* UIResponder+SLKAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = BA2AEC7B277D0452B44D0DC93C60D757 /* UIResponder+SLKAdditions.m */; };
+		24523723455AF167903D6D4D0250BFBA /* SLKInputAccessoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F82CDC40208FCAC66A8ACFDA5B23AC9 /* SLKInputAccessoryView.m */; };
+		2BB526CDF735C9102E3636B9DB774454 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A996F119136A5BCC1F6740C72E2FE2FE /* Foundation.framework */; };
+		33C469605831DEBDDE9B4B2D024FB2EB /* SLKCustomBarView.h in Headers */ = {isa = PBXBuildFile; fileRef = 78FEB8561B89A43A4A49603AB99291B5 /* SLKCustomBarView.h */; };
+		36F8491DC2CFE25BE2D7F65530DB8DF0 /* SLKCustomBarProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = CD150A1157ADA4400BC912EF73291654 /* SLKCustomBarProtocol.h */; };
+		38FE5819CF7838DD27C90D6FD154CB9E /* SLKTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8BB26554CB621D15EBADCB2EAD96DF28 /* SLKTextViewController.m */; };
+		4A1D1FFE795C29EAD7BB0EE0CD06AD35 /* SLKTextView+SLKAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 963F622D756E6C5490B6BEC9562A765F /* SLKTextView+SLKAdditions.h */; };
+		4A60CE879A928C7EEB8A1CBDEC2D29EA /* SLKTextView.h in Headers */ = {isa = PBXBuildFile; fileRef = 44ADFCC1E140A9553784A3B723075914 /* SLKTextView.h */; };
+		7698D59D5D3F97DBCCF54E21ECAA1D46 /* SLKTypingIndicatorView.h in Headers */ = {isa = PBXBuildFile; fileRef = 906FD92BCFA834ED9F37F8B6A197038B /* SLKTypingIndicatorView.h */; };
+		7D28E7ED15B0A40B14020B7DCD1A9960 /* SLKTextInputbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF3EE97B6BA52BB1B463F4FE8A0D5DF /* SLKTextInputbar.m */; };
+		8CF78E9EEA79E21D7C64B8CF9DB9022B /* UIScrollView+SLKAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 076A98B0B5501570DD8E6E21458E3CCD /* UIScrollView+SLKAdditions.h */; };
+		951E5E82305930850D10FB46834CE7D2 /* SlackTextViewController-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = B27009DCC0B038FD0647EBB0ED721E70 /* SlackTextViewController-dummy.m */; };
+		99DBFE745B6021D5764C16F1DBA9A668 /* SLKUIConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 9490BD7B81925083BD046D4B7BD462D4 /* SLKUIConstants.h */; };
+		9E80473BCB84BCB6C4436BF6CE511A86 /* SLKTextView+SLKAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D3CBDD50258D46A392E0CE12DF99CC2 /* SLKTextView+SLKAdditions.m */; };
+		B7D830B8C3299FA5AB6F29F905B01E2B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A996F119136A5BCC1F6740C72E2FE2FE /* Foundation.framework */; };
+		C58E1CD641ADEADDCC58632CCCD57379 /* UIView+SLKAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = E5BD72107CAF9B0FC8421B0DF7EB37DA /* UIView+SLKAdditions.m */; };
+		CCF33F97E13998E3BBE16044FB78E5A2 /* LoremIpsum.h in Headers */ = {isa = PBXBuildFile; fileRef = 25999AEF77E593BCBBFDE3567EFA1363 /* LoremIpsum.h */; };
+		D309ADAC043650D3F2B57D60198A3071 /* UIResponder+SLKAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = A323C8FBC8FD1AFB0B14B8D36EC78130 /* UIResponder+SLKAdditions.h */; };
+		D6D4131F9DE264C86C6CE52D7B9EAD00 /* SLKInputAccessoryView.h in Headers */ = {isa = PBXBuildFile; fileRef = 0541E946731981967EFE41CC176C9165 /* SLKInputAccessoryView.h */; };
+		D915AAE732B10BCF18034010FD37009F /* SLKTextInputbar.h in Headers */ = {isa = PBXBuildFile; fileRef = 969AF36F1E602A34CEE1AFA952685B9A /* SLKTextInputbar.h */; };
+		DB9ADDEBFA2CCE9A9E2CBC9CE012FC93 /* LoremIpsum-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DF33BD81D096FBD84CB5E6EC2FE123D /* LoremIpsum-dummy.m */; };
+		E3191A186E88231D880F33AA68FDE584 /* SLKTypingIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 94E9B21ADBEDE96C0406517D7100A23A /* SLKTypingIndicatorView.m */; };
+		E3A4A8C4EC78DB55E644794F51807E36 /* SLKTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = AFEC3FF7F34E7A3E8256AC13DE49C0D7 /* SLKTextView.m */; };
+		EA1C8CF58C2172E431B03C2BE428CA45 /* SLKTypingIndicatorProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = BD9044304C86F6659540B0737933F7B2 /* SLKTypingIndicatorProtocol.h */; };
+		EB053D283E7371DEF90A6F619CE2C1F4 /* UIScrollView+SLKAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 016E5C4995F57686B9784F95B414416C /* UIScrollView+SLKAdditions.m */; };
+		F242DA4E60FD57FC807320EB0F1423F4 /* Pods-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = C39B9DDD6F254278B62813604D2D2F74 /* Pods-dummy.m */; };
+		F432298E9DC42FFC8400093036715520 /* SLKTextViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 1EDD00DB53AD153C37DE3B3F1DA9A554 /* SLKTextViewController.h */; };
+		FEF572AD29330B3430BC74A873A9D56F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A996F119136A5BCC1F6740C72E2FE2FE /* Foundation.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		25EA5F889D1E8039DE78B788 /* PBXContainerItemProxy */ = {
+		141C1D132424F1DE022B740B2AFD285A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 83E23CE5A140A2DC94562E73 /* Project object */;
+			containerPortal = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 1EFE60AB3E90352AC7CD081F;
-			remoteInfo = "Pods-SlackTextViewController";
+			remoteGlobalIDString = 560DE62BF697B3ED3D1E8EF318760247;
+			remoteInfo = LoremIpsum;
 		};
-		4974CD386E2FDE99C00E62C8 /* PBXContainerItemProxy */ = {
+		27E5D04FD438B504620AC147B336744A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 83E23CE5A140A2DC94562E73 /* Project object */;
+			containerPortal = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 4D4BEA76D1F4EBE00E109B63;
-			remoteInfo = "Pods-LoremIpsum";
+			remoteGlobalIDString = 952C4F297F6C42D62B7B37EA1CDE304B;
+			remoteInfo = SlackTextViewController;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		1FDFC4F4F964633F0F79273D /* Podfile */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		21A1FF0414174976E7002D99 /* SLKTypingIndicatorProtocol.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SLKTypingIndicatorProtocol.h; path = Source/Classes/SLKTypingIndicatorProtocol.h; sourceTree = "<group>"; };
-		2D58C131052D2431A2AE63B4 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Pods.debug.xcconfig; sourceTree = "<group>"; };
-		30B4661930041CFBEF56D513 /* Pods-SlackTextViewController-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-SlackTextViewController-prefix.pch"; sourceTree = "<group>"; };
-		32A0A0A820A654DC7AA10E29 /* libPods-SlackTextViewController.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SlackTextViewController.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		347ADD7352C128F91C4F36E0 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Pods.release.xcconfig; sourceTree = "<group>"; };
-		38C20072A78CD4EFC24938BB /* libPods-LoremIpsum.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-LoremIpsum.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		3EB7F0F44E0F2999C4E70702 /* LoremIpsum.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = LoremIpsum.h; path = LoremIpsum/LoremIpsum.h; sourceTree = "<group>"; };
-		40EF00E2F63F4A5AB8B7B0CE /* SLKTypingIndicatorView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SLKTypingIndicatorView.h; path = Source/Classes/SLKTypingIndicatorView.h; sourceTree = "<group>"; };
-		413207C9265E5F7FA8C6A5F7 /* SLKTextView+SLKAdditions.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "SLKTextView+SLKAdditions.m"; path = "Source/Additions/SLKTextView+SLKAdditions.m"; sourceTree = "<group>"; };
-		429BEC327934FC5990367136 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		436FE8AB6B57B4E127605D4B /* Pods-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-dummy.m"; sourceTree = "<group>"; };
-		45AAEE0F82437B3B9C7E8A89 /* UIView+SLKAdditions.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "UIView+SLKAdditions.m"; path = "Source/Additions/UIView+SLKAdditions.m"; sourceTree = "<group>"; };
-		48D7F7BB74694C4CE2050E6B /* SLKTextViewController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = SLKTextViewController.m; path = Source/Classes/SLKTextViewController.m; sourceTree = "<group>"; };
-		49563224580594265329BAE1 /* SLKUIConstants.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SLKUIConstants.h; path = Source/Additions/SLKUIConstants.h; sourceTree = "<group>"; };
-		49E49E9823C137FB77D91FDE /* Pods-LoremIpsum-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-LoremIpsum-dummy.m"; sourceTree = "<group>"; };
-		5B89821E6A1F4AA7530639A4 /* SLKTextView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = SLKTextView.m; path = Source/Classes/SLKTextView.m; sourceTree = "<group>"; };
-		5D017D6946B68C64842D7FE0 /* Pods-SlackTextViewController-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-SlackTextViewController-dummy.m"; sourceTree = "<group>"; };
-		5E732072B25AC78BB42445E4 /* UIScrollView+SLKAdditions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "UIScrollView+SLKAdditions.h"; path = "Source/Additions/UIScrollView+SLKAdditions.h"; sourceTree = "<group>"; };
-		5F4241418D735A8A9B3CB5A5 /* SLKTypingIndicatorView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = SLKTypingIndicatorView.m; path = Source/Classes/SLKTypingIndicatorView.m; sourceTree = "<group>"; };
-		69B71855CCEDC7AF671BA663 /* SLKTextInputbar.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SLKTextInputbar.h; path = Source/Classes/SLKTextInputbar.h; sourceTree = "<group>"; };
-		7282C3B6AA9AFF9073C7DF82 /* Pods-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-acknowledgements.markdown"; sourceTree = "<group>"; };
-		7E3BBC7577A764FCA1FC0088 /* UIScrollView+SLKAdditions.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "UIScrollView+SLKAdditions.m"; path = "Source/Additions/UIScrollView+SLKAdditions.m"; sourceTree = "<group>"; };
-		7E8EB567AC723F3D5F67AC09 /* Pods-LoremIpsum-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-LoremIpsum-prefix.pch"; sourceTree = "<group>"; };
-		8C0D977643B48E045986734B /* LoremIpsum.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = LoremIpsum.m; path = LoremIpsum/LoremIpsum.m; sourceTree = "<group>"; };
-		8D4A7E88CEC138B84081A019 /* SLKTextView+SLKAdditions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "SLKTextView+SLKAdditions.h"; path = "Source/Additions/SLKTextView+SLKAdditions.h"; sourceTree = "<group>"; };
-		8FDF3EC0F1888E2782CB1B7A /* Pods-environment.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-environment.h"; sourceTree = "<group>"; };
-		A21E961A2004B411CBEEF9D7 /* Pods-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-resources.sh"; sourceTree = "<group>"; };
-		A4BE0C637253FF526F807BBF /* Pods-LoremIpsum.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-LoremIpsum.xcconfig"; sourceTree = "<group>"; };
-		A5C7DE610BA49016A948FABE /* Pods-SlackTextViewController.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-SlackTextViewController.xcconfig"; sourceTree = "<group>"; };
-		A7B39C1D6E97FA16DCC5B70E /* SLKInputAccessoryView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = SLKInputAccessoryView.m; path = Source/Classes/SLKInputAccessoryView.m; sourceTree = "<group>"; };
-		B2F729A206AAFD9E1B734E00 /* Pods-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-acknowledgements.plist"; sourceTree = "<group>"; };
-		BF691046CE4CB9FBEC57F0A1 /* SLKTextViewController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SLKTextViewController.h; path = Source/Classes/SLKTextViewController.h; sourceTree = "<group>"; };
-		BFA6C3DE6F728267054BCB45 /* SLKTextInputbar.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = SLKTextInputbar.m; path = Source/Classes/SLKTextInputbar.m; sourceTree = "<group>"; };
-		C9B2A3E62445817C163E167D /* SLKInputAccessoryView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SLKInputAccessoryView.h; path = Source/Classes/SLKInputAccessoryView.h; sourceTree = "<group>"; };
-		D7E7870F08F6D6DCB6541460 /* Pods-LoremIpsum-Private.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-LoremIpsum-Private.xcconfig"; sourceTree = "<group>"; };
-		DB52428C02FBCE72D8777D95 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.1.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
-		DC0F645D067315C02B840BEE /* UIView+SLKAdditions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "UIView+SLKAdditions.h"; path = "Source/Additions/UIView+SLKAdditions.h"; sourceTree = "<group>"; };
-		E2C85D5121300F258BAA3AFA /* SLKTextView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SLKTextView.h; path = Source/Classes/SLKTextView.h; sourceTree = "<group>"; };
-		E8236A2F1AEFF2BBA49C6256 /* Pods-SlackTextViewController-Private.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-SlackTextViewController-Private.xcconfig"; sourceTree = "<group>"; };
-		F104D04E48B514B2EDA45928 /* UIResponder+SLKAdditions.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "UIResponder+SLKAdditions.m"; path = "Source/Additions/UIResponder+SLKAdditions.m"; sourceTree = "<group>"; };
-		FB78491DCFA59506794B7D53 /* UIResponder+SLKAdditions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "UIResponder+SLKAdditions.h"; path = "Source/Additions/UIResponder+SLKAdditions.h"; sourceTree = "<group>"; };
+		016E5C4995F57686B9784F95B414416C /* UIScrollView+SLKAdditions.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+SLKAdditions.m"; sourceTree = "<group>"; };
+		01DD3D4A3B476E839A2EB38D1B5E488E /* LoremIpsum-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "LoremIpsum-prefix.pch"; sourceTree = "<group>"; };
+		0541E946731981967EFE41CC176C9165 /* SLKInputAccessoryView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = SLKInputAccessoryView.h; sourceTree = "<group>"; };
+		076A98B0B5501570DD8E6E21458E3CCD /* UIScrollView+SLKAdditions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+SLKAdditions.h"; sourceTree = "<group>"; };
+		0F520B2EE457BDCB394223D93C2C0159 /* UIView+SLKAdditions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "UIView+SLKAdditions.h"; sourceTree = "<group>"; };
+		134930E1475C7D2CECE3D2AE0F145333 /* LoremIpsum-Private.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "LoremIpsum-Private.xcconfig"; sourceTree = "<group>"; };
+		19F830CABFD7C5AB3A939E4B18915F47 /* Pods-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-acknowledgements.markdown"; sourceTree = "<group>"; };
+		1CF3EE97B6BA52BB1B463F4FE8A0D5DF /* SLKTextInputbar.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = SLKTextInputbar.m; sourceTree = "<group>"; };
+		1EDD00DB53AD153C37DE3B3F1DA9A554 /* SLKTextViewController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = SLKTextViewController.h; sourceTree = "<group>"; };
+		25999AEF77E593BCBBFDE3567EFA1363 /* LoremIpsum.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = LoremIpsum.h; path = LoremIpsum/LoremIpsum.h; sourceTree = "<group>"; };
+		32FD725FD01B2F7829FBE3A5E253E50A /* LoremIpsum.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = LoremIpsum.xcconfig; sourceTree = "<group>"; };
+		44ADFCC1E140A9553784A3B723075914 /* SLKTextView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = SLKTextView.h; sourceTree = "<group>"; };
+		4DF33BD81D096FBD84CB5E6EC2FE123D /* LoremIpsum-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "LoremIpsum-dummy.m"; sourceTree = "<group>"; };
+		5052AFE17A5D72BD177AD75BA37C4444 /* LoremIpsum.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = LoremIpsum.m; path = LoremIpsum/LoremIpsum.m; sourceTree = "<group>"; };
+		5D3CBDD50258D46A392E0CE12DF99CC2 /* SLKTextView+SLKAdditions.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "SLKTextView+SLKAdditions.m"; sourceTree = "<group>"; };
+		67D89AE4ABB452AC060A11B8E29D9D55 /* SLKCustomBarView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = SLKCustomBarView.m; sourceTree = "<group>"; };
+		78FEB8561B89A43A4A49603AB99291B5 /* SLKCustomBarView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = SLKCustomBarView.h; sourceTree = "<group>"; };
+		7BFB105DEB4CF35E88EA6160F7633940 /* SlackTextViewController-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "SlackTextViewController-prefix.pch"; sourceTree = "<group>"; };
+		8BB26554CB621D15EBADCB2EAD96DF28 /* SLKTextViewController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = SLKTextViewController.m; sourceTree = "<group>"; };
+		8F82CDC40208FCAC66A8ACFDA5B23AC9 /* SLKInputAccessoryView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = SLKInputAccessoryView.m; sourceTree = "<group>"; };
+		906FD92BCFA834ED9F37F8B6A197038B /* SLKTypingIndicatorView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = SLKTypingIndicatorView.h; sourceTree = "<group>"; };
+		918020A53BC2361920A627EF1A70307B /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Pods.release.xcconfig; sourceTree = "<group>"; };
+		94177A5B47BAC483A5ED375060A47E95 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Pods.debug.xcconfig; sourceTree = "<group>"; };
+		9490BD7B81925083BD046D4B7BD462D4 /* SLKUIConstants.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = SLKUIConstants.h; sourceTree = "<group>"; };
+		94E9B21ADBEDE96C0406517D7100A23A /* SLKTypingIndicatorView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = SLKTypingIndicatorView.m; sourceTree = "<group>"; };
+		963F622D756E6C5490B6BEC9562A765F /* SLKTextView+SLKAdditions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "SLKTextView+SLKAdditions.h"; sourceTree = "<group>"; };
+		969AF36F1E602A34CEE1AFA952685B9A /* SLKTextInputbar.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = SLKTextInputbar.h; sourceTree = "<group>"; };
+		A2251C79CD81A35CB5197643A6608A6F /* libLoremIpsum.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libLoremIpsum.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		A323C8FBC8FD1AFB0B14B8D36EC78130 /* UIResponder+SLKAdditions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "UIResponder+SLKAdditions.h"; sourceTree = "<group>"; };
+		A5F822E59C48343778A7A0893BEB2933 /* Pods-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-acknowledgements.plist"; sourceTree = "<group>"; };
+		A996F119136A5BCC1F6740C72E2FE2FE /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.3.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		AFEC3FF7F34E7A3E8256AC13DE49C0D7 /* SLKTextView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = SLKTextView.m; sourceTree = "<group>"; };
+		B27009DCC0B038FD0647EBB0ED721E70 /* SlackTextViewController-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "SlackTextViewController-dummy.m"; sourceTree = "<group>"; };
+		B3BB5840B4BDD2DDB6F5AB1247265D75 /* Pods-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-resources.sh"; sourceTree = "<group>"; };
+		BA2AEC7B277D0452B44D0DC93C60D757 /* UIResponder+SLKAdditions.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "UIResponder+SLKAdditions.m"; sourceTree = "<group>"; };
+		BD9044304C86F6659540B0737933F7B2 /* SLKTypingIndicatorProtocol.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = SLKTypingIndicatorProtocol.h; sourceTree = "<group>"; };
+		C39B9DDD6F254278B62813604D2D2F74 /* Pods-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-dummy.m"; sourceTree = "<group>"; };
+		C88113A79685B4EFEE7BAD12896829F7 /* Podfile */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		C9A77EA91E099152517F9AD6E6660CDA /* SlackTextViewController-Private.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "SlackTextViewController-Private.xcconfig"; sourceTree = "<group>"; };
+		CD150A1157ADA4400BC912EF73291654 /* SLKCustomBarProtocol.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = SLKCustomBarProtocol.h; sourceTree = "<group>"; };
+		DE92CA26171BD90C07ACBD1DFC208508 /* libSlackTextViewController.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSlackTextViewController.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		E5BD72107CAF9B0FC8421B0DF7EB37DA /* UIView+SLKAdditions.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "UIView+SLKAdditions.m"; sourceTree = "<group>"; };
+		ED784B8409F1344DD53426A30B69619D /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		FD45CF95E0504876BF6E2B0C2CD14282 /* SlackTextViewController.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = SlackTextViewController.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		370CD4CD7F43543F806B1CDF /* Frameworks */ = {
+		4E16487B6DF7F4B0BA0BA245C9B06538 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DD0A8CE4452FD641BAA0F74F /* Foundation.framework in Frameworks */,
+				2BB526CDF735C9102E3636B9DB774454 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		3CE2CAF29348D3A8997FC7D0 /* Frameworks */ = {
+		CB5B6BB6F0A840C509071AA1096B0270 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B2F774BD1C899CDF6BDC5C77 /* Foundation.framework in Frameworks */,
+				B7D830B8C3299FA5AB6F29F905B01E2B /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		DFE0A6A0ADEE3D74A4CDC30C /* Frameworks */ = {
+		E314BEAF3772E1FF449241D866D08CE9 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D5E0CF9AE8D234A05A4F38B5 /* Foundation.framework in Frameworks */,
+				FEF572AD29330B3430BC74A873A9D56F /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		09D83C25C5D189B909855830 /* Products */ = {
+		06B87C222494B7D16CF236F3ED88494F /* Additions */ = {
 			isa = PBXGroup;
 			children = (
-				429BEC327934FC5990367136 /* libPods.a */,
-				38C20072A78CD4EFC24938BB /* libPods-LoremIpsum.a */,
-				32A0A0A820A654DC7AA10E29 /* libPods-SlackTextViewController.a */,
+				963F622D756E6C5490B6BEC9562A765F /* SLKTextView+SLKAdditions.h */,
+				5D3CBDD50258D46A392E0CE12DF99CC2 /* SLKTextView+SLKAdditions.m */,
+				9490BD7B81925083BD046D4B7BD462D4 /* SLKUIConstants.h */,
+				A323C8FBC8FD1AFB0B14B8D36EC78130 /* UIResponder+SLKAdditions.h */,
+				BA2AEC7B277D0452B44D0DC93C60D757 /* UIResponder+SLKAdditions.m */,
+				076A98B0B5501570DD8E6E21458E3CCD /* UIScrollView+SLKAdditions.h */,
+				016E5C4995F57686B9784F95B414416C /* UIScrollView+SLKAdditions.m */,
+				0F520B2EE457BDCB394223D93C2C0159 /* UIView+SLKAdditions.h */,
+				E5BD72107CAF9B0FC8421B0DF7EB37DA /* UIView+SLKAdditions.m */,
 			);
-			name = Products;
+			path = Additions;
 			sourceTree = "<group>";
 		};
-		17383DEE48326035FEFF96F2 /* Pods */ = {
+		0720760E6FAA87218C034E98CCD3509B /* Development Pods */ = {
 			isa = PBXGroup;
 			children = (
-				7282C3B6AA9AFF9073C7DF82 /* Pods-acknowledgements.markdown */,
-				B2F729A206AAFD9E1B734E00 /* Pods-acknowledgements.plist */,
-				436FE8AB6B57B4E127605D4B /* Pods-dummy.m */,
-				8FDF3EC0F1888E2782CB1B7A /* Pods-environment.h */,
-				A21E961A2004B411CBEEF9D7 /* Pods-resources.sh */,
-				2D58C131052D2431A2AE63B4 /* Pods.debug.xcconfig */,
-				347ADD7352C128F91C4F36E0 /* Pods.release.xcconfig */,
-			);
-			name = Pods;
-			path = "Target Support Files/Pods";
-			sourceTree = "<group>";
-		};
-		279FC8FD331D33CBD469B9E7 /* Support Files */ = {
-			isa = PBXGroup;
-			children = (
-				A4BE0C637253FF526F807BBF /* Pods-LoremIpsum.xcconfig */,
-				D7E7870F08F6D6DCB6541460 /* Pods-LoremIpsum-Private.xcconfig */,
-				49E49E9823C137FB77D91FDE /* Pods-LoremIpsum-dummy.m */,
-				7E8EB567AC723F3D5F67AC09 /* Pods-LoremIpsum-prefix.pch */,
-			);
-			name = "Support Files";
-			path = "../Target Support Files/Pods-LoremIpsum";
-			sourceTree = "<group>";
-		};
-		44729B0D7DA184A48035A483 /* LoremIpsum */ = {
-			isa = PBXGroup;
-			children = (
-				3EB7F0F44E0F2999C4E70702 /* LoremIpsum.h */,
-				8C0D977643B48E045986734B /* LoremIpsum.m */,
-				279FC8FD331D33CBD469B9E7 /* Support Files */,
-			);
-			path = LoremIpsum;
-			sourceTree = "<group>";
-		};
-		5381D50775F2DD2BD46039B4 /* Targets Support Files */ = {
-			isa = PBXGroup;
-			children = (
-				17383DEE48326035FEFF96F2 /* Pods */,
-			);
-			name = "Targets Support Files";
-			sourceTree = "<group>";
-		};
-		59D1C8F8936C046745113CA9 /* iOS */ = {
-			isa = PBXGroup;
-			children = (
-				DB52428C02FBCE72D8777D95 /* Foundation.framework */,
-			);
-			name = iOS;
-			sourceTree = "<group>";
-		};
-		71AC1DF437825D41354A5F39 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				59D1C8F8936C046745113CA9 /* iOS */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		78DD5BF27BA4A31290465155 /* Development Pods */ = {
-			isa = PBXGroup;
-			children = (
-				7F912119901736C2B7251590 /* SlackTextViewController */,
+				19614B5A149D17046602BC1C6DA60C33 /* SlackTextViewController */,
 			);
 			name = "Development Pods";
 			sourceTree = "<group>";
 		};
-		7F912119901736C2B7251590 /* SlackTextViewController */ = {
+		19614B5A149D17046602BC1C6DA60C33 /* SlackTextViewController */ = {
 			isa = PBXGroup;
 			children = (
-				C9B2A3E62445817C163E167D /* SLKInputAccessoryView.h */,
-				A7B39C1D6E97FA16DCC5B70E /* SLKInputAccessoryView.m */,
-				69B71855CCEDC7AF671BA663 /* SLKTextInputbar.h */,
-				BFA6C3DE6F728267054BCB45 /* SLKTextInputbar.m */,
-				E2C85D5121300F258BAA3AFA /* SLKTextView.h */,
-				5B89821E6A1F4AA7530639A4 /* SLKTextView.m */,
-				8D4A7E88CEC138B84081A019 /* SLKTextView+SLKAdditions.h */,
-				413207C9265E5F7FA8C6A5F7 /* SLKTextView+SLKAdditions.m */,
-				BF691046CE4CB9FBEC57F0A1 /* SLKTextViewController.h */,
-				48D7F7BB74694C4CE2050E6B /* SLKTextViewController.m */,
-				40EF00E2F63F4A5AB8B7B0CE /* SLKTypingIndicatorView.h */,
-				5F4241418D735A8A9B3CB5A5 /* SLKTypingIndicatorView.m */,
-				21A1FF0414174976E7002D99 /* SLKTypingIndicatorProtocol.h */,
-				49563224580594265329BAE1 /* SLKUIConstants.h */,
-				FB78491DCFA59506794B7D53 /* UIResponder+SLKAdditions.h */,
-				F104D04E48B514B2EDA45928 /* UIResponder+SLKAdditions.m */,
-				5E732072B25AC78BB42445E4 /* UIScrollView+SLKAdditions.h */,
-				7E3BBC7577A764FCA1FC0088 /* UIScrollView+SLKAdditions.m */,
-				DC0F645D067315C02B840BEE /* UIView+SLKAdditions.h */,
-				45AAEE0F82437B3B9C7E8A89 /* UIView+SLKAdditions.m */,
-				8AAE7539686DF1C49A04714D /* Support Files */,
+				630801F6C4011A38707BDECB62AF633C /* Source */,
+				B0919272A3002F13B7B6049594925356 /* Support Files */,
 			);
 			name = SlackTextViewController;
 			path = ../..;
 			sourceTree = "<group>";
 		};
-		8AAE7539686DF1C49A04714D /* Support Files */ = {
+		33A2DFA941E11F4B5B7E005D2FE0A3E5 /* iOS */ = {
 			isa = PBXGroup;
 			children = (
-				A5C7DE610BA49016A948FABE /* Pods-SlackTextViewController.xcconfig */,
-				E8236A2F1AEFF2BBA49C6256 /* Pods-SlackTextViewController-Private.xcconfig */,
-				5D017D6946B68C64842D7FE0 /* Pods-SlackTextViewController-dummy.m */,
-				30B4661930041CFBEF56D513 /* Pods-SlackTextViewController-prefix.pch */,
+				A996F119136A5BCC1F6740C72E2FE2FE /* Foundation.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
+		4356A238B5ACC3ECA6A59164AE392ADD /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				CD150A1157ADA4400BC912EF73291654 /* SLKCustomBarProtocol.h */,
+				78FEB8561B89A43A4A49603AB99291B5 /* SLKCustomBarView.h */,
+				67D89AE4ABB452AC060A11B8E29D9D55 /* SLKCustomBarView.m */,
+				0541E946731981967EFE41CC176C9165 /* SLKInputAccessoryView.h */,
+				8F82CDC40208FCAC66A8ACFDA5B23AC9 /* SLKInputAccessoryView.m */,
+				969AF36F1E602A34CEE1AFA952685B9A /* SLKTextInputbar.h */,
+				1CF3EE97B6BA52BB1B463F4FE8A0D5DF /* SLKTextInputbar.m */,
+				44ADFCC1E140A9553784A3B723075914 /* SLKTextView.h */,
+				AFEC3FF7F34E7A3E8256AC13DE49C0D7 /* SLKTextView.m */,
+				1EDD00DB53AD153C37DE3B3F1DA9A554 /* SLKTextViewController.h */,
+				8BB26554CB621D15EBADCB2EAD96DF28 /* SLKTextViewController.m */,
+				BD9044304C86F6659540B0737933F7B2 /* SLKTypingIndicatorProtocol.h */,
+				906FD92BCFA834ED9F37F8B6A197038B /* SLKTypingIndicatorView.h */,
+				94E9B21ADBEDE96C0406517D7100A23A /* SLKTypingIndicatorView.m */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		5E1F3384B1B39575144FEBFCF3210CCC /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				33A2DFA941E11F4B5B7E005D2FE0A3E5 /* iOS */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		5E51C3521B527F06E9D990D9CF98D672 /* LoremIpsum */ = {
+			isa = PBXGroup;
+			children = (
+				25999AEF77E593BCBBFDE3567EFA1363 /* LoremIpsum.h */,
+				5052AFE17A5D72BD177AD75BA37C4444 /* LoremIpsum.m */,
+				A0263F913DBF535E3BC7699BD6C1F627 /* Support Files */,
+			);
+			path = LoremIpsum;
+			sourceTree = "<group>";
+		};
+		630801F6C4011A38707BDECB62AF633C /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				06B87C222494B7D16CF236F3ED88494F /* Additions */,
+				4356A238B5ACC3ECA6A59164AE392ADD /* Classes */,
+			);
+			path = Source;
+			sourceTree = "<group>";
+		};
+		6FD3E34139C991EBA686BD4A55CCB45D /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				19F830CABFD7C5AB3A939E4B18915F47 /* Pods-acknowledgements.markdown */,
+				A5F822E59C48343778A7A0893BEB2933 /* Pods-acknowledgements.plist */,
+				C39B9DDD6F254278B62813604D2D2F74 /* Pods-dummy.m */,
+				B3BB5840B4BDD2DDB6F5AB1247265D75 /* Pods-resources.sh */,
+				94177A5B47BAC483A5ED375060A47E95 /* Pods.debug.xcconfig */,
+				918020A53BC2361920A627EF1A70307B /* Pods.release.xcconfig */,
+			);
+			name = Pods;
+			path = "Target Support Files/Pods";
+			sourceTree = "<group>";
+		};
+		7DB346D0F39D3F0E887471402A8071AB = {
+			isa = PBXGroup;
+			children = (
+				C88113A79685B4EFEE7BAD12896829F7 /* Podfile */,
+				0720760E6FAA87218C034E98CCD3509B /* Development Pods */,
+				5E1F3384B1B39575144FEBFCF3210CCC /* Frameworks */,
+				FCC6F965540745142F6675EF7C9E0E2D /* Pods */,
+				CCA510CFBEA2D207524CDA0D73C3B561 /* Products */,
+				848A6CE8DA3504A266A17F635DC3683A /* Targets Support Files */,
+			);
+			sourceTree = "<group>";
+		};
+		848A6CE8DA3504A266A17F635DC3683A /* Targets Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				6FD3E34139C991EBA686BD4A55CCB45D /* Pods */,
+			);
+			name = "Targets Support Files";
+			sourceTree = "<group>";
+		};
+		A0263F913DBF535E3BC7699BD6C1F627 /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				32FD725FD01B2F7829FBE3A5E253E50A /* LoremIpsum.xcconfig */,
+				134930E1475C7D2CECE3D2AE0F145333 /* LoremIpsum-Private.xcconfig */,
+				4DF33BD81D096FBD84CB5E6EC2FE123D /* LoremIpsum-dummy.m */,
+				01DD3D4A3B476E839A2EB38D1B5E488E /* LoremIpsum-prefix.pch */,
 			);
 			name = "Support Files";
-			path = "Examples/Pods/Target Support Files/Pods-SlackTextViewController";
+			path = "../Target Support Files/LoremIpsum";
 			sourceTree = "<group>";
 		};
-		BD7B242A749C28F8E9661B1F = {
+		B0919272A3002F13B7B6049594925356 /* Support Files */ = {
 			isa = PBXGroup;
 			children = (
-				1FDFC4F4F964633F0F79273D /* Podfile */,
-				78DD5BF27BA4A31290465155 /* Development Pods */,
-				71AC1DF437825D41354A5F39 /* Frameworks */,
-				E529C3B6C66E7B57DE9E9463 /* Pods */,
-				09D83C25C5D189B909855830 /* Products */,
-				5381D50775F2DD2BD46039B4 /* Targets Support Files */,
+				FD45CF95E0504876BF6E2B0C2CD14282 /* SlackTextViewController.xcconfig */,
+				C9A77EA91E099152517F9AD6E6660CDA /* SlackTextViewController-Private.xcconfig */,
+				B27009DCC0B038FD0647EBB0ED721E70 /* SlackTextViewController-dummy.m */,
+				7BFB105DEB4CF35E88EA6160F7633940 /* SlackTextViewController-prefix.pch */,
 			);
+			name = "Support Files";
+			path = "Examples/Pods/Target Support Files/SlackTextViewController";
 			sourceTree = "<group>";
 		};
-		E529C3B6C66E7B57DE9E9463 /* Pods */ = {
+		CCA510CFBEA2D207524CDA0D73C3B561 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				44729B0D7DA184A48035A483 /* LoremIpsum */,
+				A2251C79CD81A35CB5197643A6608A6F /* libLoremIpsum.a */,
+				ED784B8409F1344DD53426A30B69619D /* libPods.a */,
+				DE92CA26171BD90C07ACBD1DFC208508 /* libSlackTextViewController.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FCC6F965540745142F6675EF7C9E0E2D /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				5E51C3521B527F06E9D990D9CF98D672 /* LoremIpsum */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -270,168 +301,204 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		092F1D9F114844F9D594D4CF /* Headers */ = {
+		2A99E65AB33C8787A5AE11CD339ED392 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				528E080619D6C4D012A5FC2F /* SLKInputAccessoryView.h in Headers */,
-				B2833C814087F234C21E6C5A /* SLKTextInputbar.h in Headers */,
-				17B35D5EAD9E13B336262F17 /* SLKTextView+SLKAdditions.h in Headers */,
-				6E3862A82C4809F2125229BC /* SLKTextView.h in Headers */,
-				5717B313A0DF222C0CEEEEF1 /* SLKTextViewController.h in Headers */,
-				3B0D0A66A1C700B5069DEE06 /* SLKTypingIndicatorProtocol.h in Headers */,
-				D1FCD7DAB01E587770429E3E /* SLKTypingIndicatorView.h in Headers */,
-				2D2961507D0BF5259520AA4A /* SLKUIConstants.h in Headers */,
-				DFFC9720322F466BD686BB17 /* UIResponder+SLKAdditions.h in Headers */,
-				72A783C81D2522CE7FA43788 /* UIScrollView+SLKAdditions.h in Headers */,
-				757663A9C4D928F9DF57C588 /* UIView+SLKAdditions.h in Headers */,
+				36F8491DC2CFE25BE2D7F65530DB8DF0 /* SLKCustomBarProtocol.h in Headers */,
+				33C469605831DEBDDE9B4B2D024FB2EB /* SLKCustomBarView.h in Headers */,
+				D6D4131F9DE264C86C6CE52D7B9EAD00 /* SLKInputAccessoryView.h in Headers */,
+				D915AAE732B10BCF18034010FD37009F /* SLKTextInputbar.h in Headers */,
+				4A1D1FFE795C29EAD7BB0EE0CD06AD35 /* SLKTextView+SLKAdditions.h in Headers */,
+				4A60CE879A928C7EEB8A1CBDEC2D29EA /* SLKTextView.h in Headers */,
+				F432298E9DC42FFC8400093036715520 /* SLKTextViewController.h in Headers */,
+				EA1C8CF58C2172E431B03C2BE428CA45 /* SLKTypingIndicatorProtocol.h in Headers */,
+				7698D59D5D3F97DBCCF54E21ECAA1D46 /* SLKTypingIndicatorView.h in Headers */,
+				99DBFE745B6021D5764C16F1DBA9A668 /* SLKUIConstants.h in Headers */,
+				D309ADAC043650D3F2B57D60198A3071 /* UIResponder+SLKAdditions.h in Headers */,
+				8CF78E9EEA79E21D7C64B8CF9DB9022B /* UIScrollView+SLKAdditions.h in Headers */,
+				019F4211D6139AC3D8B794B734B08DBA /* UIView+SLKAdditions.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		20DE7D384E7AF6F581899EF0 /* Headers */ = {
+		D2E356F72146A32C442EDFE24234B378 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0BE45E2168388B36663DCE34 /* LoremIpsum.h in Headers */,
+				CCF33F97E13998E3BBE16044FB78E5A2 /* LoremIpsum.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		1EFE60AB3E90352AC7CD081F /* Pods-SlackTextViewController */ = {
+		277B0C4BF83B4D8D1DEC8548033D7128 /* Pods */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E38421B59CAE95AE03C17285 /* Build configuration list for PBXNativeTarget "Pods-SlackTextViewController" */;
+			buildConfigurationList = 53B44C7CFF0E028838E5ABA692A63598 /* Build configuration list for PBXNativeTarget "Pods" */;
 			buildPhases = (
-				850200C43EE4631302F931C3 /* Sources */,
-				DFE0A6A0ADEE3D74A4CDC30C /* Frameworks */,
-				092F1D9F114844F9D594D4CF /* Headers */,
+				5830286D6C84B727E502C3D7579F8FA8 /* Sources */,
+				E314BEAF3772E1FF449241D866D08CE9 /* Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-			);
-			name = "Pods-SlackTextViewController";
-			productName = "Pods-SlackTextViewController";
-			productReference = 32A0A0A820A654DC7AA10E29 /* libPods-SlackTextViewController.a */;
-			productType = "com.apple.product-type.library.static";
-		};
-		4D4BEA76D1F4EBE00E109B63 /* Pods-LoremIpsum */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 606E9F6BB9E862FBFC98B770 /* Build configuration list for PBXNativeTarget "Pods-LoremIpsum" */;
-			buildPhases = (
-				3236B73CC59935F037D6D399 /* Sources */,
-				3CE2CAF29348D3A8997FC7D0 /* Frameworks */,
-				20DE7D384E7AF6F581899EF0 /* Headers */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = "Pods-LoremIpsum";
-			productName = "Pods-LoremIpsum";
-			productReference = 38C20072A78CD4EFC24938BB /* libPods-LoremIpsum.a */;
-			productType = "com.apple.product-type.library.static";
-		};
-		67C9B598BF2D6B4224520B8A /* Pods */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = F5CC31BD2BF1404D8F1363FA /* Build configuration list for PBXNativeTarget "Pods" */;
-			buildPhases = (
-				F203BDDAFF7F514FC58EB717 /* Sources */,
-				370CD4CD7F43543F806B1CDF /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				0D8991D2115F8D41B52171FA /* PBXTargetDependency */,
-				F4B5095F51B8447338E35C8C /* PBXTargetDependency */,
+				5FB3D3D1866D8C5E05344DA7A4894073 /* PBXTargetDependency */,
+				E810E9C5EDBBEE338386738CE866FFDE /* PBXTargetDependency */,
 			);
 			name = Pods;
 			productName = Pods;
-			productReference = 429BEC327934FC5990367136 /* libPods.a */;
+			productReference = ED784B8409F1344DD53426A30B69619D /* libPods.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		560DE62BF697B3ED3D1E8EF318760247 /* LoremIpsum */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 42311BDA295E7B4663C79CD1486C2FDE /* Build configuration list for PBXNativeTarget "LoremIpsum" */;
+			buildPhases = (
+				802A5749966C0F2E4B3BFF5A28E432F6 /* Sources */,
+				4E16487B6DF7F4B0BA0BA245C9B06538 /* Frameworks */,
+				D2E356F72146A32C442EDFE24234B378 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LoremIpsum;
+			productName = LoremIpsum;
+			productReference = A2251C79CD81A35CB5197643A6608A6F /* libLoremIpsum.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		952C4F297F6C42D62B7B37EA1CDE304B /* SlackTextViewController */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8A556DA99F969201DEEBF343B3E99B43 /* Build configuration list for PBXNativeTarget "SlackTextViewController" */;
+			buildPhases = (
+				1CE869C62D7271EA17281C40BE447F1B /* Sources */,
+				CB5B6BB6F0A840C509071AA1096B0270 /* Frameworks */,
+				2A99E65AB33C8787A5AE11CD339ED392 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SlackTextViewController;
+			productName = SlackTextViewController;
+			productReference = DE92CA26171BD90C07ACBD1DFC208508 /* libSlackTextViewController.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		83E23CE5A140A2DC94562E73 /* Project object */ = {
+		D41D8CD98F00B204E9800998ECF8427E /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0510;
+				LastSwiftUpdateCheck = 0700;
+				LastUpgradeCheck = 0700;
 			};
-			buildConfigurationList = D95AA2504B8CD5A6F83AACE0 /* Build configuration list for PBXProject "Pods" */;
+			buildConfigurationList = 2D8E8EC45A3A1A1D94AE762CB5028504 /* Build configuration list for PBXProject "Pods" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 			);
-			mainGroup = BD7B242A749C28F8E9661B1F;
-			productRefGroup = 09D83C25C5D189B909855830 /* Products */;
+			mainGroup = 7DB346D0F39D3F0E887471402A8071AB;
+			productRefGroup = CCA510CFBEA2D207524CDA0D73C3B561 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				67C9B598BF2D6B4224520B8A /* Pods */,
-				4D4BEA76D1F4EBE00E109B63 /* Pods-LoremIpsum */,
-				1EFE60AB3E90352AC7CD081F /* Pods-SlackTextViewController */,
+				560DE62BF697B3ED3D1E8EF318760247 /* LoremIpsum */,
+				277B0C4BF83B4D8D1DEC8548033D7128 /* Pods */,
+				952C4F297F6C42D62B7B37EA1CDE304B /* SlackTextViewController */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
-		3236B73CC59935F037D6D399 /* Sources */ = {
+		1CE869C62D7271EA17281C40BE447F1B /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				636836E8E9905658C3AD957C /* LoremIpsum.m in Sources */,
-				3A0A47A340D1C69253E0F6DF /* Pods-LoremIpsum-dummy.m in Sources */,
+				02A3301D29AEB13B61C1E76D8491B4E8 /* SLKCustomBarView.m in Sources */,
+				24523723455AF167903D6D4D0250BFBA /* SLKInputAccessoryView.m in Sources */,
+				7D28E7ED15B0A40B14020B7DCD1A9960 /* SLKTextInputbar.m in Sources */,
+				9E80473BCB84BCB6C4436BF6CE511A86 /* SLKTextView+SLKAdditions.m in Sources */,
+				E3A4A8C4EC78DB55E644794F51807E36 /* SLKTextView.m in Sources */,
+				38FE5819CF7838DD27C90D6FD154CB9E /* SLKTextViewController.m in Sources */,
+				E3191A186E88231D880F33AA68FDE584 /* SLKTypingIndicatorView.m in Sources */,
+				951E5E82305930850D10FB46834CE7D2 /* SlackTextViewController-dummy.m in Sources */,
+				184048306C93951B34633E9CE6CC94CA /* UIResponder+SLKAdditions.m in Sources */,
+				EB053D283E7371DEF90A6F619CE2C1F4 /* UIScrollView+SLKAdditions.m in Sources */,
+				C58E1CD641ADEADDCC58632CCCD57379 /* UIView+SLKAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		850200C43EE4631302F931C3 /* Sources */ = {
+		5830286D6C84B727E502C3D7579F8FA8 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0A935C76C4D5ECC0D3DE47D5 /* Pods-SlackTextViewController-dummy.m in Sources */,
-				08A5646171232B7A4CAAEF9C /* SLKInputAccessoryView.m in Sources */,
-				648CDB2AD7ECF88FC1EEA39E /* SLKTextInputbar.m in Sources */,
-				F11EA4056E845FF6B426E021 /* SLKTextView+SLKAdditions.m in Sources */,
-				1FB676B15569E668469B1465 /* SLKTextView.m in Sources */,
-				8C1AE0D21E878E0AA2DBCF9E /* SLKTextViewController.m in Sources */,
-				3CB6E58015CB3E2EC0B98E8C /* SLKTypingIndicatorView.m in Sources */,
-				07DCED539CB32ADB33E26623 /* UIResponder+SLKAdditions.m in Sources */,
-				B1602395C631ED99F15D0645 /* UIScrollView+SLKAdditions.m in Sources */,
-				F750ABD089567CD368F33694 /* UIView+SLKAdditions.m in Sources */,
+				F242DA4E60FD57FC807320EB0F1423F4 /* Pods-dummy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		F203BDDAFF7F514FC58EB717 /* Sources */ = {
+		802A5749966C0F2E4B3BFF5A28E432F6 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				12C029D7C000A9359C99E1A3 /* Pods-dummy.m in Sources */,
+				DB9ADDEBFA2CCE9A9E2CBC9CE012FC93 /* LoremIpsum-dummy.m in Sources */,
+				0CC4E547A717481D155EE1F41F823BC6 /* LoremIpsum.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		0D8991D2115F8D41B52171FA /* PBXTargetDependency */ = {
+		5FB3D3D1866D8C5E05344DA7A4894073 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			name = "Pods-LoremIpsum";
-			target = 4D4BEA76D1F4EBE00E109B63 /* Pods-LoremIpsum */;
-			targetProxy = 4974CD386E2FDE99C00E62C8 /* PBXContainerItemProxy */;
+			name = LoremIpsum;
+			target = 560DE62BF697B3ED3D1E8EF318760247 /* LoremIpsum */;
+			targetProxy = 141C1D132424F1DE022B740B2AFD285A /* PBXContainerItemProxy */;
 		};
-		F4B5095F51B8447338E35C8C /* PBXTargetDependency */ = {
+		E810E9C5EDBBEE338386738CE866FFDE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			name = "Pods-SlackTextViewController";
-			target = 1EFE60AB3E90352AC7CD081F /* Pods-SlackTextViewController */;
-			targetProxy = 25EA5F889D1E8039DE78B788 /* PBXContainerItemProxy */;
+			name = SlackTextViewController;
+			target = 952C4F297F6C42D62B7B37EA1CDE304B /* SlackTextViewController */;
+			targetProxy = 27E5D04FD438B504620AC147B336744A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		74FC0E9CC3C68288708907D0 /* Debug */ = {
+		1A2D4396CC231A196E013EE1F7D59E19 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = C9A77EA91E099152517F9AD6E6660CDA /* SlackTextViewController-Private.xcconfig */;
+			buildSettings = {
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_PREFIX_HEADER = "Target Support Files/SlackTextViewController/SlackTextViewController-prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		2C2001745BB9F708D814364CC0C98781 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 134930E1475C7D2CECE3D2AE0F145333 /* LoremIpsum-Private.xcconfig */;
+			buildSettings = {
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_PREFIX_HEADER = "Target Support Files/LoremIpsum/LoremIpsum-prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		3523159348E1035C58EF859238BFEDB0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -446,7 +513,9 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES;
-				COPY_PHASE_STRIP = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -464,91 +533,59 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				ONLY_ACTIVE_ARCH = YES;
 				STRIP_INSTALLED_PRODUCT = NO;
+				SYMROOT = "${SRCROOT}/../build";
 			};
 			name = Debug;
 		};
-		82C212FFE5148B3B3DAAA691 /* Debug */ = {
+		4048D2B43E83AFD574994EB9CEE77ADD /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2D58C131052D2431A2AE63B4 /* Pods.debug.xcconfig */;
+			baseConfigurationReference = 134930E1475C7D2CECE3D2AE0F145333 /* LoremIpsum-Private.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = NO;
-				DSTROOT = /tmp/xcodeproj.dst;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				INSTALL_PATH = "$(BUILT_PRODUCTS_DIR)";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_PREFIX_HEADER = "Target Support Files/LoremIpsum/LoremIpsum-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PUBLIC_HEADERS_FOLDER_PATH = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-			};
-			name = Debug;
-		};
-		85F6050A478AC651ACDE13E2 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 347ADD7352C128F91C4F36E0 /* Pods.release.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = YES;
-				DSTROOT = /tmp/xcodeproj.dst;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				INSTALL_PATH = "$(BUILT_PRODUCTS_DIR)";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				OTHER_CFLAGS = (
-					"-DNS_BLOCK_ASSERTIONS=1",
-					"$(inherited)",
-				);
-				OTHER_CPLUSPLUSFLAGS = (
-					"-DNS_BLOCK_ASSERTIONS=1",
-					"$(inherited)",
-				);
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PUBLIC_HEADERS_FOLDER_PATH = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
 		};
-		9C433FA1D1D2467AEB108E64 /* Debug */ = {
+		412FE87EC81ABB2D46DFC8463A2B7B55 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D7E7870F08F6D6DCB6541460 /* Pods-LoremIpsum-Private.xcconfig */;
+			baseConfigurationReference = 94177A5B47BAC483A5ED375060A47E95 /* Pods.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = NO;
-				DSTROOT = /tmp/xcodeproj.dst;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Target Support Files/Pods-LoremIpsum/Pods-LoremIpsum-prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				INSTALL_PATH = "$(BUILT_PRODUCTS_DIR)";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PUBLIC_HEADERS_FOLDER_PATH = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 			};
 			name = Debug;
 		};
-		DA6F944EF887874DA1888C3E /* Release */ = {
+		45B6D62078F926A75666A9BDD7D72A0D /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 918020A53BC2361920A627EF1A70307B /* Pods.release.xcconfig */;
+			buildSettings = {
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		A88658A9552ACB0502744ED7A6EDBEFD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -563,7 +600,9 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES;
-				COPY_PHASE_STRIP = NO;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PREPROCESSOR_DEFINITIONS = "RELEASE=1";
@@ -575,135 +614,67 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				STRIP_INSTALLED_PRODUCT = NO;
+				SYMROOT = "${SRCROOT}/../build";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
 		};
-		E1F0E48AFEC113C57793E2FF /* Debug */ = {
+		E1230AEAD6ACB58DD74550EEADAF2045 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E8236A2F1AEFF2BBA49C6256 /* Pods-SlackTextViewController-Private.xcconfig */;
+			baseConfigurationReference = C9A77EA91E099152517F9AD6E6660CDA /* SlackTextViewController-Private.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = NO;
-				DSTROOT = /tmp/xcodeproj.dst;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Target Support Files/Pods-SlackTextViewController/Pods-SlackTextViewController-prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				INSTALL_PATH = "$(BUILT_PRODUCTS_DIR)";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_PREFIX_HEADER = "Target Support Files/SlackTextViewController/SlackTextViewController-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PUBLIC_HEADERS_FOLDER_PATH = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 			};
 			name = Debug;
 		};
-		EBE49C2E4F71E40AA9BC6F96 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = D7E7870F08F6D6DCB6541460 /* Pods-LoremIpsum-Private.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = YES;
-				DSTROOT = /tmp/xcodeproj.dst;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Target Support Files/Pods-LoremIpsum/Pods-LoremIpsum-prefix.pch";
-				INSTALL_PATH = "$(BUILT_PRODUCTS_DIR)";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				OTHER_CFLAGS = (
-					"-DNS_BLOCK_ASSERTIONS=1",
-					"$(inherited)",
-				);
-				OTHER_CPLUSPLUSFLAGS = (
-					"-DNS_BLOCK_ASSERTIONS=1",
-					"$(inherited)",
-				);
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PUBLIC_HEADERS_FOLDER_PATH = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
-		EFCF0D5CFF32E541423090BC /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = E8236A2F1AEFF2BBA49C6256 /* Pods-SlackTextViewController-Private.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = YES;
-				DSTROOT = /tmp/xcodeproj.dst;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Target Support Files/Pods-SlackTextViewController/Pods-SlackTextViewController-prefix.pch";
-				INSTALL_PATH = "$(BUILT_PRODUCTS_DIR)";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				OTHER_CFLAGS = (
-					"-DNS_BLOCK_ASSERTIONS=1",
-					"$(inherited)",
-				);
-				OTHER_CPLUSPLUSFLAGS = (
-					"-DNS_BLOCK_ASSERTIONS=1",
-					"$(inherited)",
-				);
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PUBLIC_HEADERS_FOLDER_PATH = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		606E9F6BB9E862FBFC98B770 /* Build configuration list for PBXNativeTarget "Pods-LoremIpsum" */ = {
+		2D8E8EC45A3A1A1D94AE762CB5028504 /* Build configuration list for PBXProject "Pods" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				9C433FA1D1D2467AEB108E64 /* Debug */,
-				EBE49C2E4F71E40AA9BC6F96 /* Release */,
+				3523159348E1035C58EF859238BFEDB0 /* Debug */,
+				A88658A9552ACB0502744ED7A6EDBEFD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D95AA2504B8CD5A6F83AACE0 /* Build configuration list for PBXProject "Pods" */ = {
+		42311BDA295E7B4663C79CD1486C2FDE /* Build configuration list for PBXNativeTarget "LoremIpsum" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				74FC0E9CC3C68288708907D0 /* Debug */,
-				DA6F944EF887874DA1888C3E /* Release */,
+				2C2001745BB9F708D814364CC0C98781 /* Debug */,
+				4048D2B43E83AFD574994EB9CEE77ADD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E38421B59CAE95AE03C17285 /* Build configuration list for PBXNativeTarget "Pods-SlackTextViewController" */ = {
+		53B44C7CFF0E028838E5ABA692A63598 /* Build configuration list for PBXNativeTarget "Pods" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				E1F0E48AFEC113C57793E2FF /* Debug */,
-				EFCF0D5CFF32E541423090BC /* Release */,
+				412FE87EC81ABB2D46DFC8463A2B7B55 /* Debug */,
+				45B6D62078F926A75666A9BDD7D72A0D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F5CC31BD2BF1404D8F1363FA /* Build configuration list for PBXNativeTarget "Pods" */ = {
+		8A556DA99F969201DEEBF343B3E99B43 /* Build configuration list for PBXNativeTarget "SlackTextViewController" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				82C212FFE5148B3B3DAAA691 /* Debug */,
-				85F6050A478AC651ACDE13E2 /* Release */,
+				E1230AEAD6ACB58DD74550EEADAF2045 /* Debug */,
+				1A2D4396CC231A196E013EE1F7D59E19 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 83E23CE5A140A2DC94562E73 /* Project object */;
+	rootObject = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
 }

@@ -8,10 +8,10 @@ DEPENDENCIES:
 
 EXTERNAL SOURCES:
   SlackTextViewController:
-    :path: ../SlackTextViewController.podspec
+    :path: "../SlackTextViewController.podspec"
 
 SPEC CHECKSUMS:
   LoremIpsum: 9029c55d36501b2ee0b05cc9ecda11d3a0479160
-  SlackTextViewController: 2a3f79c474e41f50b22a8498c510a4da05e207de
+  SlackTextViewController: ab240cda4c7fe1f70f6c6cf64578f3fea495ce99
 
-COCOAPODS: 0.35.0
+COCOAPODS: 0.38.0
