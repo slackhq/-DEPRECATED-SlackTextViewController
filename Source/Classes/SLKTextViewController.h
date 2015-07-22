@@ -21,6 +21,8 @@
 #import "SLKTextView.h"
 #import "SLKTypingIndicatorView.h"
 #import "SLKTypingIndicatorProtocol.h"
+#import "SLKCustomBarView.h"
+#import "SLKCustomBarProtocol.h"
 
 #import "SLKTextView+SLKAdditions.h"
 #import "UIScrollView+SLKAdditions.h"
@@ -414,6 +416,13 @@ NS_CLASS_AVAILABLE_IOS(7_0) @interface SLKTextViewController : UIViewController 
  */
 - (void)acceptAutoCompletionWithString:(NSString *)string keepPrefix:(BOOL)keepPrefix;
 
+#pragma mark - Custom Bar
+///------------------------------------------------
+/// @name Custom Bar
+///------------------------------------------------
+
+/** The container view used to display the custom bar */
+@property (nonatomic, readonly) UIView <SLKCustomBarProtocol> *customBarView;
 
 #pragma mark - Text Caching
 ///------------------------------------------------
@@ -463,6 +472,8 @@ NS_CLASS_AVAILABLE_IOS(7_0) @interface SLKTextViewController : UIViewController 
  @param aClass A UIView subclass conforming to the SLKTypingIndicatorProtocol.
  */
 - (void)registerClassForTypingIndicatorView:(Class)aClass;
+
+- (void)registerClassForCustomBarView:(Class)aClass;
 
 
 #pragma mark - Delegate Methods Requiring Super
