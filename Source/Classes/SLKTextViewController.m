@@ -43,6 +43,7 @@ NSInteger const SLKAlertViewClearTextTag = 1534347677; // absolute hash of 'SLKT
 // Auto-Layout height constraints used for updating their constants
 @property (nonatomic, strong) NSLayoutConstraint *scrollViewHC;
 @property (nonatomic, strong) NSLayoutConstraint *textInputbarHC;
+@property (nonatomic, strong) NSLayoutConstraint *customBarViewHC;
 @property (nonatomic, strong) NSLayoutConstraint *typingIndicatorViewHC;
 @property (nonatomic, strong) NSLayoutConstraint *autoCompletionViewHC;
 @property (nonatomic, strong) NSLayoutConstraint *keyboardHC;
@@ -71,6 +72,7 @@ NSInteger const SLKAlertViewClearTextTag = 1534347677; // absolute hash of 'SLKT
 // Optional classes to be used instead of the default ones.
 @property (nonatomic, strong) Class textViewClass;
 @property (nonatomic, strong) Class typingIndicatorViewClass;
+@property (nonatomic, strong) Class customBarViewClass;
 
 @end
 
@@ -80,6 +82,7 @@ NSInteger const SLKAlertViewClearTextTag = 1534347677; // absolute hash of 'SLKT
 @synthesize scrollView = _scrollView;
 @synthesize typingIndicatorProxyView = _typingIndicatorProxyView;
 @synthesize textInputbar = _textInputbar;
+@synthesize customBarView = _customBarView;
 @synthesize autoCompletionView = _autoCompletionView;
 @synthesize autoCompleting = _autoCompleting;
 @synthesize scrollViewProxy = _scrollViewProxy;
@@ -180,6 +183,7 @@ NSInteger const SLKAlertViewClearTextTag = 1534347677; // absolute hash of 'SLKT
     [self.view addSubview:self.scrollViewProxy];
     [self.view addSubview:self.autoCompletionView];
     [self.view addSubview:self.typingIndicatorProxyView];
+    [self.view addSubview:self.customBarView];
     [self.view addSubview:self.textInputbar];
 
     [self slk_setupViewConstraints];
@@ -302,6 +306,21 @@ NSInteger const SLKAlertViewClearTextTag = 1534347677; // absolute hash of 'SLKT
     return _autoCompletionView;
 }
 
+- (UIView <SLKCustomBarProtocol> *)customBarView
+{
+    if (!_customBarView) {
+        Class class = self.customBarViewClass ? : [SLKCustomBarView class];
+        
+        _customBarView = [[class alloc] init];
+        _customBarView.translatesAutoresizingMaskIntoConstraints = NO;
+        _customBarView.hidden = YES;
+        
+        [_customBarView addObserver:self forKeyPath:@"visible" options:NSKeyValueObservingOptionNew context:nil];
+    }
+    return _customBarView;
+
+}
+
 - (SLKTextInputbar *)textInputbar
 {
     if (!_textInputbar)
@@ -420,6 +439,7 @@ NSInteger const SLKAlertViewClearTextTag = 1534347677; // absolute hash of 'SLKT
     height -= self.textInputbarHC.constant;
     height -= self.autoCompletionViewHC.constant;
     height -= self.typingIndicatorViewHC.constant;
+    height -= self.customBarViewHC.constant;
     
     if (height < 0) return 0;
     else return roundf(height);
@@ -1187,8 +1207,12 @@ NSInteger const SLKAlertViewClearTextTag = 1534347677; // absolute hash of 'SLKT
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    if ([object conformsToProtocol:@protocol(SLKTypingIndicatorProtocol)] && [keyPath isEqualToString:@"visible"]) {
-        [self slk_willShowOrHideTypeIndicatorView:object];
+    if ([keyPath isEqualToString:@"visible"]) {
+        if ([object conformsToProtocol:@protocol(SLKTypingIndicatorProtocol)]) {
+            [self slk_willShowOrHideTypeIndicatorView:object];
+        } else if ([object conformsToProtocol:@protocol(SLKCustomBarProtocol)]) {
+            [self slk_willShowOrHideCustomBarView:object];
+        }
     }
     else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
@@ -1405,6 +1429,28 @@ NSInteger const SLKAlertViewClearTextTag = 1534347677; // absolute hash of 'SLKT
                                         completion:^(BOOL finished) {
                                             if (!typingIndicatorView.isVisible) {
                                                 typingIndicatorView.hidden = YES;
+                                            }
+                                        }];
+}
+
+- (void)slk_willShowOrHideCustomBarView:(UIView <SLKCustomBarProtocol> *)customBarView
+{
+    CGFloat systemLayoutSizeHeight = [customBarView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height;
+    CGFloat height = customBarView.visible ? systemLayoutSizeHeight : 0.0;
+    
+    self.customBarViewHC.constant = height;
+    self.scrollViewHC.constant -= height;
+    
+    if (customBarView.visible) {
+        customBarView.hidden = NO;
+    }
+    
+    [self.view slk_animateLayoutIfNeededWithBounce:self.bounces
+                                           options:UIViewAnimationOptionCurveEaseInOut
+                                        animations:NULL
+                                        completion:^(BOOL finished) {
+                                            if (!customBarView.visible) {
+                                                customBarView.hidden = YES;
                                             }
                                         }];
 }
@@ -1734,6 +1780,17 @@ NSInteger const SLKAlertViewClearTextTag = 1534347677; // absolute hash of 'SLKT
     self.typingIndicatorViewClass = aClass;
 }
 
+- (void)registerClassForCustomBarView:(Class)aClass
+{
+    if (aClass == nil) {
+        return;
+    }
+    
+    NSAssert([aClass isSubclassOfClass:[UIView class]], @"The registered class is invalid, it must be a subclass for UIView.");
+    NSAssert([aClass conformsToProtocol:@protocol(SLKCustomBarProtocol)], @"The registered class is invalid, it must conform to the SLKCustomBarProtocol protocol");
+    self.customBarViewClass = aClass;
+}
+
 
 #pragma mark - UITextViewDelegate Methods
 
@@ -1878,18 +1935,21 @@ NSInteger const SLKAlertViewClearTextTag = 1534347677; // absolute hash of 'SLKT
     NSDictionary *views = @{@"scrollView": self.scrollViewProxy,
                             @"autoCompletionView": self.autoCompletionView,
                             @"typingIndicatorView": self.typingIndicatorProxyView,
+                            @"customBarView": self.customBarView,
                             @"textInputbar": self.textInputbar,
                             };
     
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[scrollView(0@750)][autoCompletionView(0@750)][typingIndicatorView(0)]-0@999-[textInputbar(>=0)]|" options:0 metrics:nil views:views]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[scrollView(0@750)][autoCompletionView(0@750)][typingIndicatorView(0)][customBarView(0)]-0@999-[textInputbar(>=0)]|" options:0 metrics:nil views:views]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[scrollView]|" options:0 metrics:nil views:views]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[autoCompletionView]|" options:0 metrics:nil views:views]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[typingIndicatorView]|" options:0 metrics:nil views:views]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[customBarView]|" options:0 metrics:nil views:views]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[textInputbar]|" options:0 metrics:nil views:views]];
     
     self.scrollViewHC = [self.view slk_constraintForAttribute:NSLayoutAttributeHeight firstItem:self.scrollViewProxy secondItem:nil];
     self.autoCompletionViewHC = [self.view slk_constraintForAttribute:NSLayoutAttributeHeight firstItem:self.autoCompletionView secondItem:nil];
     self.typingIndicatorViewHC = [self.view slk_constraintForAttribute:NSLayoutAttributeHeight firstItem:self.typingIndicatorProxyView secondItem:nil];
+    self.customBarViewHC = [self.view slk_constraintForAttribute:NSLayoutAttributeHeight firstItem:self.customBarView secondItem:nil];
     self.textInputbarHC = [self.view slk_constraintForAttribute:NSLayoutAttributeHeight firstItem:self.textInputbar secondItem:nil];
     self.keyboardHC = [self.view slk_constraintForAttribute:NSLayoutAttributeBottom firstItem:self.view secondItem:self.textInputbar];
     
@@ -2042,6 +2102,11 @@ NSInteger const SLKAlertViewClearTextTag = 1534347677; // absolute hash of 'SLKT
     _textInputbar.textView.delegate = nil;
     _textInputbar = nil;
     _textViewClass = nil;
+    
+    [_customBarView removeObserver:self forKeyPath:@"visible"];
+    _customBarView = nil;
+    _customBarViewClass = nil;
+    _customBarViewHC = nil;
     
     [_typingIndicatorProxyView removeObserver:self forKeyPath:@"visible"];
     _typingIndicatorProxyView = nil;

@@ -127,4 +127,13 @@
     return self.thumbnailView.image ? NO : YES;
 }
 
+- (BOOL)canPerformAction:(SEL)action withSender:(id)sender
+{
+    return action == @selector(quote:);
+}
+
+- (void)quote:(id)sender
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:kMessageShouldBeQuoted object:self];
+}
 @end

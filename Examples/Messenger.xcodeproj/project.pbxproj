@@ -48,6 +48,9 @@
 		71BE102F1A72F42F0083EE32 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4F86BF8E19F01234007A3D4A /* Images.xcassets */; };
 		71BE10301A76C4890083EE32 /* MessageTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F7C6BA41A6E208E006E3FAB /* MessageTextView.m */; };
 		8C6D809F3C95C912F87F0D17 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DDFA9095EABC480682E6396C /* libPods.a */; };
+		CBFBC8F01B5F962600464D55 /* QuoteMessageView.m in Sources */ = {isa = PBXBuildFile; fileRef = CBFBC8EF1B5F962600464D55 /* QuoteMessageView.m */; };
+		CBFBC8F11B5F962600464D55 /* QuoteMessageView.m in Sources */ = {isa = PBXBuildFile; fileRef = CBFBC8EF1B5F962600464D55 /* QuoteMessageView.m */; };
+		CBFBC8F21B5F962600464D55 /* QuoteMessageView.m in Sources */ = {isa = PBXBuildFile; fileRef = CBFBC8EF1B5F962600464D55 /* QuoteMessageView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -100,6 +103,8 @@
 		71BE10021A72F3130083EE32 /* Messenger-iPad-Sheet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Messenger-iPad-Sheet.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA45477DD68F2909374B51A4 /* libPods-Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C905E5DB18A83F74BD092CDD /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		CBFBC8EE1B5F962600464D55 /* QuoteMessageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuoteMessageView.h; sourceTree = "<group>"; };
+		CBFBC8EF1B5F962600464D55 /* QuoteMessageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuoteMessageView.m; sourceTree = "<group>"; };
 		DDFA9095EABC480682E6396C /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		E76FE7634642D0C745F673A5 /* libPods-Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -289,6 +294,8 @@
 				4F7C6BA41A6E208E006E3FAB /* MessageTextView.m */,
 				4FF04E571B3F7A04004C3BED /* TypingIndicatorView.h */,
 				4FF04E581B3F7A04004C3BED /* TypingIndicatorView.m */,
+				CBFBC8EE1B5F962600464D55 /* QuoteMessageView.h */,
+				CBFBC8EF1B5F962600464D55 /* QuoteMessageView.m */,
 				4F8ADA751A68C37400023752 /* Message.h */,
 				4F8ADA761A68C37400023752 /* Message.m */,
 				4F86BF8E19F01234007A3D4A /* Images.xcassets */,
@@ -620,6 +627,7 @@
 				4F86BF9719F01234007A3D4A /* MessageViewController.m in Sources */,
 				4F3EDB5D199ED00F004C15D6 /* AppDelegate.m in Sources */,
 				4F8ADA771A68C37400023752 /* Message.m in Sources */,
+				CBFBC8F01B5F962600464D55 /* QuoteMessageView.m in Sources */,
 				4F86BF9519F01234007A3D4A /* MessageTableViewCell.m in Sources */,
 				4FF04E591B3F7A04004C3BED /* TypingIndicatorView.m in Sources */,
 				4F3EDB59199ED00F004C15D6 /* main.m in Sources */,
@@ -634,6 +642,7 @@
 				4F9DFA7F1AD4EDB900841D98 /* ViewController.m in Sources */,
 				71BE10301A76C4890083EE32 /* MessageTextView.m in Sources */,
 				4F86BF9819F01234007A3D4A /* MessageViewController.m in Sources */,
+				CBFBC8F11B5F962600464D55 /* QuoteMessageView.m in Sources */,
 				4F86BF9619F01234007A3D4A /* MessageTableViewCell.m in Sources */,
 				4F8ADA781A68C37400023752 /* Message.m in Sources */,
 				4F86BF6A19F011D0007A3D4A /* main.m in Sources */,
@@ -655,6 +664,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CBFBC8F21B5F962600464D55 /* QuoteMessageView.m in Sources */,
 				71BE10281A72F3E50083EE32 /* MessageViewController.m in Sources */,
 				71BE10291A72F3E50083EE32 /* MessageTableViewCell.m in Sources */,
 				71BE102B1A72F3E50083EE32 /* Message.m in Sources */,

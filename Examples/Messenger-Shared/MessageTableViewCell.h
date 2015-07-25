@@ -11,6 +11,8 @@
 static CGFloat kMessageTableViewCellMinimumHeight = 50.0;
 static CGFloat kMessageTableViewCellAvatarHeight = 30.0;
 
+static NSString *kMessageShouldBeQuoted = @"com.slack.exmaples.quote";
+
 @interface MessageTableViewCell : UITableViewCell
 
 @property (nonatomic, strong) UILabel *titleLabel;
