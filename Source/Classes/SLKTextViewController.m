@@ -633,6 +633,10 @@ NSInteger const SLKAlertViewClearTextTag = 1534347677; // absolute hash of 'SLKT
 
 - (void)textDidUpdate:(BOOL)animated
 {
+    if (self.textInputbarHidden) {
+        return;
+    }
+    
     CGFloat inputbarHeight = self.textInputbar.appropriateHeight;
     
     self.textInputbar.rightButton.enabled = [self canPressRightButton];
@@ -823,16 +827,45 @@ NSInteger const SLKAlertViewClearTextTag = 1534347677; // absolute hash of 'SLKT
     [alert show];
 }
 
-- (void)hideInputBar:(BOOL)hide animated:(BOOL)animated
+- (void)setTextInputbarHidden:(BOOL)hidden
 {
+    [self setTextInputbarHidden:hidden animated:NO];
+}
+
+- (void)setTextInputbarHidden:(BOOL)hidden animated:(BOOL)animated
+{
+//    if (self.isTextInputbarHidden == hidden) {
+//        return;
+//    }
+    
     __weak typeof(self) weakSelf = self;
     
-    [UIView animateWithDuration:animated ? 0.2 : 0.0 animations:^{
-        weakSelf.textInputbar.alpha = hide ? 0 : 1;
-        weakSelf.textInputbarHC.constant = hide ? 0 : weakSelf.textInputbar.appropriateHeight;
+    void (^animations)() = ^void(){
+        
+        weakSelf.textInputbarHC.constant = hidden ? 0 : weakSelf.textInputbar.appropriateHeight;
+        
         [weakSelf.view setNeedsLayout];
         [weakSelf.view layoutIfNeeded];
-    }];
+    };
+    
+    void (^completion)(BOOL finished) = ^void(BOOL finished){
+        
+        _textInputbarHidden = hidden;
+        
+        if (hidden) {
+            [self dismissKeyboard:YES];
+        }
+    };
+    
+    if (animated) {
+        NSTimeInterval duration = animated ? 0.25 : 0.0;
+
+        [UIView animateWithDuration:duration animations:animations completion:completion];
+    }
+    else {
+        animations();
+        completion(NO);
+    }
 }
 
 
@@ -1266,8 +1299,7 @@ NSInteger const SLKAlertViewClearTextTag = 1534347677; // absolute hash of 'SLKT
     
     SLKKeyboardStatus status = [self slk_keyboardStatusForNotification:notification];
     
-    // Skips if it's the current status
-    if (self.keyboardStatus == status) {
+    if (status == SLKKeyboardStatusDidHide) {
         return;
     }
     
