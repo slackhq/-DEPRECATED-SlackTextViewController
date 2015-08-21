@@ -619,6 +619,10 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 
 - (void)textDidUpdate:(BOOL)animated
 {
+    if (self.textInputbarHidden) {
+        return;
+    }
+    
     CGFloat inputbarHeight = self.textInputbar.appropriateHeight;
     
     self.textInputbar.rightButton.enabled = [self canPressRightButton];
@@ -809,6 +813,47 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     [alert setTag:SLKAlertViewClearTextTag];
     [alert setDelegate:self];
     [alert show];
+}
+
+- (void)setTextInputbarHidden:(BOOL)hidden
+{
+    [self setTextInputbarHidden:hidden animated:NO];
+}
+
+- (void)setTextInputbarHidden:(BOOL)hidden animated:(BOOL)animated
+{
+//    if (self.isTextInputbarHidden == hidden) {
+//        return;
+//    }
+    
+    __weak typeof(self) weakSelf = self;
+    
+    void (^animations)() = ^void(){
+        
+        weakSelf.textInputbarHC.constant = hidden ? 0 : weakSelf.textInputbar.appropriateHeight;
+        
+        [weakSelf.view setNeedsLayout];
+        [weakSelf.view layoutIfNeeded];
+    };
+    
+    void (^completion)(BOOL finished) = ^void(BOOL finished){
+        
+        _textInputbarHidden = hidden;
+        
+        if (hidden) {
+            [self dismissKeyboard:YES];
+        }
+    };
+    
+    if (animated) {
+        NSTimeInterval duration = animated ? 0.25 : 0.0;
+
+        [UIView animateWithDuration:duration animations:animations completion:completion];
+    }
+    else {
+        animations();
+        completion(NO);
+    }
 }
 
 
@@ -1242,8 +1287,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     
     SLKKeyboardStatus status = [self slk_keyboardStatusForNotification:notification];
     
-    // Skips if it's the current status
-    if (self.keyboardStatus == status) {
+    if (status == SLKKeyboardStatusDidHide) {
         return;
     }
     
@@ -1864,7 +1908,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
                             @"textInputbar": self.textInputbar,
                             };
     
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[scrollView(0@750)][autoCompletionView(0@750)][typingIndicatorView(0)]-0@999-[textInputbar(>=0)]-0-|" options:0 metrics:nil views:views]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[scrollView(0@750)][autoCompletionView(0@750)][typingIndicatorView(0)]-0@999-[textInputbar(==0)]-0-|" options:0 metrics:nil views:views]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[scrollView]|" options:0 metrics:nil views:views]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[autoCompletionView]|" options:0 metrics:nil views:views]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[typingIndicatorView]|" options:0 metrics:nil views:views]];
@@ -2039,7 +2083,6 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     _verticalPanGesture.delegate = nil;
     _verticalPanGesture = nil;
     _scrollViewHC = nil;
-    _textInputbarHC = nil;
     _textInputbarHC = nil;
     _typingIndicatorViewHC = nil;
     _autoCompletionViewHC = nil;
