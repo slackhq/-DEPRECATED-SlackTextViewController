@@ -719,11 +719,11 @@
 {
     [self slk_unregisterNotifications];
     
-    [_leftButton.imageView removeObserver:self forKeyPath:NSStringFromSelector(@selector(image))];
-    [_rightButton.titleLabel removeObserver:self forKeyPath:NSStringFromSelector(@selector(font))];
+    [self.leftButton.imageView removeObserver:self forKeyPath:NSStringFromSelector(@selector(image))];
+    [self.rightButton.titleLabel removeObserver:self forKeyPath:NSStringFromSelector(@selector(font))];
     
-    _leftButton = nil;
-    _rightButton = nil;
+    self.leftButton = nil;
+    self.rightButton = nil;
     
     _inputAccessoryView = nil;
     _textView.delegate = nil;
