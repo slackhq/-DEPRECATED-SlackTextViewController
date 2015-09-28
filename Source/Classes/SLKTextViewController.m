@@ -19,7 +19,7 @@
 #import "UIResponder+SLKAdditions.h"
 
 /** Feature flagged while waiting to implement a more reliable technique. */
-#define SLKBottomPanningEnabled NO
+#define SLKBottomPanningEnabled 0
 
 NSString * const SLKKeyboardWillShowNotification =  @"SLKKeyboardWillShowNotification";
 NSString * const SLKKeyboardDidShowNotification =   @"SLKKeyboardDidShowNotification";
@@ -61,8 +61,8 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 // YES if the view controller did appear and everything is finished configurating. This allows blocking some layout animations among other things.
 @property (nonatomic, getter=isViewVisible) BOOL viewVisible;
 
-// The setter of isExternalKeyboardDetected, for private use.
-@property (nonatomic, getter = isRotating) BOOL rotating;
+// YES if the view controller's view's size is changing by its parent (i.e. when its window rotates or is resized)
+@property (nonatomic, getter = isTransitioning) BOOL transitioning;
 
 // Optional classes to be used instead of the default ones.
 @property (nonatomic, strong) Class textViewClass;
@@ -283,6 +283,12 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
         _autoCompletionView.dataSource = self;
         _autoCompletionView.delegate = self;
         
+#ifdef __IPHONE_9_0
+        if ([_autoCompletionView respondsToSelector:@selector(cellLayoutMarginsFollowReadableWidth)]) {
+            _autoCompletionView.cellLayoutMarginsFollowReadableWidth = NO;
+        }
+#endif
+        
         CGRect rect = CGRectZero;
         rect.size = CGSizeMake(CGRectGetWidth(self.view.frame), 0.5);
         
@@ -425,6 +431,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     }
     
     topBarsHeight += CGRectGetHeight([UIApplication sharedApplication].statusBarFrame);
+    
     return topBarsHeight;
 }
 
@@ -637,9 +644,6 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
         }
     }
     
-    // Only updates the input view if the number of line changed
-    [self slk_reloadInputAccessoryViewIfNeeded];
-    
     // Toggles auto-correction if requiered
     [self slk_enableTypingSuggestionIfNeeded];
 }
@@ -652,7 +656,14 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     }
     
     // Skips if the loupe is visible or if there is a real text selection
-    if (self.textView.isLoupeVisible || self.textView.selectedRange.length > 0) {
+    if (self.textView.isLoupeVisible || self.textView.isTrackpadEnabled) {
+        return;
+    }
+    
+    if (self.textView.selectedRange.length > 0) {
+        if (self.isAutoCompleting) {
+            [self cancelAutoCompletion];
+        }
         return;
     }
     
@@ -696,23 +707,16 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     // Caches the current text, in case the user cancels the edition
     [self slk_cacheTextToDisk:self.textView.text];
     
-    if (!SLK_IS_LANDSCAPE) {
-        [self.textView setText:text];
-    }
-    
     [self.textInputbar beginTextEditing];
     
-    // Setting the text after calling -beginTextEditing is safer when on landscape orientation
-    if (SLK_IS_LANDSCAPE) {
-        [self.textView setText:text];
-    }
+    // Setting the text after calling -beginTextEditing is safer
+    [self.textView setText:text];
     
     [self.textView slk_scrollToCaretPositonAnimated:YES];
     
     // Brings up the keyboard if needed
     [self presentKeyboard:YES];
 }
-
 - (void)didCommitTextEditing:(id)sender
 {
     if (!self.textInputbar.isEditing) {
@@ -769,8 +773,9 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 {
     CGFloat maxiumumHeight = SLKAutoCompletionViewDefaultHeight;
     
-    if (!self.isAutoCompleting) {
-        CGFloat scrollViewHeight = self.scrollViewHC.constant - [self slk_topBarsHeight];
+    if (self.isAutoCompleting) {
+        CGFloat scrollViewHeight = self.scrollViewHC.constant;
+        scrollViewHeight -= [self slk_topBarsHeight];
         
         if (scrollViewHeight < maxiumumHeight) {
             maxiumumHeight = scrollViewHeight;
@@ -1051,7 +1056,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 
 - (void)slk_postKeyboarStatusNotification:(NSNotification *)notification
 {
-    if ([self ignoreTextInputbarAdjustment] || self.isRotating) {
+    if ([self ignoreTextInputbarAdjustment] || self.isTransitioning) {
         return;
     }
     
@@ -1199,19 +1204,6 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     }
 }
 
-- (void)slk_reloadInputAccessoryViewIfNeeded
-{
-    // Reload only if the input views if the text view is first responder.
-    if (!self.isKeyboardPanningEnabled || ![self.textView isFirstResponder]) {
-        
-        // Disables the input accessory when not first responder so when showing the keyboard back, there is no delay in the animation.
-        if (self.textInputbar.inputAccessoryView) {
-            self.textView.inputAccessoryView = nil;
-            [self.textView refreshInputViews];
-        }
-    }
-}
-
 - (void)slk_adjustContentConfigurationIfNeeded
 {
     // When inverted, we need to substract the top bars height (generally status bar + navigation bar's) to align the top of the
@@ -1231,9 +1223,9 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     }
 }
 
-- (void)slk_prepareForInterfaceRotationWithDuration:(NSTimeInterval)duration
+- (void)slk_prepareForInterfaceTransitionWithDuration:(NSTimeInterval)duration
 {
-    self.rotating = YES;
+    self.transitioning = YES;
     
     [self.view layoutIfNeeded];
     
@@ -1247,7 +1239,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     // Disables the flag after the rotation animation is finished
     // Hacky but works.
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(duration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        self.rotating = NO;
+        self.transitioning = NO;
     });
 }
 
@@ -1314,6 +1306,9 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     NSInteger curve = [notification.userInfo[UIKeyboardAnimationCurveUserInfoKey] integerValue];
     NSTimeInterval duration = [notification.userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
     
+    CGRect beginFrame = [notification.userInfo[UIKeyboardFrameBeginUserInfoKey] CGRectValue];
+    CGRect endFrame = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    
     SLKKeyboardStatus status = [self slk_keyboardStatusForNotification:notification];
     
     // Programatically stops scrolling before updating the view constraints (to avoid scrolling glitch).
@@ -1336,14 +1331,24 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
         [self slk_postKeyboarStatusNotification:notification];
     }
     
-    // Only for this animation, we set bo to bounce since we want to give the impression that the text input is glued to the keyboard.
-    [self.view slk_animateLayoutIfNeededWithDuration:duration
-                                              bounce:NO
-                                             options:(curve<<16)|UIViewAnimationOptionLayoutSubviews|UIViewAnimationOptionBeginFromCurrentState
-                                          animations:^{
-                                              [self slk_scrollToBottomIfNeeded];
-                                          }
-                                          completion:NULL];
+    void (^animations)() = ^void() {
+        [self slk_scrollToBottomIfNeeded];
+    };
+    
+    // Begin and end frames are the same when the keyboard is shown during navigation controller's push animation.
+    // The animation happens in window coordinates (slides from right to left) but doesn't in the view controller's view coordinates.
+    if (!CGRectEqualToRect(beginFrame, endFrame))
+    {
+        // Only for this animation, we set bo to bounce since we want to give the impression that the text input is glued to the keyboard.
+        [self.view slk_animateLayoutIfNeededWithDuration:duration
+                                                  bounce:NO
+                                                 options:(curve<<16)|UIViewAnimationOptionLayoutSubviews|UIViewAnimationOptionBeginFromCurrentState
+                                              animations:animations
+                                              completion:NULL];
+    }
+    else {
+        animations();
+    }
 }
 
 - (void)slk_didShowOrHideKeyboard:(NSNotification *)notification
@@ -1384,9 +1389,6 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
         [self slk_postKeyboarStatusNotification:notification];
     }
     
-    // Updates the dismiss mode and input accessory view, if needed.
-    [self slk_reloadInputAccessoryViewIfNeeded];
-    
     // Very important to invalidate this flag after the keyboard is dismissed or presented, to start with a clean state next time.
     self.movingKeyboard = NO;
 }
@@ -1404,7 +1406,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 - (void)slk_willChangeTextViewText:(NSNotification *)notification
 {
     // Skips this it's not the expected textView.
-    if (![notification.object isEqual:self.textView]) {
+    if (![notification.object isEqual:self.textView] || !self.textView.window) {
         return;
     }
     
@@ -1414,7 +1416,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 - (void)slk_didChangeTextViewText:(NSNotification *)notification
 {
     // Skips this it's not the expected textView.
-    if (![notification.object isEqual:self.textView]) {
+    if (![notification.object isEqual:self.textView] || !self.textView.window) {
         return;
     }
     
@@ -1430,7 +1432,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 - (void)slk_didChangeTextViewContentSize:(NSNotification *)notification
 {
     // Skips this it's not the expected textView.
-    if (![notification.object isEqual:self.textView]) {
+    if (![notification.object isEqual:self.textView] || !self.textView.window) {
         return;
     }
     
@@ -1441,7 +1443,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 - (void)slk_didChangeTextViewSelectedRange:(NSNotification *)notification
 {
     // Skips this it's not the expected textView.
-    if (![notification.object isEqual:self.textView]) {
+    if (![notification.object isEqual:self.textView] || !self.textView.window) {
         return;
     }
     
@@ -1548,7 +1550,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 
 - (void)slk_processTextForAutoCompletion
 {
-    if (self.isRotating) {
+    if (self.isTransitioning) {
         return;
     }
     
@@ -1674,11 +1676,6 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 
 - (void)slk_showAutoCompletionView:(BOOL)show
 {
-    // Skips if rotating
-    if (self.isRotating) {
-        return;
-    }
-    
     // Reloads the tableview before showing/hiding
     [self.autoCompletionView reloadData];
     
@@ -2016,12 +2013,12 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     UIKeyCommand *command = [UIKeyCommand keyCommandWithInput:@"\r" modifierFlags:0 action:@selector(didPressReturnKey:)];
     
 #ifdef __IPHONE_9_0
-    // Only available since iOS9
     if ([UIKeyCommand respondsToSelector:@selector(keyCommandWithInput:modifierFlags:action:discoverabilityTitle:)] ) {
+        // Only available since iOS 9
         if (self.textInputbar.isEditing) {
             command.discoverabilityTitle = [self.textInputbar.editorRightButton titleForState:UIControlStateNormal] ? : NSLocalizedString(@"Commit Editing", nil);
         }
-        else {
+        else if (self.textView.text.length > 0) {
             command.discoverabilityTitle = [self.rightButton titleForState:UIControlStateNormal] ? : NSLocalizedString(@"Send", nil);
         }
     }
@@ -2035,8 +2032,8 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     UIKeyCommand *command = [UIKeyCommand keyCommandWithInput:UIKeyInputEscape modifierFlags:0 action:@selector(didPressEscapeKey:)];
     
 #ifdef __IPHONE_9_0
-    // Only available since iOS9
     if ([UIKeyCommand respondsToSelector:@selector(keyCommandWithInput:modifierFlags:action:discoverabilityTitle:)] ) {
+        // Only available since iOS 9
         if (self.isAutoCompleting) {
             command.discoverabilityTitle = NSLocalizedString(@"Exit Auto-Completion", nil);
         }
@@ -2057,8 +2054,8 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     UIKeyCommand *command = [UIKeyCommand keyCommandWithInput:inputUpArrow modifierFlags:0 action:@selector(didPressArrowKey:)];
 
 #ifdef __IPHONE_9_0
-    // Only available since iOS9
-    if ([UIKeyCommand respondsToSelector:@selector(keyCommandWithInput:modifierFlags:action:discoverabilityTitle:)] && self.textView.numberOfLines > 1) {
+    // Only available since iOS 9
+    if ([UIKeyCommand respondsToSelector:@selector(keyCommandWithInput:modifierFlags:action:discoverabilityTitle:)] ) {
         if ([inputUpArrow isEqualToString:UIKeyInputUpArrow]) {
             command.discoverabilityTitle = NSLocalizedString(@"Move Up", nil);
         }
@@ -2138,31 +2135,37 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 
 #pragma mark - View Auto-Rotation
 
-- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
+#ifdef __IPHONE_8_0
+- (void)willTransitionToTraitCollection:(UITraitCollection *)newCollection withTransitionCoordinator:(id <UIViewControllerTransitionCoordinator>)coordinator
 {
-    [self slk_prepareForInterfaceRotationWithDuration:coordinator.transitionDuration];
+    [super willTransitionToTraitCollection:newCollection withTransitionCoordinator:coordinator];
 }
 
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
+{
+    [self slk_prepareForInterfaceTransitionWithDuration:coordinator.transitionDuration];
+    
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+}
+#else
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
     if ([self respondsToSelector:@selector(viewWillTransitionToSize:withTransitionCoordinator:)]) {
         return;
     }
 
-    [self slk_prepareForInterfaceRotationWithDuration:duration];
+    [self slk_prepareForInterfaceTransitionWithDuration:duration];
 }
+#endif
 
 #ifdef __IPHONE_9_0
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations
-{
-    return UIInterfaceOrientationMaskAll;
-}
 #else
 - (NSUInteger)supportedInterfaceOrientations
+#endif
 {
     return UIInterfaceOrientationMaskAll;
 }
-#endif
 
 - (BOOL)shouldAutorotate
 {
