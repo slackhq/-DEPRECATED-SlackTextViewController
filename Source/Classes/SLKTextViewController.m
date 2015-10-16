@@ -1985,6 +1985,27 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     }
 }
 
+- (void)slk_updateConstraints
+{
+    if (self.textInputbar.hidden) {
+        self.textInputbarHC.constant = 0;
+        self.scrollViewHC.constant = [self slk_appropriateScrollViewHeight];
+    }
+    else {
+        self.textInputbarHC.constant = self.textInputbar.minimumInputbarHeight;
+        self.scrollViewHC.constant = [self slk_appropriateScrollViewHeight];
+        if (self.textInputbar.isEditing) {
+            self.textInputbarHC.constant += self.textInputbar.editorContentViewHeight;
+        }
+    }
+}
+
+- (void)updateViewConstraints
+{
+    [self slk_updateConstraints];
+    [super updateViewConstraints];
+}
+
 
 #pragma mark - External Keyboard Support
 
