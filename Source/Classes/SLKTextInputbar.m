@@ -339,7 +339,7 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
 - (CGFloat)slk_appropriateRightButtonWidth
 {
     if (self.autoHideRightButton) {
-        if (self.textView.text.length == 0) {
+        if (self.textView.text.length == 0 && self.textView.attributedText.length == 0) {
             return 0.0;
         }
     }
@@ -361,7 +361,7 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
 - (CGFloat)slk_appropriateRightButtonMargin
 {
     if (self.autoHideRightButton) {
-        if (self.textView.text.length == 0) {
+        if (self.textView.text.length == 0 && self.textView.attributedText.length == 0) {
             return 0.0;
         }
     }
