@@ -156,6 +156,16 @@ NS_CLASS_AVAILABLE_IOS(7_0) @interface SLKTextViewController : UIViewController 
 - (instancetype)initWithCoder:(NSCoder *)decoder SLK_DESIGNATED_INITIALIZER;
 
 /**
+ Returns a newly-created table view to be used when initializing instances
+ with `initWithTableViewStyle:`. Default creates a `UITableView` with the given style.
+ 
+ You can override this to initialize subclasses of `UITableView`.
+
+ @return A newly-allocated `UITableView`.
+ */
++ (UITableView *)createTableViewWithStyle:(UITableViewStyle)tableViewStyle;
+
+/**
  Returns the tableView style to be configured when using Interface Builder. Default is UITableViewStylePlain.
  You must override this method if you want to configure a tableView.
  
@@ -163,6 +173,16 @@ NS_CLASS_AVAILABLE_IOS(7_0) @interface SLKTextViewController : UIViewController 
  @return The tableView style to be used in the new instantiated tableView.
  */
 + (UITableViewStyle)tableViewStyleForCoder:(NSCoder *)decoder;
+
+/**
+ Returns a newly-created collection view to be used when initializing instances
+ with `initWithCollectionViewLayout:`. Default creates a `UICollectionView` with the given layout.
+
+ You can override this to initialize subclasses of `UICollectionView`.
+
+ @return A newly-allocated `UICollectionView`.
+ */
++ (UICollectionView *)createCollectionViewWithLayout:(UICollectionViewLayout *)collectionViewLayout;
 
 /**
  Returns the tableView style to be configured when using Interface Builder. Default is nil.
