@@ -56,13 +56,19 @@ pod 'SlackTextViewController'
 Start by creating a new subclass of `SLKTextViewController`.
 
 In the init overriding method, if you wish to use the `UITableView` version, call:
-```objc
-[super initWithTableViewStyle:UITableViewStylePlain]
+```swift
+    override class func tableViewStyleForCoder(decoder: NSCoder) -> UITableViewStyle {
+        return UITableViewStyle.Plain;
+    }
 ```
 
 or the `UICollectionView` version:
-```objc
-[super initWithCollectionViewLayout:[UICollectionViewFlowLayout new]]
+```swift
+    override class func collectionViewLayoutForCoder(decoder: NSCoder) -> UICollectionViewLayout {
+        return UICollectionViewLayout
+        let layout = YourLayout();
+        return layout
+    }
 ```
 
 or the `UIScrollView` version:
@@ -72,9 +78,6 @@ or the `UIScrollView` version:
 
 
 Protocols like `UITableViewDelegate` and `UITableViewDataSource` are already setup for you. You will be able to call whatever delegate and data source methods you need for customising your control.
-
-Calling `[super init]` will call `[super initWithTableViewStyle:UITableViewStylePlain]` by default.
-
 
 ###Growing Text View
 
@@ -99,99 +102,87 @@ To set up autocompletion in your app, follow these simple steps:
 
 #### 1. Registration
 You must first register all the prefixes you'd like to support for autocompletion detection:
-````objc
-[self registerPrefixesForAutoCompletion:@[@"#"]];
+````swift
+self.registerPrefixesForAutoCompletion(["#"])
 ````
 
 #### 2. Processing
 Every time a new character is inserted in the text view, the nearest word to the caret will be processed and verified if it contains any of the registered prefixes.
 
-Once the prefix has been detected, `-canShowAutoCompletion` will be called. This is the perfect place to populate your data source, and return a BOOL if the autocompletion view should actually be shown. So you must override it in your subclass, to be able to perform additional tasks. Default returns NO.
+Once the prefix has been detected, func `canShowAutoCompletion() -> Bool` will be called. This is the perfect place to populate your data source, and return a BOOL if the autocompletion view should actually be shown. So you must override it in your subclass, to be able to perform additional tasks. Default returns NO.
 
-````objc
-- (BOOL)canShowAutoCompletion
-{
-    NSString *prefix = self.foundPrefix;
-    NSString *word = self.foundWord;
-    
-    self.searchResult = [[NSArray alloc] initWithArray:self.channels];
-    
-    if ([prefix isEqualToString:@"#"])
-    {
-        if (word.length > 0) {
-            self.searchResult = [self.searchResult filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self BEGINSWITH[c] %@ AND self !=[c] %@", word, word]];
+````swift
+    override func canShowAutoCompletion() -> Bool {
+        
+        let prefix: String = self.foundPrefix
+        let word = self.foundWord
+        
+        self.serachResult = NSArray(array: self.channels)
+        
+        if prefix == "#" {
+            if word.characters.count > 0 {
+                self.searchResult = self.searchResult?.filteredArrayUsingPredicate(NSPredicate(format: "", word, word))
+            }
         }
+        
+        if self.searchResult.count > 0 {
+            self.searchResult = self.searchResult.sortedArrayUsingSelector("localizedCaseInsensitiveCompare:")
+        }
+        return self.serachResult.count > 0
+        
     }
-
-    if (self.searchResult.count > 0) {
-        self.searchResult = [self.searchResult sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
-    }
-    
-    return self.searchResult.count > 0;
-}
 ````
 
 The autocompletion view is a `UITableView` instance, so you will need to use `UITableViewDataSource` to populate its cells. You have complete freedom for customizing the cells.
 
-You don't need to call `-reloadData` yourself, since it will be called automatically if you return `YES` in `-canShowAutoCompletion` method.
+You don't need to call `.reloadData()` yourself, since it will be called automatically if you return `true` in func `canShowAutoCompletion() -> Bool` method.
 
 #### 3. Layout
 
 The maximum height of the autocompletion view is set to 140 pts by default. You can update this value anytime, so the view automatically adjusts based on the amount of displayed cells.
 
-````objc
-- (CGFloat)heightForAutoCompletionView
-{
-    CGFloat cellHeight = 34.0;
-    return cellHeight*self.searchResult.count;
+````swift
+func heightForAutoCompletionView() -> CGFloat {
+    var cellHeight: CGFloat = 34.0
+    return cellHeight * self.searchResult.count
 }
 ````
 
 #### 4. Confirmation
 
-If the user selects any autocompletion view cell on `-tableView:didSelectRowAtIndexPath:`, you must call `-acceptAutoCompletionWithString:` to commit autocompletion. That method expects a string matching the selected item, that you would like to be inserted in the text view.
+If the user selects any autocompletion view cell on `tableView(tableView: UITableView, didSelectRowAtIndexPath...){}`, you must call `acceptAutoCompletionWithString()` to commit autocompletion. That method expects a string matching the selected item, that you would like to be inserted in the text view.
 
-`````objc
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if ([tableView isEqual:self.autoCompletionView]) {
-        
-        NSString *item = self.searchResult[indexPath.row];
-        
-        [self acceptAutoCompletionWithString:item];
-    }
-}
+`````swift
+        func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+            if tableView.isEqual(self.autoCompletionView) {
+                let item: String = self.searchResult[indexPath.row] as! String
+                self.acceptAutoCompletionWithString(item)
+            }
+        }
 ````
 
 The autocompletion view will automatically be dismissed and the chosen string will be inserted in the text view, replacing the detected prefix and word.
 
-You can always call `-cancelAutoCompletion` to exit the autocompletion mode and refresh the UI.
+You can always call `cancelAutoCompletion()` to exit the autocompletion mode and refresh the UI.
 
 
 ###Edit Mode
 
 ![Edit Mode](Screenshots/screenshot_edit-mode.png)
 
-To enable edit mode, you simply need to call `[self editText:@"hello"];`, and the text input will switch to edit mode, removing both left and right buttons, extending the input bar a bit higher with "Accept" and "Cancel" buttons. Both of this buttons are accessible in the `SLKTextInputbar` instance for customisation.
+To enable edit mode, you simply need to call `self.editText("EcampleString" as String)`, and the text input will switch to edit mode, removing both left and right buttons, extending the input bar a bit higher with "Accept" and "Cancel" buttons. Both of this buttons are accessible in the `SLKTextInputbar` instance for customisation.
 
 To capture the "Accept" or "Cancel" events, you must override the following methods.
 
-````objc
-- (void)didCommitTextEditing:(id)sender
-{
-    NSString *message = [self.textView.text copy];
-    
-    [self.messages removeObjectAtIndex:0];
-    [self.messages insertObject:message atIndex:0];
-    [self.tableView reloadData];
-    
-    [super didCommitTextEditing:sender];
-}
+````swift
+override func didCommitTextEditing(sender: AnyObject!) {
+            super.didCancelTextEditing(self)
+        }
+    }
 
-- (void)didCancelTextEditing:(id)sender
-{
-    [super didCancelTextEditing:sender];
-}
+override func didCancelTextEditing(sender: AnyObject!) {
+        super.didCancelTextEditing(self)
+    }
 ````
 
 Notice that you must call `super` at some point, so the text input exits the edit mode, re-adjusting the layout and clearing the text view.
