@@ -28,7 +28,7 @@ This library is used in Slack's iOS app. It was built to fit our needs, but is f
 - [Typing Indicator](https://github.com/slackhq/SlackTextViewController#typing-indicator) display
 - [Shake Gesture](https://github.com/slackhq/SlackTextViewController#shake-gesture) for clearing text view
 - Multimedia Pasting (png, gif, mov, etc.)
-- [Inverted Mode](https://github.com/slackhq/SlackTextViewController#inverted-mode) for displaying cells upside-down (using CATransform) -- a necessary hack for some messaging apps. `YES` by default, so beware, your entire cells might be flipped!
+- [Inverted Mode](https://github.com/slackhq/SlackTextViewController#inverted-mode) for displaying cells upside-down (using CATransform) -- a necessary hack for some messaging apps. `true` by default, so beware, your entire cells might be flipped!
 - Bouncy Animations
 
 ### Compatibility
@@ -72,8 +72,8 @@ or the `UICollectionView` version:
 ```
 
 or the `UIScrollView` version:
-```objc
-[super initWithScrollView:self.myStrongScrollView]
+```swift
+init(scrollView: self.myStrongScrollView)
 ```
 
 
@@ -170,7 +170,7 @@ You can always call `cancelAutoCompletion()` to exit the autocompletion mode and
 
 ![Edit Mode](Screenshots/screenshot_edit-mode.png)
 
-To enable edit mode, you simply need to call `self.editText("EcampleString" as String)`, and the text input will switch to edit mode, removing both left and right buttons, extending the input bar a bit higher with "Accept" and "Cancel" buttons. Both of this buttons are accessible in the `SLKTextInputbar` instance for customisation.
+To enable edit mode, you simply need to call `self.editText("ExampleString" as String)`, and the text input will switch to edit mode, removing both left and right buttons, extending the input bar a bit higher with "Accept" and "Cancel" buttons. Both of this buttons are accessible in the `SLKTextInputbar` instance for customisation.
 
 To capture the "Accept" or "Cancel" events, you must override the following methods.
 
@@ -195,11 +195,11 @@ Use the `editing` property to know if the editing mode is on.
 
 Optionally, you can enable a simple typing indicator, which will be displayed right above the text input. It shows the name of the people that are typing, and if more than 2, it will display "Several are typing" message.
 
-To enable the typing indicator, just call `[self.typeIndicatorView insertUsername:@"John"];` and the view will automatically be animated on top of the text input. After a default interval of 6 seconds, if the same name hasn't been assigned once more, the view will be dismissed with animation.
+To enable the typing indicator, just call `self.typeIndicatorView.insertUsername("John")` and the view will automatically be animated on top of the text input. After a default interval of 6 seconds, if the same name hasn't been assigned once more, the view will be dismissed with animation.
 
-You can remove names from the list by calling `[self.typeIndicatorView removeUsername:@"John"];`
+You can remove names from the list by calling `self.typeIndicatorView.removeUsername("John")`
 
-You can also dismiss it by calling `[self.typeIndicatorView dismissIndicator];`
+You can also dismiss it by calling `self.typeIndicatorView.dismissIndicator()`
 
 ###Panning Gesture
 
@@ -211,9 +211,9 @@ Dismissing the keyboard with a panning gesture is enabled by default with the `k
 
 A shake gesture to clear text is enabled by default with the `undoShakingEnabled` property.
 
-You can optionally override `-willRequestUndo`, to implement your UI to ask the users if he would like to clean the text view's text. If there is not text entered, the method will not be called.
+You can optionally override `willRequestUndo()`, to implement your UI to ask the users if he would like to clean the text view's text. If there is not text entered, the method will not be called.
 
-If you don't override `-willRequestUndo` and `undoShakingEnabled` is set to `true`, a system UIAlertView will prompt.
+If you don't override `willRequestUndo()` and `undoShakingEnabled` is set to `true`, a system UIAlertView will prompt.
 
 ###Inverted Mode
 
@@ -233,7 +233,7 @@ func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexP
 There a few basic key commands enabled by default:
 - cmd + z -> undo
 - shift + cmd + z -> redo
-- return key -> calls `-didPressRightButton:`, or `-didCommitTextEditing:` if in edit mode
+- return key -> calls `didPressRightButton(sender: AnyObject!)`, or `didCommitTextEditing(sender: AnyObject!)` if in edit mode
 - shift/cmd + return key -> line break
 - escape key -> exits edit mode, or auto-completion mode, or dismisses the keyboard
 - up & down arrows -> vertical cursor movement
