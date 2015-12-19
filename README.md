@@ -213,20 +213,18 @@ A shake gesture to clear text is enabled by default with the `undoShakingEnabled
 
 You can optionally override `-willRequestUndo`, to implement your UI to ask the users if he would like to clean the text view's text. If there is not text entered, the method will not be called.
 
-If you don't override `-willRequestUndo` and `undoShakingEnabled` is set to `YES`, a system UIAlertView will prompt.
+If you don't override `-willRequestUndo` and `undoShakingEnabled` is set to `true`, a system UIAlertView will prompt.
 
 ###Inverted Mode
 
-Some UITableView layouts may require that new messages enter from bottom to top. To enable this, you must use the `inverted` flag property. This will actually invert the UITableView or UICollectionView, so you will need to do a transform adjustment in your UITableViewDataSource method `-tableView:cellForRowAtIndexPath:` for the cells to show correctly.
+Some UITableView layouts may require that new messages enter from bottom to top. To enable this, you must use the `inverted` flag property. This will actually invert the UITableView or UICollectionView, so you will need to do a transform adjustment in your UITableViewDataSource method `tableView(tableView: UITableView, cellForRowAtIndexPath...)` for the cells to show correctly.
 
-````objc
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:chatCellIdentifier];
-    
+````swift
+func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    var cell: UITableViewCell = self.tableView.dequeueReusableCellWithIdentifier(chatCellIdentifier)
     // Cells must inherit the table view's transform
     // This is very important, since the main table view may be inverted
-    cell.transform = self.tableView.transform;
+    cell.transform = self.tableView.transform
 }
 ````
 
@@ -261,18 +259,16 @@ To add additional key commands, simply override `-keyCommands` and append `super
 When using SlackTextViewController with storyboards, instead of overriding the traditional `initWithCoder:` you will need to override any of the two custom methods below. This approach helps preserving the exact same features from the programatic approach, but also limits the edition of the nib of your `SLKTextViewController` subclass since it doesn't layout subviews from the nib (subviews are still initialized and layed out programatically).
 
 if you wish to use the `UITableView` version, call:
-```objc
-+ (UITableViewStyle)tableViewStyleForCoder:(NSCoder *)decoder
-{
-    return UITableViewStylePlain;
+```swift
+class func tableViewStyleForCoder(decoder: NSCoder) -> UITableViewStyle {
+    return .Plain
 }
 ```
 
 or the `UICollectionView` version:
-```objc
-+ (UICollectionViewLayout *)collectionViewLayoutForCoder:(NSCoder *)decoder
-{
-    return [UICollectionViewFlowLayout new];
+```swift
+class func collectionViewLayoutForCoder(decoder: NSCoder) -> UICollectionViewLayout {
+    return UICollectionViewFlowLayout()
 }
 ```
 
