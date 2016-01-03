@@ -16,6 +16,7 @@
 
 #import "SLKTypingIndicatorView.h"
 #import "UIView+SLKAdditions.h"
+
 #import "SLKUIConstants.h"
 
 #define SLKTypingIndicatorViewIdentifier    [NSString stringWithFormat:@"%@.%@", SLKTextViewControllerDomain, NSStringFromClass([self class])]

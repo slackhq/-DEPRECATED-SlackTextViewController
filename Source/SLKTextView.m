@@ -15,7 +15,6 @@
 //
 
 #import "SLKTextView.h"
-
 #import "SLKTextView+SLKAdditions.h"
 
 #import "SLKUIConstants.h"
@@ -82,7 +81,7 @@ static NSString *const SLKTextViewGenericFormattingSelectorPrefix = @"slk_format
 {
     _pastableMediaTypes = SLKPastableMediaTypeNone;
     _dynamicTypeEnabled = YES;
-
+    
     self.undoManagerEnabled = YES;
     self.autoCompleteFormatting = YES;
     
@@ -513,7 +512,7 @@ SLKPastableMediaType SLKPastableMediaTypeFromNSString(NSString *string)
     _dynamicTypeEnabled = dynamicTypeEnabled;
     
     NSString *contentSizeCategory = [[UIApplication sharedApplication] preferredContentSizeCategory];
-
+    
     [self setFontName:self.font.fontName pointSize:self.initialFontSize withContentSizeCategory:contentSizeCategory];
 }
 
@@ -543,7 +542,7 @@ SLKPastableMediaType SLKPastableMediaTypeFromNSString(NSString *string)
 - (void)endFloatingCursor
 {
     [super endFloatingCursor];
-
+    
     _trackpadEnabled = NO;
     
     // We still need to notify a selection change in the textview after the trackpad is disabled
@@ -601,7 +600,7 @@ SLKPastableMediaType SLKPastableMediaTypeFromNSString(NSString *string)
         
         return NO;
     }
-
+    
     if (action == @selector(delete:)) {
         return NO;
     }
@@ -689,10 +688,13 @@ SLKPastableMediaType SLKPastableMediaTypeFromNSString(NSString *string)
 
 - (void)slk_gestureRecognized:(UIGestureRecognizer *)gesture
 {
+    NSString *variableDelayLoupeGestureName = SLKEncodeText(@"VJWbsjbcmfEfmbzMpvqfHftuvsf", -1);
+    NSString *textSelectionForceGestureName = SLKEncodeText(@"`VJUfyuTfmfdujpoGpsdfHftuvsf", -1);
+    
     // In iOS 8 and earlier, the gesture recognizer responsible for the magnifying glass movement was 'UIVariableDelayLoupeGesture'
     // Since iOS 9, that gesture is now called '_UITextSelectionForceGesture'
-    if ([gesture isMemberOfClass:NSClassFromString(@"UIVariableDelayLoupeGesture")] ||
-        [gesture isMemberOfClass:NSClassFromString(@"_UITextSelectionForceGesture")]) {
+    if ([gesture isMemberOfClass:NSClassFromString(variableDelayLoupeGestureName)] ||
+        [gesture isMemberOfClass:NSClassFromString(textSelectionForceGestureName)]) {
         [self slk_willShowLoupe:gesture];
     }
 }
@@ -969,15 +971,15 @@ SLKPastableMediaType SLKPastableMediaTypeFromNSString(NSString *string)
     }
     
     _keyboardCommands = @[
-         // Return
-         [UIKeyCommand keyCommandWithInput:@"\r" modifierFlags:UIKeyModifierShift action:@selector(slk_didPressLineBreakKeys:)],
-         [UIKeyCommand keyCommandWithInput:@"\r" modifierFlags:UIKeyModifierAlternate action:@selector(slk_didPressLineBreakKeys:)],
-         [UIKeyCommand keyCommandWithInput:@"\r" modifierFlags:UIKeyModifierControl action:@selector(slk_didPressLineBreakKeys:)],
-         
-         // Undo/Redo
-         [UIKeyCommand keyCommandWithInput:@"z" modifierFlags:UIKeyModifierCommand action:@selector(slk_didPressCommandZKeys:)],
-         [UIKeyCommand keyCommandWithInput:@"z" modifierFlags:UIKeyModifierShift|UIKeyModifierCommand action:@selector(slk_didPressCommandZKeys:)],
-         ];
+                          // Return
+                          [UIKeyCommand keyCommandWithInput:@"\r" modifierFlags:UIKeyModifierShift action:@selector(slk_didPressLineBreakKeys:)],
+                          [UIKeyCommand keyCommandWithInput:@"\r" modifierFlags:UIKeyModifierAlternate action:@selector(slk_didPressLineBreakKeys:)],
+                          [UIKeyCommand keyCommandWithInput:@"\r" modifierFlags:UIKeyModifierControl action:@selector(slk_didPressLineBreakKeys:)],
+                          
+                          // Undo/Redo
+                          [UIKeyCommand keyCommandWithInput:@"z" modifierFlags:UIKeyModifierCommand action:@selector(slk_didPressCommandZKeys:)],
+                          [UIKeyCommand keyCommandWithInput:@"z" modifierFlags:UIKeyModifierShift|UIKeyModifierCommand action:@selector(slk_didPressCommandZKeys:)],
+                          ];
     
     return _keyboardCommands;
 }
