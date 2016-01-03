@@ -48,3 +48,17 @@ inline static CGRect SLKRectInvert(CGRect rect)
     
     return invert;
 }
+
+inline static NSString *SLKEncodeText(NSString *string, int key)
+{
+    NSMutableString *result = [[NSMutableString alloc] init];
+    
+    for (int i = 0; i < [string length]; i++) {
+        
+        unichar c = [string characterAtIndex:i];
+        c += key;
+        [result appendString:[NSString stringWithCharacters:&c length:1]];
+    }
+    
+    return result;
+}
