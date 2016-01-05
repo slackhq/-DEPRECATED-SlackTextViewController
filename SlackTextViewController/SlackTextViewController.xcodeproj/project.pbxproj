@@ -98,6 +98,7 @@
 				F5A782751BD0CEF300EC230B /* Products */,
 			);
 			sourceTree = "<group>";
+			usesTabs = 0;
 		};
 		F5A782751BD0CEF300EC230B /* Products */ = {
 			isa = PBXGroup;

@@ -244,9 +244,19 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 
 #pragma mark - Getters
 
++ (UITableView *)createTableViewWithStyle:(UITableViewStyle)tableViewStyle
+{
+    return [[UITableView alloc] initWithFrame:CGRectZero style:tableViewStyle];
+}
+
 + (UITableViewStyle)tableViewStyleForCoder:(NSCoder *)decoder
 {
     return UITableViewStylePlain;
+}
+
++ (UICollectionView *)createCollectionViewWithLayout:(UICollectionViewLayout *)collectionViewLayout
+{
+    return [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:collectionViewLayout];
 }
 
 + (UICollectionViewLayout *)collectionViewLayoutForCoder:(NSCoder *)decoder
@@ -257,7 +267,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 - (UITableView *)tableViewWithStyle:(UITableViewStyle)style
 {
     if (!_tableView) {
-        _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:style];
+        _tableView = [self.class createTableViewWithStyle:style];
         _tableView.translatesAutoresizingMaskIntoConstraints = NO;
         _tableView.scrollsToTop = YES;
         _tableView.dataSource = self;
@@ -270,7 +280,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 - (UICollectionView *)collectionViewWithLayout:(UICollectionViewLayout *)layout
 {
     if (!_collectionView) {
-        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
+        _collectionView = [self.class createCollectionViewWithLayout:layout];
         _collectionView.translatesAutoresizingMaskIntoConstraints = NO;
         _collectionView.scrollsToTop = YES;
         _collectionView.dataSource = self;
