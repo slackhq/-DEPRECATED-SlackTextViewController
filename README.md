@@ -81,18 +81,21 @@ Start by creating a new subclass of `SLKTextViewController`.
 
 In the init overriding method, if you wish to use the `UITableView` version, call:
 ```objc
-[super initWithTableViewStyle:UITableViewStylePlain]
+[super initWithTableViewStyle:UITableViewStylePlain]  // Objective-C
 ```
 
 or the `UICollectionView` version:
 ```objc
-[super initWithCollectionViewLayout:[UICollectionViewFlowLayout new]]
+[super initWithCollectionViewLayout:[UICollectionViewFlowLayout new]] // Objective-C
 ```
 
 or the `UIScrollView` version:
 ```objc
-[super initWithScrollView:self.myStrongScrollView]
+[super initWithScrollView:self.myStrongScrollView] // Objective-C
+
+init(scrollView: self.myStrongScrollView) // Swift 2.1.1
 ```
+
 
 Protocols like `UITableViewDelegate` and `UITableViewDataSource` are already setup for you. You will be able to call whatever delegate and data source methods you need for customising your control.
 
@@ -104,18 +107,31 @@ When using SlackTextViewController with storyboards, instead of overriding the t
 
 if you wish to use the `UITableView` version, call:
 ```objc
+//Objective-C
 + (UITableViewStyle)tableViewStyleForCoder:(NSCoder *)decoder
 {
     return UITableViewStylePlain;
-}
+}    
+
+//Swift 2.1.1
+override class func tableViewStyleForCoder(decoder: NSCoder) -> UITableViewStyle {
+    return UITableViewStyle.Plain;
+    }
 ```
 
 or the `UICollectionView` version:
 ```objc
+//Objective-C
 + (UICollectionViewLayout *)collectionViewLayoutForCoder:(NSCoder *)decoder
 {
     return [UICollectionViewFlowLayout new];
 }
+
+//Swift 2.1.1
+override class func collectionViewLayoutForCoder(decoder: NSCoder) -> UICollectionViewLayout {
+    let yourCustomLayout = yourCustomMessageViewLayout();
+    return layout
+    }
 ```
 
 ###Sample Project
@@ -147,13 +163,21 @@ On iPhone devices, in landscape orientation, the maximum number of lines is chan
 ###Inverted Mode
 
 Some layouts may require to show from bottom to top and new subviews are inserted from the bottom. To enable this, you must use the `inverted` flag property (default is YES). This will actually invert the entire ScrollView object. Make sure to apply the same transformation to every subview. In the case of UITableView, the best place for adjusting the transformation is in its data source methods like:
-
 ````objc
+//Objective-C
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:chatCellIdentifier];
     cell.transform = self.tableView.transform;
 }
+
+//Swift 2.1.1
+func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    var cell: UITableViewCell = self.tableView.dequeueReusableCellWithIdentifier(chatCellIdentifier)
+    // Cells must inherit the table view's transform
+    // This is very important, since the main table view may be inverted
+    cell.transform = self.tableView.transform
+    }
 ````
 
 
@@ -168,7 +192,11 @@ To set up autocompletion in your app, follow these simple steps:
 #### 1. Registration
 You must first register all the prefixes you'd like to support for autocompletion detection:
 ````objc
+//Objective-C
 [self registerPrefixesForAutoCompletion:@[@"#"]];
+
+//Swift 2.1.1
+self.registerPrefixesForAutoCompletion(["#"])
 ````
 
 #### 2. Processing
@@ -177,6 +205,7 @@ Every time a new character is inserted in the text view, the nearest word to the
 Once the prefix has been detected, `-didChangeAutoCompletionPrefix:andWord:` will be called. This is the perfect place to populate your data source and show/hide the autocompletion view. So you must override it in your subclass, to be able to perform additional tasks. Default returns NO.
 
 ````objc
+//Objective-C
 - (void)didChangeAutoCompletionPrefix:(NSString *)prefix andWord:(NSString *)word
 {
     self.searchResult = [[NSArray alloc] initWithArray:self.channels];
@@ -196,6 +225,33 @@ Once the prefix has been detected, `-didChangeAutoCompletionPrefix:andWord:` wil
     
     [self showAutoCompletionView:show];
 }
+
+//Swift 2.1.1
+override func didChangeAutoCompletionPrefix(prefix: String, andWord word: String) {
+        
+        var array: NSArray = []
+        var show = false
+        
+        if prefix == "#" {
+            array = channels as [AnyObject]
+        }
+        else if prefix == "@" {
+            array = users as [AnyObject]
+        }
+        
+        if array.count > 0 {
+            if word.characters.count > 0 {
+                array = array.filteredArrayUsingPredicate(NSPredicate(format: "self BEGINSWITH[c] %@", word))
+            }
+            
+            array = array.sort() { $0.localizedCaseInsensitiveCompare($1 as! String) == NSComparisonResult.OrderedAscending }
+            
+            self.searchResult = array as! [String]
+            show = (self.searchResult.count > 0)
+        }
+        
+        self.showAutoCompletionView(show)
+    }
 ````
 
 The autocompletion view is a `UITableView` instance, so you will need to use `UITableViewDataSource` to populate its cells. You have complete freedom for customizing the cells.
@@ -207,11 +263,17 @@ You don't need to call `-reloadData` yourself, since it will be invoked automati
 The maximum height of the autocompletion view is set to 140 pts by default. You can update this value anytime, so the view automatically adjusts based on the amount of displayed cells.
 
 ````objc
+//Objective-C
 - (CGFloat)heightForAutoCompletionView
 {
     CGFloat cellHeight = 34.0;
     return cellHeight*self.searchResult.count;
 }
+
+//Swift 2.1.1
+override func heightForAutoCompletionView() -> CGFloat {
+        return kAutoCompletionCellHeight * CGFloat(self.searchResult.count)
+    }
 ````
 
 #### 4. Confirmation
@@ -219,6 +281,7 @@ The maximum height of the autocompletion view is set to 140 pts by default. You 
 If the user selects any autocompletion view cell on `-tableView:didSelectRowAtIndexPath:`, you must call `-acceptAutoCompletionWithString:` to commit autocompletion. That method expects a string matching the selected item, that you would like to be inserted in the text view.
 
 `````objc
+//Objective-C
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if ([tableView isEqual:self.autoCompletionView]) {
@@ -228,6 +291,14 @@ If the user selects any autocompletion view cell on `-tableView:didSelectRowAtIn
         [self acceptAutoCompletionWithString:item];
     }
 }
+
+//Swift 2.1.1
+func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    if tableView.isEqual(self.autoCompletionView) {
+        let item: String = self.searchResult[indexPath.row] as! String
+        self.acceptAutoCompletionWithString(item)
+        }
+    }
 ````
 
 The autocompletion view will automatically be dismissed and the chosen string will be inserted in the text view, replacing the detected prefix and word.
@@ -244,6 +315,7 @@ To enable edit mode, you simply need to call `[self editText:@"hello"];`, and th
 To capture the "Accept" or "Cancel" events, you must override the following methods.
 
 ````objc
+//Objective-C
 - (void)didCommitTextEditing:(id)sender
 {
     NSString *message = [self.textView.text copy];
@@ -259,6 +331,15 @@ To capture the "Accept" or "Cancel" events, you must override the following meth
 {
     [super didCancelTextEditing:sender];
 }
+
+//Swift 2.1.1
+override func didCommitTextEditing(sender: AnyObject!) {
+            super.didCancelTextEditing(self)
+    }
+
+override func didCancelTextEditing(sender: AnyObject!) {
+        super.didCancelTextEditing(self)
+    }
 ````
 
 Notice that you must call `super` at some point, so the text input exits the edit mode, re-adjusting the layout and clearing the text view.
@@ -332,11 +413,28 @@ In this other method implementation, we don't want to allow auto-completion for 
 
 Optionally, you can enable a simple typing indicator, which will be displayed right above the text input. It shows the name of the people that are typing, and if more than 2, it will display "Several are typing" message.
 
-To enable the typing indicator, just call `[self.typingIndicatorView insertUsername:@"John"];` and the view will automatically be animated on top of the text input. After a default interval of 6 seconds, if the same name hasn't been assigned once more, the view will be dismissed with animation.
 
-You can remove names from the list by calling `[self.typingIndicatorView removeUsername:@"John"];`
+To enable the typing indicator, just call:
 
-You can also dismiss it by calling `[self.typingIndicatorView dismissIndicator];`
+Objective-C: `[self.typingIndicatorView insertUsername:@"John"];`
+
+Swift: `self.typeIndicatorView.insertUsername("John")`
+
+And the view will automatically be animated on top of the text input. After a default interval of 6 seconds, if the same name hasn't been assigned once more, the view will be dismissed with animation.
+
+
+You can remove names from the list by calling:
+
+Objective-C: `[self.typingIndicatorView removeUsername:@"John"];`
+
+Swift: `self.typeIndicatorView.removeUsername("John")`
+
+
+You can also dismiss it by calling:
+
+Objective-C: `[self.typingIndicatorView dismissIndicator];`
+
+Swift: `self.typeIndicatorView.dismissIndicator()`
 
 
 ###Panning Gesture
@@ -348,8 +446,13 @@ Dismissing the keyboard with a panning gesture is enabled by default with the `k
 
 Sometimes you may need to hide the text input bar.
 Very similar to `UINavigationViewController`'s API, simply do:
+Objective-C:
 ```objc
+//Objective-C
 [self setTextInputbarHidden:YES animated:YES];
+
+//Swift 2.1.1
+self.setTextInputbarHidden(hidden: true, animated: true)
 ```
 
 
