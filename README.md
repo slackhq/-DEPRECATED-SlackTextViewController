@@ -411,6 +411,7 @@ In this other method implementation, we don't want to allow auto-completion for 
 
 Optionally, you can enable a simple typing indicator, which will be displayed right above the text input. It shows the name of the people that are typing, and if more than 2, it will display "Several are typing" message.
 
+
 To enable the typing indicator, just call:
 
 Objective-C: `[self.typingIndicatorView insertUsername:@"John"];`
@@ -419,11 +420,13 @@ Swift: `self.typeIndicatorView.insertUsername("John")`
 
 And the view will automatically be animated on top of the text input. After a default interval of 6 seconds, if the same name hasn't been assigned once more, the view will be dismissed with animation.
 
+
 You can remove names from the list by calling:
 
 Objective-C: `[self.typingIndicatorView removeUsername:@"John"];`
 
 Swift: `self.typeIndicatorView.removeUsername("John")`
+
 
 You can also dismiss it by calling:
 
