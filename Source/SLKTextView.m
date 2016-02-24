@@ -374,7 +374,7 @@ SLKPastableMediaType SLKPastableMediaTypeFromNSString(NSString *string)
 
 - (BOOL)slk_shouldHidePlaceholder
 {
-    if (self.placeholder.length == 0 || self.text.length > 0) {
+    if ((self.placeholder.length == 0 && self.attributedPlaceholder.length == 0 )|| self.text.length > 0) {
         return YES;
     }
     return NO;
@@ -400,6 +400,14 @@ SLKPastableMediaType SLKPastableMediaTypeFromNSString(NSString *string)
 {
     self.placeholderLabel.text = placeholder;
     self.accessibilityLabel = placeholder;
+    
+    [self setNeedsLayout];
+}
+
+- (void)setAttributedPlaceholder:(NSAttributedString *)attributedPlaceholder
+{
+    self.placeholderLabel.attributedText = attributedPlaceholder;
+    self.accessibilityLabel = attributedPlaceholder.string;
     
     [self setNeedsLayout];
 }

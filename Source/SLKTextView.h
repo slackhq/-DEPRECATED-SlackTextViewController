@@ -49,6 +49,9 @@ typedef NS_OPTIONS(NSUInteger, SLKPastableMediaType) {
 /** The placeholder text string. Default is nil. */
 @property (nonatomic, copy) NSString *placeholder;
 
+/** The placeholder attributed string. Default is nil. */
+@property (nonatomic, copy) NSAttributedString *attributedPlaceholder;
+
 /** The placeholder color. Default is lightGrayColor. */
 @property (nonatomic, copy) UIColor *placeholderColor;
 
