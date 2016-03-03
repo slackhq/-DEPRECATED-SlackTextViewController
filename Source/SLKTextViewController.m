@@ -162,7 +162,8 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     self.keyboardPanningEnabled = YES;
     self.shouldClearTextAtRightButtonPress = YES;
     self.shouldScrollToBottomAfterKeyboardShows = NO;
-    
+    self.adjustsForTabBar = YES;
+
     self.automaticallyAdjustsScrollViewInsets = YES;
     self.extendedLayoutIncludesOpaqueBars = YES;
 }
@@ -422,7 +423,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 - (CGFloat)slk_appropriateBottomMargin
 {
     // A bottom margin is required only if the view is extended out of it bounds
-    if ((self.edgesForExtendedLayout & UIRectEdgeBottom) > 0) {
+    if (self.adjustsForTabBar && (self.edgesForExtendedLayout & UIRectEdgeBottom) > 0) {
         
         UITabBar *tabBar = self.tabBarController.tabBar;
         
