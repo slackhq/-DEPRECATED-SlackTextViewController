@@ -237,6 +237,13 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     [super viewDidLayoutSubviews];
 }
 
+- (void)didMoveToParentViewController:(UIViewController *)parent {
+    [super didMoveToParentViewController:parent];
+    
+    // when our tabBarController changes we need to update for a possible new bottom margin
+    [self slk_updateViewConstraints];
+}
+
 
 #pragma mark - Getters
 
