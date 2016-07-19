@@ -1169,11 +1169,16 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 
 - (void)slk_dismissTextInputbarIfNeeded
 {
-    if (self.keyboardHC.constant == 0) {
+    CGFloat bottom = 0;
+    if (self.tabBarController) {
+        bottom = self.tabBarController.tabBar.frame.size.height;
+    }
+    
+    if (self.keyboardHC.constant == bottom) {
         return;
     }
     
-    self.keyboardHC.constant = 0.0;
+    self.keyboardHC.constant = bottom;
     self.scrollViewHC.constant = [self slk_appropriateScrollViewHeight];
     
     [self slk_hideAutoCompletionViewIfNeeded];
