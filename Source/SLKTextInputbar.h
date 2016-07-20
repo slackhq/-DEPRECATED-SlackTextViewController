@@ -116,6 +116,19 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)endTextEdition;
 
+/**
+ Shows a keyboard snapshot placeholder, replacing the system keyboard.
+ The snapshot is being added as a subview, aligned at the same position the keyboard is, before hiding it momentarily.
+ 
+ @param view The view where the snapshot is taken for, for aligning purposes.
+ */
+- (void)prepareKeyboardPlaceholderFromView:(UIView *)view;
+
+/**
+ Hides the visible keyboard snapshot placeholder, if applicable.
+ */
+- (void)showKeyboardPlaceholder:(BOOL)show;
+
 
 #pragma mark - Text Counting
 ///------------------------------------------------

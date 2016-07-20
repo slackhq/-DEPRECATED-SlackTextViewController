@@ -31,6 +31,7 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
 @property (nonatomic, strong) NSArray *charCountLabelVCs;
 
 @property (nonatomic, strong) UILabel *charCountLabel;
+@property (nonatomic, strong) UIView *keyboardPlaceholderView;
 
 @property (nonatomic) CGPoint previousOrigin;
 
@@ -527,6 +528,65 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
     
     self.charCountLabel.text = counter;
     self.charCountLabel.textColor = [self limitExceeded] ? self.charCountLabelWarningColor : self.charCountLabelNormalColor;
+}
+
+
+#pragma mark - Keyboard Snapshot Placeholder
+
+- (void)prepareKeyboardPlaceholderFromView:(UIView *)view
+{
+    UIWindow *keyboardWindow = [self slk_keyboardWindow];
+    
+    if (!_keyboardPlaceholderView && keyboardWindow) {
+        // Takes a snapshot of the keyboard's window
+        UIView *snapshotView = [keyboardWindow snapshotViewAfterScreenUpdates:NO];
+        
+        CGRect screenBounds = [UIScreen mainScreen].bounds;
+        
+        // Shifts the snapshot up to fit to the bottom
+        CGRect snapshowFrame = snapshotView.frame;
+        snapshowFrame.origin.y = CGRectGetHeight(self.inputAccessoryView.keyboardViewProxy.frame) - CGRectGetHeight(screenBounds);
+        snapshotView.frame = snapshowFrame;
+        
+        CGRect keyboardFrame = self.inputAccessoryView.keyboardViewProxy.frame;
+        keyboardFrame.origin.y = CGRectGetHeight(self.frame);
+        
+        self.keyboardPlaceholderView = [[UIView alloc] initWithFrame:keyboardFrame];
+        self.keyboardPlaceholderView.backgroundColor = [UIColor clearColor];
+        [self.keyboardPlaceholderView addSubview:snapshotView];
+    }
+}
+
+- (void)showKeyboardPlaceholder:(BOOL)show
+{
+    UIWindow *keyboardWindow = [self slk_keyboardWindow];
+    
+    if (show && self.keyboardPlaceholderView && keyboardWindow) {
+        
+        // Adds the placeholder view to the input bar, so when it looks they are sticked together.
+        [self addSubview:self.keyboardPlaceholderView];
+        
+        // Let's delay hiding the keyboard's window to avoid noticeable glitches
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            keyboardWindow.hidden = YES;
+        });
+    }
+    else if (!show && _keyboardPlaceholderView && keyboardWindow) {
+        
+        [_keyboardPlaceholderView removeFromSuperview];
+        _keyboardPlaceholderView = nil;
+        
+        keyboardWindow.hidden = NO;
+    }
+}
+
+- (UIWindow *)slk_keyboardWindow
+{
+    NSArray *array = [[UIApplication sharedApplication] windows];
+    
+    // NOTE: This is risky, since the order may change in the future.
+    // But it is the only way of looking up for the keyboard window without using private APIs.
+    return [array lastObject];
 }
 
 
