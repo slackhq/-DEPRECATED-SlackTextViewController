@@ -50,7 +50,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 @property (nonatomic, getter=isViewVisible) BOOL viewVisible;
 
 // YES if the view controller's view's size is changing by its parent (i.e. when its window rotates or is resized)
-@property (nonatomic, getter = isTransitioning) BOOL transitioning;
+@property (nonatomic, getter=isTransitioning) BOOL transitioning;
 
 // Optional classes to be used instead of the default ones.
 @property (nonatomic, strong) Class textViewClass;
