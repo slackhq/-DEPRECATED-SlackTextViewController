@@ -560,6 +560,7 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
 - (void)showKeyboardPlaceholder:(BOOL)show
 {
     UIWindow *keyboardWindow = [self slk_keyboardWindow];
+    int64_t delay = NSEC_PER_SEC * 0.025;
     
     if (show && self.keyboardPlaceholderView && keyboardWindow) {
         
@@ -567,16 +568,18 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
         [self addSubview:self.keyboardPlaceholderView];
         
         // Let's delay hiding the keyboard's window to avoid noticeable glitches
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, delay), dispatch_get_main_queue(), ^{
             keyboardWindow.hidden = YES;
         });
     }
     else if (!show && _keyboardPlaceholderView && keyboardWindow) {
         
-        [_keyboardPlaceholderView removeFromSuperview];
-        _keyboardPlaceholderView = nil;
-        
         keyboardWindow.hidden = NO;
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, delay), dispatch_get_main_queue(), ^{
+            [_keyboardPlaceholderView removeFromSuperview];
+            _keyboardPlaceholderView = nil;
+        });
     }
 }
 

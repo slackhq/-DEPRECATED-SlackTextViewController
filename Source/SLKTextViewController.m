@@ -910,7 +910,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     static CGRect originalFrame;
     static BOOL dragging = NO;
     
-    __block UIView *keyboardView = [_textInputbar.inputAccessoryView keyboardViewProxy];
+    __block UIView *keyboardView = [self.textInputbar.inputAccessoryView keyboardViewProxy];
     
     // When no keyboard view has been detecting, let's skip any handling.
     if (!keyboardView) {
@@ -930,28 +930,21 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
             startPoint = CGPointZero;
             dragging = NO;
             
-            // Because the keyboard is on its own view hierarchy since iOS 9,
-            // we instead show a snapshot of the keyboard and hide it
+            // Shows a snapshot of the keyboard and hides it
             // to give the illusion that the keyboard is being moved by the user.
-            if (SLK_IS_IOS9_AND_HIGHER && gestureVelocity.y > 0) {
-                [self.textInputbar prepareKeyboardPlaceholderFromView:self.view];
-            }
+            [self.textInputbar prepareKeyboardPlaceholderFromView:self.view];
             
             break;
         }
         case UIGestureRecognizerStateChanged: {
             
-            if (CGRectContainsPoint(_textInputbar.frame, gestureLocation) || dragging){
+            if (CGRectContainsPoint(self.textInputbar.frame, gestureLocation) || dragging){
                 if (CGPointEqualToPoint(startPoint, CGPointZero)) {
                     startPoint = gestureLocation;
                     dragging = YES;
                     
-                    // Because the keyboard is on its own view hierarchy since iOS 9,
-                    // we instead show a snapshot of the keyboard and hide it
-                    // to give the illusion that the keyboard is being moved by the user.
-                    if (SLK_IS_IOS9_AND_HIGHER && gestureVelocity.y > 0) {
-                        [self.textInputbar showKeyboardPlaceholder:YES];
-                    }
+                    // Displays the keyboard placeholder in the text input bar's view hierarchy.
+                    [self.textInputbar showKeyboardPlaceholder:YES];
                     
                     originalFrame = keyboardView.frame;
                 }
@@ -967,9 +960,6 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
                 if (CGRectGetMinY(keyboardFrame) < keyboardMinY) {
                     keyboardFrame.origin.y = keyboardMinY;
                 }
-                
-                keyboardView.frame = keyboardFrame;
-                
                 
                 self.keyboardHC.constant = [self slk_appropriateKeyboardHeightFromRect:keyboardFrame];
                 self.scrollViewHC.constant = [self slk_appropriateScrollViewHeight];
@@ -1001,10 +991,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
         case UIGestureRecognizerStateFailed: {
             
             if (!dragging) {
-                if (SLK_IS_IOS9_AND_HIGHER) {
-                    [self.textInputbar showKeyboardPlaceholder:NO];
-                }
-                
+                [self.textInputbar showKeyboardPlaceholder:NO];
                 break;
             }
             
@@ -1017,7 +1004,9 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
             
             BOOL hide = (gestureVelocity.y > minVelocity) || (transition.y > minDistance);
             
-            if (hide) keyboardFrame.origin.y = keyboardMaxY;
+            if (hide) {
+                keyboardFrame.origin.y = keyboardMaxY;
+            }
             
             self.keyboardHC.constant = [self slk_appropriateKeyboardHeightFromRect:keyboardFrame];
             self.scrollViewHC.constant = [self slk_appropriateScrollViewHeight];
@@ -1027,7 +1016,6 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
                                 options:UIViewAnimationOptionCurveEaseInOut|UIViewAnimationOptionBeginFromCurrentState
                              animations:^{
                                  [self.view layoutIfNeeded];
-                                 keyboardView.frame = keyboardFrame;
                              }
                              completion:^(BOOL finished) {
                                  if (hide) {
@@ -1041,9 +1029,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
                                  
                                  self.movingKeyboard = NO;
                                  
-                                 if (SLK_IS_IOS9_AND_HIGHER) {
-                                     [self.textInputbar showKeyboardPlaceholder:NO];
-                                 }
+                                 [self.textInputbar showKeyboardPlaceholder:NO];
                              }];
             
             break;
