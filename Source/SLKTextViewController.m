@@ -33,6 +33,9 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 // A hairline displayed on top of the auto-completion view, to better separate the content from the control.
 @property (nonatomic, strong) UIView *autoCompletionHairline;
 
+// A view to stub the keyboard during the keyboard panning transition.
+@property (nonatomic, strong) UIView *keyboardStubView;
+
 // Auto-Layout height constraints used for updating their constants
 @property (nonatomic, strong) NSLayoutConstraint *scrollViewHC;
 @property (nonatomic, strong) NSLayoutConstraint *textInputbarHC;
@@ -512,6 +515,15 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     return YES;
 }
 
+- (UIWindow *)slk_keyboardWindow
+{
+    NSArray *array = [[UIApplication sharedApplication] windows];
+    
+    // NOTE: This is risky, since the order may change in the future
+    // but it is the only way of looking up for the keyboard's window without using private APIs.
+    return [array lastObject];
+}
+
 
 #pragma mark - Setters
 
@@ -930,9 +942,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
             startPoint = CGPointZero;
             dragging = NO;
             
-            // Shows a snapshot of the keyboard and hides it
-            // to give the illusion that the keyboard is being moved by the user.
-            [self.textInputbar prepareKeyboardPlaceholderFromView:self.view];
+            [self slk_prepareKeyboardStub];
             
             break;
         }
@@ -943,8 +953,8 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
                     startPoint = gestureLocation;
                     dragging = YES;
                     
-                    // Displays the keyboard placeholder in the text input bar's view hierarchy.
-                    [self.textInputbar showKeyboardPlaceholder:YES];
+                    // Displays the keyboard stub in the key windows's hierarchy.
+                    [self slk_showKeyboardStub:YES];
                     
                     originalFrame = keyboardView.frame;
                 }
@@ -961,8 +971,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
                     keyboardFrame.origin.y = keyboardMinY;
                 }
                 
-                UIView *keyboardPlaceholder = self.textInputbar.keyboardPlaceholderView;
-                keyboardPlaceholder.frame = [self.view.window convertRect:keyboardFrame fromView:nil];
+                self.keyboardStubView.frame = [self.view.window convertRect:keyboardFrame fromView:nil];
                 
                 self.keyboardHC.constant = [self slk_appropriateKeyboardHeightFromRect:keyboardFrame];
                 self.scrollViewHC.constant = [self slk_appropriateScrollViewHeight];
@@ -994,7 +1003,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
         case UIGestureRecognizerStateFailed: {
             
             if (!dragging) {
-                [self.textInputbar showKeyboardPlaceholder:NO];
+                [self slk_showKeyboardStub:NO];
                 break;
             }
             
@@ -1019,6 +1028,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
                                 options:UIViewAnimationOptionCurveEaseInOut|UIViewAnimationOptionBeginFromCurrentState
                              animations:^{
                                  [self.view layoutIfNeeded];
+                                 self.keyboardStubView.frame = [self.view.window convertRect:keyboardFrame fromView:nil];
                              }
                              completion:^(BOOL finished) {
                                  if (hide) {
@@ -1032,7 +1042,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
                                  
                                  self.movingKeyboard = NO;
                                  
-                                 [self.textInputbar showKeyboardPlaceholder:NO];
+                                 [self slk_showKeyboardStub:NO];
                              }];
             
             break;
@@ -1218,6 +1228,60 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(duration * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         self.transitioning = NO;
     });
+}
+
+// Takes a snapshot of the keyboard window and caches it in a wrapper view
+// to be used later as a keyboard stub and give the illusion that the keyboard is being panned by the user.
+- (void)slk_prepareKeyboardStub
+{
+    UIWindow *keyboardWindow = [self slk_keyboardWindow];
+    
+    if (!_keyboardStubView && keyboardWindow) {
+        // Takes a snapshot of the keyboard's window
+        UIView *snapshotView = [keyboardWindow snapshotViewAfterScreenUpdates:NO];
+        UIView *keyboardView = [self.textInputbar.inputAccessoryView keyboardViewProxy];
+        
+        CGRect screenBounds = [UIScreen mainScreen].bounds;
+        
+        // Shifts the snapshot up to fit to the bottom
+        CGRect snapshowFrame = snapshotView.frame;
+        snapshowFrame.origin.y = CGRectGetHeight(keyboardView.frame) - CGRectGetHeight(screenBounds);
+        snapshotView.frame = snapshowFrame;
+        
+        self.keyboardStubView = [[UIView alloc] init];
+        self.keyboardStubView.backgroundColor = [UIColor clearColor];
+        [self.keyboardStubView addSubview:snapshotView];
+    }
+}
+
+// Shows/Hides the keyboard stub
+- (void)slk_showKeyboardStub:(BOOL)show
+{
+    UIWindow *keyboardWindow = [self slk_keyboardWindow];
+    int64_t delay = NSEC_PER_SEC * 0.025;
+    
+    if (!keyboardWindow || !self.keyboardStubView) {
+        return;
+    }
+    
+    if (show) {
+        // Adds the stub view to the key window, to overlap any other view in the hierarchy
+        [self.view.window addSubview:self.keyboardStubView];
+        
+        // Let's delay hiding the keyboard's window to avoid noticeable glitches
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, delay), dispatch_get_main_queue(), ^{
+            keyboardWindow.hidden = YES;
+        });
+    }
+    else {
+        keyboardWindow.hidden = NO;
+        
+        // Let's the removal of the keyboard stub to avoid noticeable glitches
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, delay), dispatch_get_main_queue(), ^{
+            [_keyboardStubView removeFromSuperview];
+            _keyboardStubView = nil;
+        });
+    }
 }
 
 
