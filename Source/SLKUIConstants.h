@@ -1,17 +1,9 @@
 //
-//   Copyright 2014-2016 Slack Technologies, Inc.
+//  SlackTextViewController
+//  https://github.com/slackhq/SlackTextViewController
 //
-//   Licensed under the Apache License, Version 2.0 (the "License");
-//   you may not use this file except in compliance with the License.
-//   You may obtain a copy of the License at
-//
-//       http://www.apache.org/licenses/LICENSE-2.0
-//
-//   Unless required by applicable law or agreed to in writing, software
-//   distributed under the License is distributed on an "AS IS" BASIS,
-//   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//   See the License for the specific language governing permissions and
-//   limitations under the License.
+//  Copyright 2014-2016 Slack Technologies, Inc.
+//  Licence: MIT-Licence
 //
 
 #define SLK_IS_LANDSCAPE         ([[UIApplication sharedApplication] statusBarOrientation] == UIDeviceOrientationLandscapeLeft || [[UIApplication sharedApplication] statusBarOrientation] == UIDeviceOrientationLandscapeRight)
@@ -26,18 +18,37 @@
 
 #define SLK_KEYBOARD_NOTIFICATION_DEBUG     DEBUG && 0  // Logs every keyboard notification being sent
 
-#if __has_attribute(objc_designated_initializer)
-    #define SLK_DESIGNATED_INITIALIZER __attribute__((objc_designated_initializer))
-#endif
-
 static NSString *SLKTextViewControllerDomain = @"com.slack.TextViewController";
 
-inline static CGRect SLKKeyWindowBounds()
+/**
+ Returns a constant font size difference reflecting the current accessibility settings.
+ 
+ @param category A content size category constant string.
+ @returns A float constant font size difference.
+ */
+__unused static CGFloat SLKPointSizeDifferenceForCategory(NSString *category)
+{
+    if ([category isEqualToString:UIContentSizeCategoryExtraSmall])                         return -3.0;
+    if ([category isEqualToString:UIContentSizeCategorySmall])                              return -2.0;
+    if ([category isEqualToString:UIContentSizeCategoryMedium])                             return -1.0;
+    if ([category isEqualToString:UIContentSizeCategoryLarge])                              return 0.0;
+    if ([category isEqualToString:UIContentSizeCategoryExtraLarge])                         return 2.0;
+    if ([category isEqualToString:UIContentSizeCategoryExtraExtraLarge])                    return 4.0;
+    if ([category isEqualToString:UIContentSizeCategoryExtraExtraExtraLarge])               return 6.0;
+    if ([category isEqualToString:UIContentSizeCategoryAccessibilityMedium])                return 8.0;
+    if ([category isEqualToString:UIContentSizeCategoryAccessibilityLarge])                 return 10.0;
+    if ([category isEqualToString:UIContentSizeCategoryAccessibilityExtraLarge])            return 11.0;
+    if ([category isEqualToString:UIContentSizeCategoryAccessibilityExtraExtraLarge])       return 12.0;
+    if ([category isEqualToString:UIContentSizeCategoryAccessibilityExtraExtraExtraLarge])  return 13.0;
+    return 0;
+}
+
+__unused static CGRect SLKKeyWindowBounds()
 {
     return [[UIApplication sharedApplication] keyWindow].bounds;
 }
 
-inline static CGRect SLKRectInvert(CGRect rect)
+__unused static CGRect SLKRectInvert(CGRect rect)
 {
     CGRect invert = CGRectZero;
     
