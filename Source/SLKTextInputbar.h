@@ -129,6 +129,9 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)showKeyboardPlaceholder:(BOOL)show;
 
+@property (nonatomic, strong) UIView *keyboardPlaceholderView;
+
+
 
 #pragma mark - Text Counting
 ///------------------------------------------------

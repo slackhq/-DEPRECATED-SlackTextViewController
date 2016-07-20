@@ -961,6 +961,9 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
                     keyboardFrame.origin.y = keyboardMinY;
                 }
                 
+                UIView *keyboardPlaceholder = self.textInputbar.keyboardPlaceholderView;
+                keyboardPlaceholder.frame = [self.view.window convertRect:keyboardFrame fromView:nil];
+                
                 self.keyboardHC.constant = [self slk_appropriateKeyboardHeightFromRect:keyboardFrame];
                 self.scrollViewHC.constant = [self slk_appropriateScrollViewHeight];
                 

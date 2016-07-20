@@ -31,7 +31,6 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
 @property (nonatomic, strong) NSArray *charCountLabelVCs;
 
 @property (nonatomic, strong) UILabel *charCountLabel;
-@property (nonatomic, strong) UIView *keyboardPlaceholderView;
 
 @property (nonatomic) CGPoint previousOrigin;
 
@@ -548,10 +547,7 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
         snapshowFrame.origin.y = CGRectGetHeight(self.inputAccessoryView.keyboardViewProxy.frame) - CGRectGetHeight(screenBounds);
         snapshotView.frame = snapshowFrame;
         
-        CGRect keyboardFrame = self.inputAccessoryView.keyboardViewProxy.frame;
-        keyboardFrame.origin.y = CGRectGetHeight(self.frame);
-        
-        self.keyboardPlaceholderView = [[UIView alloc] initWithFrame:keyboardFrame];
+        self.keyboardPlaceholderView = [[UIView alloc] init];
         self.keyboardPlaceholderView.backgroundColor = [UIColor clearColor];
         [self.keyboardPlaceholderView addSubview:snapshotView];
     }
@@ -565,7 +561,7 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
     if (show && self.keyboardPlaceholderView && keyboardWindow) {
         
         // Adds the placeholder view to the input bar, so when it looks they are sticked together.
-        [self addSubview:self.keyboardPlaceholderView];
+        [self.window addSubview:self.keyboardPlaceholderView];
         
         // Let's delay hiding the keyboard's window to avoid noticeable glitches
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, delay), dispatch_get_main_queue(), ^{
