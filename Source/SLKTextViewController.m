@@ -1700,7 +1700,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     [self.textView lookForPrefixes:self.registeredPrefixes
                         completion:^(NSString *prefix, NSString *word, NSRange wordRange) {
                             
-                            if (prefix.length > 0 && word.length > 0) {
+                            if (prefix && prefix.length > 0 && word.length > 0) {
                                 
                                 // Captures the detected symbol prefix
                                 _foundPrefix = prefix;
