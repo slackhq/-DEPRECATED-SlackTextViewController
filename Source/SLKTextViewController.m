@@ -1686,7 +1686,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 - (void)cancelAutoCompletion
 {
     [self slk_invalidateAutoCompletion];
-    [self slk_hideAutoCompletionViewIfNeeded];
+    [self showAutoCompletionView:NO];
 }
 
 - (void)slk_processTextForAutoCompletion
