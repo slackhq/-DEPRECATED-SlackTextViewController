@@ -379,6 +379,15 @@ NS_CLASS_AVAILABLE_IOS(7_0) @interface SLKTextViewController : UIViewController 
 - (void)editText:(NSString *)text NS_REQUIRES_SUPER;
 
 /**
+ Re-uses the text layout for edition, displaying an accessory view on top of the text input bar with options (cancel & save).
+ You can override this method to perform additional tasks
+ You MUST call super at some point in your implementation.
+ 
+ @param attributedText The attributed text to edit.
+ */
+- (void)editAttributedText:(NSAttributedString *)attributedText NS_REQUIRES_SUPER;
+
+/**
  Notifies the view controller when the editing bar's right button's action has been triggered, manually or by using the external keyboard's Return key.
  You can override this method to perform additional tasks associated with accepting changes.
  You MUST call super at some point in your implementation.
@@ -458,15 +467,15 @@ NS_CLASS_AVAILABLE_IOS(7_0) @interface SLKTextViewController : UIViewController 
  */
 - (void)showAutoCompletionView:(BOOL)show;
 
-
 /**
  Use this method to programatically show the autocompletion view, with provided prefix and word to search.
  Right before the view is shown, -reloadData is called. So avoid calling it manually.
  
- @param prefix a prefix that is used to trigger autocompletion
- @parm word a word to search for autocompletion
+ @param prefix A prefix that is used to trigger autocompletion
+ @param word A word to search for autocompletion
+ @param prefixRange The range in which prefix spans.
 */
-- (void)showAutoCompletionViewWithPrefix:(NSString *)prefix andWord:(NSString *)word;
+- (void)showAutoCompletionViewWithPrefix:(NSString *)prefix andWord:(NSString *)word prefixRange:(NSRange)prefixRange;
 
 /**
  Returns a custom height for the autocompletion view. Default is 0.0.
@@ -531,6 +540,11 @@ NS_CLASS_AVAILABLE_IOS(7_0) @interface SLKTextViewController : UIViewController 
  Removes all the cached text from disk.
  */
 + (void)clearAllCachedText;
+
+/**
+ Caches text to disk.
+ */
+- (void)cacheTextView;
 
 
 #pragma mark - Customization

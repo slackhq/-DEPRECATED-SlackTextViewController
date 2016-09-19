@@ -222,7 +222,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     [super viewDidDisappear:animated];
     
     // Caches the text before it's too late!
-    [self slk_cacheTextView];
+    [self cacheTextView];
 }
 
 - (void)viewWillLayoutSubviews
@@ -742,17 +742,23 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 
 - (void)editText:(NSString *)text
 {
-    if (![_textInputbar canEditText:text]) {
+    NSAttributedString *attributedText = [self.textView slk_defaultAttributedStringForText:text];
+    [self editAttributedText:attributedText];
+}
+
+- (void)editAttributedText:(NSAttributedString *)attributedText
+{
+    if (![_textInputbar canEditText:attributedText.string]) {
         return;
     }
     
     // Caches the current text, in case the user cancels the edition
-    [self slk_cacheTextToDisk:self.textView.text];
+    [self slk_cacheAttributedTextToDisk:self.textView.attributedText];
     
     [_textInputbar beginTextEditing];
     
     // Setting the text after calling -beginTextEditing is safer
-    [self.textView setText:text];
+    [self.textView setAttributedText:attributedText];
     
     [self.textView slk_scrollToCaretPositonAnimated:YES];
     
@@ -1346,29 +1352,28 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
         return;
     }
     
+    // Programatically stops scrolling before updating the view constraints (to avoid scrolling glitch).
+    if (status == SLKKeyboardStatusWillShow) {
+        [self.scrollViewProxy slk_stopScrolling];
+    }
+    
+    // Stores the previous keyboard height
+    CGFloat previousKeyboardHeight = self.keyboardHC.constant;
+    
+    // Updates the height constraints' constants
+    self.keyboardHC.constant = [self slk_appropriateKeyboardHeightFromNotification:notification];
+    self.scrollViewHC.constant = [self slk_appropriateScrollViewHeight];
+    
     // Updates and notifies about the keyboard status update
     if ([self slk_updateKeyboardStatus:status]) {
         // Posts custom keyboard notification, if logical conditions apply
         [self slk_postKeyboarStatusNotification:notification];
     }
     
-    // Programatically stops scrolling before updating the view constraints (to avoid scrolling glitch).
-    if (status == SLKKeyboardStatusWillShow) {
-        [self.scrollViewProxy slk_stopScrolling];
-    }
-    
     // Hides the auto-completion view if the keyboard is being dismissed.
     if (![self.textView isFirstResponder] || status == SLKKeyboardStatusWillHide) {
         [self slk_hideAutoCompletionViewIfNeeded];
     }
-    
-    // Stores the previous keyboard height
-    CGFloat previousKeyboardHeight = self.keyboardHC.constant;
-
-    // Updates the height constraints' constants
-    self.keyboardHC.constant = [self slk_appropriateKeyboardHeightFromNotification:notification];
-    self.scrollViewHC.constant = [self slk_appropriateScrollViewHeight];
-    
     
     NSInteger curve = [notification.userInfo[UIKeyboardAnimationCurveUserInfoKey] integerValue];
     NSTimeInterval duration = [notification.userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
@@ -1642,11 +1647,12 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
                                         animations:NULL];
 }
 
-- (void)showAutoCompletionViewWithPrefix:(NSString *)prefix andWord:(NSString *)word;
+- (void)showAutoCompletionViewWithPrefix:(NSString *)prefix andWord:(NSString *)word prefixRange:(NSRange)prefixRange
 {
     if ([self.registeredPrefixes containsObject:prefix]) {
         _foundPrefix = prefix;
         _foundWord = word;
+        _foundPrefixRange = prefixRange;
         [self didChangeAutoCompletionPrefix:self.foundPrefix andWord:self.foundWord];
         [self showAutoCompletionView:YES];
     }
@@ -1788,21 +1794,67 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     if (key == nil) {
         return;
     }
-    NSString *cachedText = [[NSUserDefaults standardUserDefaults] objectForKey:key];
+    NSAttributedString *cachedAttributedText = [[NSAttributedString alloc] initWithString:@""];
     
-    if (self.textView.text.length == 0 || cachedText.length > 0) {
-        self.textView.text = cachedText;
+    id obj = [[NSUserDefaults standardUserDefaults] objectForKey:key];
+    if (obj) {
+        if ([obj isKindOfClass:[NSString class]]) {
+            cachedAttributedText = [[NSAttributedString alloc] initWithString:obj];
+        }
+        else if ([obj isKindOfClass:[NSData class]]) {
+            cachedAttributedText = [NSKeyedUnarchiver unarchiveObjectWithData:obj];
+        }
+    }
+    
+    if (self.textView.attributedText.length == 0 || cachedAttributedText.length > 0) {
+        self.textView.attributedText = cachedAttributedText;
     }
 }
 
-- (void)slk_cacheTextView
+- (void)cacheTextView
 {
-    [self slk_cacheTextToDisk:self.textView.text];
+    [self slk_cacheAttributedTextToDisk:self.textView.attributedText];
 }
 
 - (void)clearCachedText
 {
-    [self slk_cacheTextToDisk:nil];
+    [self slk_cacheAttributedTextToDisk:nil];
+}
+
+- (void)slk_cacheAttributedTextToDisk:(NSAttributedString *)attributedText
+{
+    NSString *key = [self slk_keyForPersistency];
+    
+    if (!key || key.length == 0) {
+        return;
+    }
+    
+    NSAttributedString *cachedAttributedText = [[NSAttributedString alloc] initWithString:@""];
+    id obj = [[NSUserDefaults standardUserDefaults] objectForKey:key];
+    if (obj) {
+        if ([obj isKindOfClass:[NSString class]]) {
+            cachedAttributedText = [[NSAttributedString alloc] initWithString:obj];
+        }
+        else if ([obj isKindOfClass:[NSData class]]) {
+            cachedAttributedText = [NSKeyedUnarchiver unarchiveObjectWithData:obj];
+        }
+    }
+    
+    // Caches text only if its a valid string and not already cached
+    if (attributedText.length > 0 && ![attributedText isEqualToAttributedString:cachedAttributedText]) {
+        NSData *data = [NSKeyedArchiver archivedDataWithRootObject:attributedText];
+        [[NSUserDefaults standardUserDefaults] setObject:data forKey:key];
+    }
+    // Clears cache only if it exists
+    else if (attributedText.length == 0 && cachedAttributedText.length > 0) {
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:key];
+    }
+    else {
+        // Skips so it doesn't hit 'synchronize' unnecessarily
+        return;
+    }
+    
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (void)slk_cacheTextToDisk:(NSString *)text
@@ -1813,22 +1865,8 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
         return;
     }
     
-    NSString *cachedText = [[NSUserDefaults standardUserDefaults] objectForKey:key];
-    
-    // Caches text only if its a valid string and not already cached
-    if (text.length > 0 && ![text isEqualToString:cachedText]) {
-        [[NSUserDefaults standardUserDefaults] setObject:text forKey:key];
-    }
-    // Clears cache only if it exists
-    else if (text.length == 0 && cachedText.length > 0) {
-        [[NSUserDefaults standardUserDefaults] removeObjectForKey:key];
-    }
-    else {
-        // Skips so it doesn't hit 'synchronize' unnecessarily
-        return;
-    }
-    
-    [[NSUserDefaults standardUserDefaults] synchronize];
+    NSAttributedString *attributedText = [[NSAttributedString alloc] initWithString:text];
+    [self slk_cacheAttributedTextToDisk:attributedText];
 }
 
 + (void)clearAllCachedText
@@ -2243,9 +2281,9 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     [notificationCenter addObserver:self selector:@selector(slk_didShakeTextView:) name:SLKTextViewDidShakeNotification object:nil];
     
     // Application notifications
-    [notificationCenter addObserver:self selector:@selector(slk_cacheTextView) name:UIApplicationWillTerminateNotification object:nil];
-    [notificationCenter addObserver:self selector:@selector(slk_cacheTextView) name:UIApplicationDidEnterBackgroundNotification object:nil];
-    [notificationCenter addObserver:self selector:@selector(slk_cacheTextView) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
+    [notificationCenter addObserver:self selector:@selector(cacheTextView) name:UIApplicationWillTerminateNotification object:nil];
+    [notificationCenter addObserver:self selector:@selector(cacheTextView) name:UIApplicationDidEnterBackgroundNotification object:nil];
+    [notificationCenter addObserver:self selector:@selector(cacheTextView) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
 }
 
 - (void)slk_unregisterNotifications

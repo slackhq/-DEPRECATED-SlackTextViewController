@@ -446,6 +446,8 @@ SLKPastableMediaType SLKPastableMediaTypeFromNSString(NSString *string)
 - (void)setSelectedRange:(NSRange)selectedRange
 {
     [super setSelectedRange:selectedRange];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:SLKTextViewSelectedRangeDidChangeNotification object:self userInfo:nil];
 }
 
 - (void)setSelectedTextRange:(UITextRange *)selectedTextRange
@@ -462,7 +464,8 @@ SLKPastableMediaType SLKPastableMediaTypeFromNSString(NSString *string)
 
     if (text) {
         [self setAttributedText:[self slk_defaultAttributedStringForText:text]];
-    } else {
+    }
+    else {
         [self setAttributedText:nil];
     }
     
