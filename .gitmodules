@@ -1,0 +1,3 @@
+[submodule "Examples/Uncrustify/Source"]
+	path = Examples/Uncrustify/Source
+	url = https://github.com/bengardner/uncrustify.git
