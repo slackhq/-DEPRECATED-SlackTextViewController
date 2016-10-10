@@ -54,6 +54,8 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 
 // Optional classes to be used instead of the default ones.
 @property (nonatomic, strong) Class textViewClass;
+@property (nonatomic, strong) Class textStorageClass;
+
 @property (nonatomic, strong) Class typingIndicatorViewClass;
 
 @end
@@ -306,7 +308,8 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 - (SLKTextInputbar *)textInputbar
 {
     if (!_textInputbar) {
-        _textInputbar = [[SLKTextInputbar alloc] initWithTextViewClass:self.textViewClass];
+        _textInputbar = [[SLKTextInputbar alloc] initWithTextViewClass:self.textViewClass textStorageClass:self.textStorageClass];
+                         
         _textInputbar.translatesAutoresizingMaskIntoConstraints = NO;
         
         [_textInputbar.leftButton addTarget:self action:@selector(didPressLeftButton:) forControlEvents:UIControlEventTouchUpInside];
@@ -1903,6 +1906,16 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     self.textViewClass = aClass;
 }
 
+- (void)registerClassForTextStorage:(Class)aClass
+{
+    if (aClass == nil) {
+        return;
+    }
+    
+    NSAssert([aClass isSubclassOfClass:[NSTextStorage class]], @"The registered class is invalid, it must be a subclass of NSTextStorage.");
+    self.textStorageClass = aClass;
+}
+
 - (void)registerClassForTypingIndicatorView:(Class)aClass
 {
     if (aClass == nil) {
@@ -2387,6 +2400,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     
     _textInputbar = nil;
     _textViewClass = nil;
+    _textStorageClass = nil;
     
     [_typingIndicatorProxyView removeObserver:self forKeyPath:@"visible"];
     _typingIndicatorProxyView = nil;
