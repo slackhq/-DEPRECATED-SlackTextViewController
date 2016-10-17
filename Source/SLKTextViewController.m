@@ -196,6 +196,9 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
         // Reloads any cached text
         [self slk_reloadTextView];
     }];
+    
+    [self setAutomaticallyAdjustsScrollViewInsets:NO];
+    [[self tableView] setContentInset:UIEdgeInsetsZero];
 }
 
 - (void)viewDidAppear:(BOOL)animated
