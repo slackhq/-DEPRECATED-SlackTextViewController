@@ -578,6 +578,9 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
         BOOL shouldHide = (self.textView.numberOfLines == 1) || self.editing;
         self.charCountLabel.hidden = shouldHide;
     }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self slk_updateConstraintConstants];
+    });
 }
 
 - (void)slk_didChangeContentSizeCategory:(NSNotification *)notification
