@@ -571,6 +571,15 @@ NS_CLASS_AVAILABLE_IOS(7_0) @interface SLKTextViewController : UIViewController 
 - (void)registerClassForTextView:(Class _Nullable)aClass;
 
 /**
+ Registers a class to be used as the text storage for the text view.
+ You need to call this method inside of any initialization method.
+ 
+ @param aClass An NSTextStorage subclass.
+ */
+- (void)registerClassForTextStorage:(Class _Nullable)aClass;
+
+
+/**
  Registers a class for customizing the behavior and appearance of the typing indicator view.
  You need to call this method inside of any initialization method.
  Make sure to conform to SLKTypingIndicatorProtocol and implement the required methods.

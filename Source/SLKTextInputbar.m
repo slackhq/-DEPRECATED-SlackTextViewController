@@ -35,6 +35,7 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
 @property (nonatomic) CGPoint previousOrigin;
 
 @property (nonatomic, strong) Class textViewClass;
+@property (nonatomic, strong) Class textStorageClass;
 
 @property (nonatomic, getter=isHidden) BOOL hidden; // Required override
 
@@ -45,10 +46,11 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
 
 #pragma mark - Initialization
 
-- (instancetype)initWithTextViewClass:(Class)textViewClass
+- (instancetype)initWithTextViewClass:(Class)textViewClass textStorageClass:(Class)textStorageClass
 {
     if (self = [super init]) {
         self.textViewClass = textViewClass;
+        self.textStorageClass = textStorageClass;
         [self slk_commonInit];
     }
     return self;
@@ -129,7 +131,25 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
     if (!_textView) {
         Class class = self.textViewClass ? : [SLKTextView class];
         
-        _textView = [[class alloc] init];
+        if (self.textStorageClass) {
+            _textStorage = [[self.textStorageClass alloc] init];
+           
+            NSLayoutManager *layoutManager = [[NSLayoutManager alloc] init];
+            
+            NSTextContainer *container = [[NSTextContainer alloc] initWithSize:CGSizeZero];
+            container.heightTracksTextView = YES;
+            container.widthTracksTextView = YES;
+            
+            [layoutManager addTextContainer:container];
+            
+            [_textStorage addLayoutManager:layoutManager];
+            
+            _textView = [[class alloc]initWithFrame:CGRectZero textContainer:container];
+        }
+        else {
+            _textView = [[class alloc] init];
+        }
+        
         _textView.translatesAutoresizingMaskIntoConstraints = NO;
         _textView.font = [UIFont systemFontOfSize:15.0];
         _textView.maxNumberOfLines = [self slk_defaultNumberOfLines];

@@ -36,6 +36,8 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, strong) SLKTextView *textView;
 
+@property (nonatomic, strong) NSTextStorage *textStorage;
+
 /** The custom input accessory view, used as empty achor view to detect the keyboard frame. */
 @property (nonatomic, strong) SLKInputAccessoryView *inputAccessoryView;
 
@@ -67,12 +69,15 @@ NS_ASSUME_NONNULL_BEGIN
 ///------------------------------------------------
 
 /**
- Initializes a text input bar with a class to be used for the text view
+ Initializes a text input bar with classes to be used for the text view, and its text storage
  
  @param textViewClass The class to be used when creating the text view. May be nil. If provided, the class must be a subclass of SLKTextView
+ @param textStorageClass The class to be used when creating the text view's text storage. May be nil.
+
  @return An initialized SLKTextInputbar object or nil if the object could not be created.
  */
-- (instancetype)initWithTextViewClass:(Class)textViewClass;
+
+- (instancetype)initWithTextViewClass:(Class)textViewClass textStorageClass:(Class)textStorageClass;
 
 
 #pragma mark - Text Editing
