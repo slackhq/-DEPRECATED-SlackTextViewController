@@ -74,8 +74,11 @@ NS_CLASS_AVAILABLE_IOS(7_0) @interface SLKTextViewController : UIViewController 
 /** A single tap gesture used to dismiss the keyboard. SLKTextViewController is its delegate. */
 @property (nonatomic, readonly) UIGestureRecognizer *singleTapGesture;
 
-/** A vertical pan gesture used for bringing the keyboard from the bottom. SLKTextViewController is its delegate. */
+/** A vertical pan gesture used for moving the keyboard up and bottom. SLKTextViewController is its delegate. */
 @property (nonatomic, readonly) UIPanGestureRecognizer *verticalPanGesture;
+
+/** A vertical swipe gesture used for bringing the keyboard from the bottom. SLKTextViewController is its delegate. */
+@property (nonatomic, readonly) UISwipeGestureRecognizer *verticalSwipeGesture;
 
 /** YES if animations should have bouncy effects. Default is YES. */
 @property (nonatomic, assign) BOOL bounces;
@@ -83,12 +86,7 @@ NS_CLASS_AVAILABLE_IOS(7_0) @interface SLKTextViewController : UIViewController 
 /** YES if text view's content can be cleaned with a shake gesture. Default is NO. */
 @property (nonatomic, assign) BOOL shakeToClearEnabled;
 
-/**
- YES if keyboard can be dismissed gradually with a vertical panning gesture. Default is YES.
- 
- This feature doesn't work on iOS 9 due to no legit alternatives to detect the keyboard view.
- Open Radar: http://openradar.appspot.com/radar?id=5021485877952512
- */
+/** YES if keyboard can be dismissed gradually with a vertical panning gesture. Default is YES. */
 @property (nonatomic, assign, getter = isKeyboardPanningEnabled) BOOL keyboardPanningEnabled;
 
 /** YES if an external keyboard has been detected (this value updates only when the text view becomes first responder). */
@@ -599,6 +597,7 @@ NS_CLASS_AVAILABLE_IOS(7_0) @interface SLKTextViewController : UIViewController 
 
 /** UIGestureRecognizerDelegate */
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer NS_REQUIRES_SUPER;
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer NS_REQUIRES_SUPER;
 
 /** UIAlertViewDelegate */
 #ifndef __IPHONE_8_0
