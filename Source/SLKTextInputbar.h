@@ -34,10 +34,13 @@ NS_ASSUME_NONNULL_BEGIN
  For iPhone 5 & 6   (>=568pts): 6 lines
  For iPad           (>=768pts): 8 lines
  */
-@property (nonatomic, strong) SLKTextView *textView;
+@property (nonatomic, readonly, strong) SLKTextView *textView;
+
+/** Optional view to host outlets under the text view, adjusting its height based on its subviews. Non-visible by default. Subviews' layout should be configured using auto-layout as well. */
+@property (nonatomic, readonly, strong) UIView *contentView;
 
 /** The custom input accessory view, used as empty achor view to detect the keyboard frame. */
-@property (nonatomic, strong) SLKInputAccessoryView *inputAccessoryView;
+@property (nonatomic, readonly, strong) SLKInputAccessoryView *inputAccessoryView;
 
 /** The left action button action. */
 @property (nonatomic, strong) UIButton *leftButton;
@@ -59,9 +62,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 /** The most appropriate height calculated based on the amount of lines of text and other factors. */
 @property (nonatomic, readonly) CGFloat appropriateHeight;
-
-/** */
-@property (nonatomic, assign) CGFloat bottomMargin;
 
 
 #pragma mark - Initialization
