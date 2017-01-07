@@ -445,6 +445,7 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
     
     // Add constant values and refresh layout
     [self slk_updateConstraintConstants];
+    
     [super layoutIfNeeded];
 }
 
@@ -458,6 +459,9 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
     _editorContentView.hidden = !editing;
     
     self.contentViewHC.active = editing;
+    
+    [super setNeedsLayout];
+    [super layoutIfNeeded];
 }
 
 - (void)setHidden:(BOOL)hidden
@@ -466,6 +470,13 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
     // The hidden render state is handled by the view controller.
     
     _hidden = hidden;
+    
+    if (!self.isEditing) {
+        self.contentViewHC.active = hidden;
+        
+        [super setNeedsLayout];
+        [super layoutIfNeeded];
+    }
 }
 
 - (void)setCounterPosition:(SLKCounterPosition)counterPosition
@@ -650,7 +661,7 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[editorContentView(0)]-(<=top)-[textView(0@999)]-(0)-|" options:0 metrics:metrics views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[editorContentView]|" options:0 metrics:metrics views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[contentView]|" options:0 metrics:metrics views:views]];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[contentView(0)]-0-|" options:0 metrics:metrics views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[contentView(0)]|" options:0 metrics:metrics views:views]];
     
     self.textViewBottomMarginC = [self slk_constraintForAttribute:NSLayoutAttributeBottom firstItem:self secondItem:self.textView];
     self.editorContentViewHC = [self slk_constraintForAttribute:NSLayoutAttributeHeight firstItem:self.editorContentView secondItem:nil];

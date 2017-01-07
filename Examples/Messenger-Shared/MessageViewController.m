@@ -214,6 +214,7 @@
     UIBarButtonItem *buttonItem = (UIBarButtonItem *)sender;
     
     [self setTextInputbarHidden:hide animated:YES];
+    
     [buttonItem setImage:image];
 }
 
