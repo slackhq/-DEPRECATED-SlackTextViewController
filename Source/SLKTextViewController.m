@@ -28,6 +28,8 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 {
     CGPoint _scrollViewOffsetBeforeDragging;
     CGFloat _keyboardHeightBeforeDragging;
+    CGPoint _textViewPointBeforeEditing;
+    BOOL _viewAtButtomBeforeEditing;
 }
 
 // The shared scrollView pointer, either a tableView or collectionView
@@ -2074,6 +2076,15 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 
 - (BOOL)textViewShouldBeginEditing:(SLKTextView *)textView
 {
+    if (!_inverted && _tableView) {
+        if (_tableView.contentOffset.y >= (_tableView.contentSize.height - _tableView.frame.size.height)) {
+            //user has scrolled to the bottom
+            _viewAtButtomBeforeEditing = YES;
+        } else {
+            _viewAtButtomBeforeEditing = NO;
+            _textViewPointBeforeEditing = [textView.superview convertPoint:textView.frame.origin toView: self.view];
+        }
+    }
     return YES;
 }
 
@@ -2084,6 +2095,19 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 
 - (void)textViewDidBeginEditing:(SLKTextView *)textView
 {
+    if (!_inverted && _tableView) {
+        CGPoint textViewPoint = [textView.superview convertPoint:textView.frame.origin toView: self.view];
+        CGPoint contentOffset = _tableView.contentOffset;
+        if (_viewAtButtomBeforeEditing) {
+            CGFloat y = _tableView.contentSize.height - _tableView.frame.size.height;
+            if (y > 0) {
+                contentOffset.y = y;
+            }
+        } else {
+            contentOffset.y += _textViewPointBeforeEditing.y - textViewPoint.y;
+        }
+        [_tableView setContentOffset:contentOffset animated:YES];
+    }
     // No implementation here. Meant to be overriden in subclass.
 }
 
