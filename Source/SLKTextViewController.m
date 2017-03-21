@@ -1329,6 +1329,39 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 
 
 #pragma mark - Notification Events
+- (void)slk_willChangeFrameKeyboard:(NSNotification *)notification
+{
+    NSInteger curve = [notification.userInfo[UIKeyboardAnimationCurveUserInfoKey] integerValue];
+    NSTimeInterval duration = [notification.userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+    CGRect beginFrame = [notification.userInfo[UIKeyboardFrameBeginUserInfoKey] CGRectValue];
+    CGRect endFrame = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    CGFloat delta = (endFrame.origin.y - beginFrame.origin.y);
+    
+    if (!self.isInverted  && fabs(delta) > 0) {
+        CGPoint contentOffset = self.scrollViewProxy.contentOffset;
+        CGFloat contentHeight = self.scrollViewProxy.contentSize.height;
+        CGFloat frameHeight = self.scrollViewProxy.frame.size.height;
+        BOOL isAtBottom = self.scrollViewProxy.contentOffset.y >= (contentHeight - frameHeight);
+        if ((contentHeight + 64 < frameHeight) && delta < 0) {
+            // Content Size less than frame size
+            if (contentHeight + 64 > frameHeight + delta) {
+                // Keyboard will cover content
+                contentOffset.y = contentHeight - frameHeight - delta;
+                UIViewAnimationOptions options = (curve << 16) | UIViewAnimationOptionBeginFromCurrentState;
+                [UIView animateWithDuration:duration delay:0 options:options animations:^{
+                    self.scrollViewProxy.contentOffset = contentOffset;
+                } completion:nil];
+            }
+        } else if (!isAtBottom || (isAtBottom && delta < 0)) {
+            contentOffset.y -= delta;
+            UIViewAnimationOptions options = (curve << 16) | UIViewAnimationOptionBeginFromCurrentState;
+            [UIView animateWithDuration:duration delay:0 options:options animations:^{
+                self.scrollViewProxy.contentOffset = contentOffset;
+            } completion:nil];
+        }
+    }
+
+}
 
 - (void)slk_willShowOrHideKeyboard:(NSNotification *)notification
 {
@@ -2305,6 +2338,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     // Keyboard notifications
     [notificationCenter addObserver:self selector:@selector(slk_willShowOrHideKeyboard:) name:UIKeyboardWillShowNotification object:nil];
     [notificationCenter addObserver:self selector:@selector(slk_willShowOrHideKeyboard:) name:UIKeyboardWillHideNotification object:nil];
+    [notificationCenter addObserver:self selector:@selector(slk_willChangeFrameKeyboard:) name:UIKeyboardWillChangeFrameNotification object:nil];
     [notificationCenter addObserver:self selector:@selector(slk_didShowOrHideKeyboard:) name:UIKeyboardDidShowNotification object:nil];
     [notificationCenter addObserver:self selector:@selector(slk_didShowOrHideKeyboard:) name:UIKeyboardDidHideNotification object:nil];
     
@@ -2336,6 +2370,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     // Keyboard notifications
     [notificationCenter removeObserver:self name:UIKeyboardWillShowNotification object:nil];
     [notificationCenter removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+    [notificationCenter removeObserver:self name:UIKeyboardWillChangeFrameNotification object:nil];
     [notificationCenter removeObserver:self name:UIKeyboardDidShowNotification object:nil];
     [notificationCenter removeObserver:self name:UIKeyboardDidHideNotification object:nil];
     
