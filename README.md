@@ -250,6 +250,8 @@ The autocompletion view is a `UITableView` instance, so you will need to use `UI
 
 You don't need to call `reloadData` yourself, since it will be invoked automatically right after calling the `showAutoCompletionView` method.
 
+You also need to override `-heightForAutoCompletionView` and return the default height for the autocomplete table.
+
 #### 3. Layout
 
 The maximum height of the autocompletion view is set to 140 pts by default. You can update this value anytime, so the view automatically adjusts based on the amount of displayed cells.
