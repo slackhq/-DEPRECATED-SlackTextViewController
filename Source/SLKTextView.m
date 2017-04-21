@@ -401,6 +401,14 @@ SLKPastableMediaType SLKPastableMediaTypeFromNSString(NSString *string)
     [self setNeedsLayout];
 }
 
+- (void)setAttributedPlaceholder:(NSAttributedString *)attributedPlaceholder
+{
+    self.placeholderLabel.attributedText = attributedPlaceholder;
+    self.accessibilityLabel = attributedPlaceholder.string;
+
+    [self setNeedsLayout];
+}
+
 - (void)setPlaceholderColor:(UIColor *)color
 {
     self.placeholderLabel.textColor = color;

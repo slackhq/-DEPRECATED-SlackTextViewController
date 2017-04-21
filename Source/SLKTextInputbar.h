@@ -23,10 +23,23 @@ typedef NS_ENUM(NSUInteger, SLKCounterPosition) {
     SLKCounterPositionBottom
 };
 
+typedef NS_ENUM(NSUInteger, SLKInputBarState) {
+    SLKInputBarStateNormal,
+    SLKInputBarStateHighlight,
+    SLKInputBarStateDisabled
+};
+
+@protocol SLKInputBarViewDelegate <NSObject>
+    - (void)barStateDidChange:(SLKInputBarState)state;
+@end
+
 NS_ASSUME_NONNULL_BEGIN
 
 /** @name A custom tool bar encapsulating messaging controls. */
 @interface SLKTextInputbar : UIToolbar
+
+@property (nonatomic, assign) SLKInputBarState barState;
+@property (nonatomic, weak) id<SLKInputBarViewDelegate> barDelegate;
 
 /** The centered text input view.
  The maximum number of lines is configured by default, to best fit each devices dimensions.

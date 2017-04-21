@@ -102,8 +102,26 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
     [self slk_registerTo:self.layer forSelector:@selector(position)];
     [self slk_registerTo:self.leftButton.imageView forSelector:@selector(image)];
     [self slk_registerTo:self.rightButton.titleLabel forSelector:@selector(font)];
+
+    self.barState = SLKInputBarStateNormal;
 }
 
+#pragma mark - SLKInputBarViewDelegate
+
+- (void)setBarDelegate:(id<SLKInputBarViewDelegate>)barDelegate
+{
+    _barDelegate = barDelegate;
+    self.barState = SLKInputBarStateNormal;
+}
+
+- (void)setBarState:(SLKInputBarState)barState
+{
+    if ([self.barDelegate respondsToSelector:@selector(barStateDidChange:)]) {
+        [self.barDelegate barStateDidChange:barState];
+    }
+
+    _barState = barState;
+}
 
 #pragma mark - UIView Overrides
 
@@ -177,7 +195,7 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
 - (UIButton *)leftButton
 {
     if (!_leftButton) {
-        _leftButton = [UIButton buttonWithType:UIButtonTypeSystem];
+        _leftButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _leftButton.translatesAutoresizingMaskIntoConstraints = NO;
         _leftButton.titleLabel.font = [UIFont systemFontOfSize:15.0];
     }

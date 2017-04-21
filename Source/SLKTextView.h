@@ -43,6 +43,7 @@ UIKIT_EXTERN NSString * const SLKTextViewPastedItemData;
 
 /** The placeholder text string. Default is nil. */
 @property (nonatomic, copy) NSString *_Nullable placeholder;
+@property (nonatomic, copy) NSAttributedString *_Nullable attributedPlaceholder;
 
 /** The placeholder color. Default is lightGrayColor. */
 @property (nonatomic, copy) UIColor *_Null_unspecified placeholderColor;

@@ -121,7 +121,7 @@ NS_CLASS_AVAILABLE_IOS(7_0) @interface SLKTextViewController : UIViewController 
 @property (nonatomic, readonly) SLKTextView *textView;
 @property (nonatomic, readonly) UIButton *leftButton;
 @property (nonatomic, readonly) UIButton *rightButton;
-
+@property (nonatomic, weak) UIView *menuAccesoryView;
 
 #pragma mark - Initialization
 ///------------------------------------------------
@@ -181,6 +181,10 @@ NS_CLASS_AVAILABLE_IOS(7_0) @interface SLKTextViewController : UIViewController 
  */
 + (UICollectionViewLayout *)collectionViewLayoutForCoder:(NSCoder *)decoder;
 
+#pragma mark - Menu Accessory View
+
+- (void)presentMenuAccessoryView:(BOOL)animated;
+- (void)dismissMenuAccessoryView:(BOOL)animated;
 
 #pragma mark - Keyboard Handling
 ///------------------------------------------------
@@ -579,6 +583,21 @@ NS_CLASS_AVAILABLE_IOS(7_0) @interface SLKTextViewController : UIViewController 
  */
 - (void)registerClassForTypingIndicatorView:(Class _Nullable)aClass;
 
+
+#pragma mark - Layout Customization
+///------------------------------------------------
+/// @name Layout Customization
+///------------------------------------------------
+
+@property (nonatomic, assign) CGFloat textInputBarLRC;
+@property (nonatomic, assign) CGFloat textInputBarBC;
+
+/**
+ Configure bottom margin.
+
+ @param The margin to configure
+ */
+- (void)adjustBottomMargin:(CGFloat)margin;
 
 #pragma mark - Delegate Methods Requiring Super
 ///------------------------------------------------
