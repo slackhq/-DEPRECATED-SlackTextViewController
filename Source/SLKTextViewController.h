@@ -64,6 +64,8 @@ NS_CLASS_AVAILABLE_IOS(7_0) @interface SLKTextViewController : UIViewController 
 /** The default typing indicator used to display user names horizontally. */
 @property (nonatomic, readonly) SLKTypingIndicatorView *_Nullable typingIndicatorView;
 
+@property (nonatomic, readonly, nullable) UIImage *image;
+
 /**
  The custom typing indicator view. Default is kind of SLKTypingIndicatorView.
  To customize the typing indicator view, you will need to call -registerClassForTypingIndicatorView: nside of any initialization method.

@@ -90,6 +90,7 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
     [self addSubview:self.textView];
     [self addSubview:self.charCountLabel];
     [self addSubview:self.contentView];
+  [self addSubview:self.imageView];
     
     [self slk_setupViewConstraints];
     [self slk_updateConstraintConstants];
@@ -125,6 +126,20 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
 + (BOOL)requiresConstraintBasedLayout
 {
     return YES;
+}
+
+- (void)setImage:(UIImage *)image {
+  _image = image;
+  [self handleImage];
+}
+
+- (void)handleImage {
+  if (_image) {
+    _imageView.frame = CGRectMake(0, 0, 108, 108);
+  } else {
+    _imageView.frame = CGRectMake(0, 0, 0, 0);
+  }
+  _imageView.image = _image;
 }
 
 
@@ -172,6 +187,14 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
     }
     
     return _inputAccessoryView;
+}
+
+- (UIImageView *)imageView {
+  if (!_imageView) {
+    _imageView = [[UIImageView alloc] init];
+  }
+  
+  return _imageView;
 }
 
 - (UIButton *)leftButton

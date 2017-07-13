@@ -570,6 +570,14 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     _textInputbar.bounces = bounces;
 }
 
+- (void)setImage:(UIImage *)image {
+  _textInputbar.image = image;
+}
+
+- (UIImage *)image {
+  return _textInputbar.image;
+}
+
 - (BOOL)slk_updateKeyboardStatus:(SLKKeyboardStatus)status
 {
     // Skips if trying to update the same status
