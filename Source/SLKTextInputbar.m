@@ -135,7 +135,9 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
 
 - (void)handleImage {
   if (_image) {
-    _imageView.frame = CGRectMake(0, 0, 108, 108);
+    const CGFloat width = self.frame.size.width;
+    const CGFloat x = width - 116;
+    _imageView.frame = CGRectMake(x, 0, 108, 108);
   } else {
     _imageView.frame = CGRectMake(0, 0, 0, 0);
   }
@@ -192,6 +194,9 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
 - (UIImageView *)imageView {
   if (!_imageView) {
     _imageView = [[UIImageView alloc] init];
+    _imageView.contentMode = UIViewContentModeScaleAspectFit;
+    _imageView.layer.masksToBounds = true;
+    _imageView.layer.cornerRadius = 6;
   }
   
   return _imageView;
