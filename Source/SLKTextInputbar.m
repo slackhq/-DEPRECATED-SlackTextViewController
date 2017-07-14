@@ -148,6 +148,9 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
   [self addCloseButton];
   [self setNeedsLayout];
   [self layoutIfNeeded];
+  
+  NSNotification *notification = [[NSNotification alloc] initWithName:@"" object:self.textView userInfo:nil];
+  [self slk_didChangeTextViewText:notification];
 }
 
 - (void)addCloseButton {
@@ -467,7 +470,7 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
 - (CGFloat)slk_appropriateRightButtonWidth
 {
     if (self.autoHideRightButton) {
-        if (self.textView.text.length == 0) {
+        if (self.textView.text.length == 0 && !self.image) {
             return 0.0;
         }
     }
@@ -478,7 +481,7 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
 - (CGFloat)slk_appropriateRightButtonMargin
 {
     if (self.autoHideRightButton) {
-        if (self.textView.text.length == 0) {
+      if (self.textView.text.length == 0 && !self.image) {
             return 0.0;
         }
     }

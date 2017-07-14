@@ -759,6 +759,8 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     
     // Clears cache
     [self clearCachedText];
+  
+  self.image = nil;
 }
 
 - (void)didPressImageCloseButton:(id)sender {
