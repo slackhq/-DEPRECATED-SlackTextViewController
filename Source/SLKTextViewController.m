@@ -572,6 +572,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 
 - (void)setImage:(UIImage *)image {
   _textInputbar.image = image;
+  [self textDidUpdate:YES];
 }
 
 - (UIImage *)image {
@@ -732,6 +733,8 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     
     if (text.length > 0 && ![_textInputbar limitExceeded]) {
         return YES;
+    } else if (self.image) {
+      return YES;
     }
     
     return NO;
