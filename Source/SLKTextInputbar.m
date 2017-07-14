@@ -144,14 +144,31 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
     _imageView.frame = CGRectMake(0, 0, 0, 0);
   }
   _imageView.image = _image;
+  
+  [self addCloseButton];
   [self setNeedsLayout];
   [self layoutIfNeeded];
+}
+
+- (void)addCloseButton {
+  if (_image) {
+    if (_imageCloseButton.superview) { return; }
+    
+    [self addSubview:_imageCloseButton];
+    [_imageCloseButton sizeToFit];
+    const CGSize size = _imageCloseButton.frame.size;
+    const CGFloat x = self.frame.size.width - (size.width + 16);
+    const CGFloat y = 16;
+    _imageCloseButton.frame = CGRectMake(x, y, size.width, size.height);
+  } else {
+    [_imageCloseButton removeFromSuperview];
+  }
 }
 
 - (CGSize)dimensionForImage:(UIImage *)image {
   if (_image) {
     const CGFloat maxHeight = 108;
-    const CGFloat maxWidth = 108;//self.frame.size.width - 20;
+    const CGFloat maxWidth = self.frame.size.width - 125;
     
     const CGSize imageSize = image.size;
     const CGSize maxSize = CGSizeMake(maxWidth, maxHeight);
@@ -238,6 +255,14 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
   }
   
   return _imageView;
+}
+
+- (UIButton *)imageCloseButton {
+  if (!_imageCloseButton) {
+    _imageCloseButton = [[UIButton alloc] init];
+  }
+  
+  return _imageCloseButton;
 }
 
 - (UIButton *)leftButton
@@ -781,7 +806,7 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
           CGFloat leftVerMargin = roundf((self.intrinsicContentSize.height - leftButtonSize.height) / 2.0) + self.slk_contentViewHeight / 2.0;
           
           if (_image) {
-            leftVerMargin -= 40;
+            leftVerMargin -= (_imageView.frame.size.height / 2) + 4;
           }
           
           self.leftButtonBottomMarginC.constant = leftVerMargin;
@@ -797,7 +822,7 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
       CGFloat rightVerBottomMargin = rightVerMargin + self.slk_contentViewHeight;
       
       if (_image) {
-        rightVerBottomMargin -= 40;
+        rightVerBottomMargin -= (_imageView.frame.size.height / 2) + 4;
       }
       
         self.rightButtonTopMarginC.constant = rightVerMargin;

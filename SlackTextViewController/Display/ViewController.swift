@@ -16,6 +16,7 @@ class ViewController: SLKTextViewController {
     // Do any additional setup after loading the view, typically from a nib.
     
     self.leftButton.setImage(#imageLiteral(resourceName: "camera"), for: UIControlState())
+    self.imageCloseButton.setImage(#imageLiteral(resourceName: "close_icon"), for: UIControlState())
   }
 
   override func viewWillAppear(_ animated: Bool) {

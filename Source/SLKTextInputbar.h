@@ -67,6 +67,8 @@ NS_ASSUME_NONNULL_BEGIN
 /** The most appropriate height calculated based on the amount of lines of text and other factors. */
 @property (nonatomic, readonly) CGFloat appropriateHeight;
 
+@property (nonatomic, strong) UIButton *imageCloseButton;
+
 
 #pragma mark - Initialization
 ///------------------------------------------------
