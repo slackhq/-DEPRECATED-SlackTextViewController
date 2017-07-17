@@ -211,7 +211,6 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
   
   if (hidden) {
     _leftButtonWC.constant = 0;
-//    _leftButtonHC.constant = 0;
   }
 }
 
