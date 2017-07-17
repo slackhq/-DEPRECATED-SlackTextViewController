@@ -69,6 +69,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) UIButton *imageCloseButton;
 
+- (void)setLeftButtonHidden:(BOOL)hidden animated:(BOOL)animated;
+
 
 #pragma mark - Initialization
 ///------------------------------------------------

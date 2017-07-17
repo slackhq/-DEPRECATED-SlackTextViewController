@@ -236,6 +236,8 @@ NS_CLASS_AVAILABLE_IOS(7_0) @interface SLKTextViewController : UIViewController 
  */
 - (void)didChangeKeyboardStatus:(SLKKeyboardStatus)status;
 
+- (void)setLeftButtonHidden:(BOOL)hidden animated:(BOOL)animated;
+
 
 #pragma mark - Interaction Notifications
 ///------------------------------------------------

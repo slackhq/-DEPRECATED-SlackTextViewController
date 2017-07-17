@@ -237,6 +237,10 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     [super viewDidLayoutSubviews];
 }
 
+- (void)setLeftButtonHidden:(BOOL)hidden animated:(BOOL)animated {
+  [self.textInputbar setLeftButtonHidden:hidden animated:animated];
+}
+
 
 #pragma mark - Getters
 

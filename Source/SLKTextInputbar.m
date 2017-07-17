@@ -31,6 +31,7 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
 @property (nonatomic, strong) NSLayoutConstraint *rightButtonBottomMarginC;
 @property (nonatomic, strong) NSLayoutConstraint *editorContentViewHC;
 @property (nonatomic, strong) NSArray *charCountLabelVCs;
+@property (nonatomic, strong) UIImage *leftButtonImage;
 
 @property (nonatomic, strong) UILabel *charCountLabel;
 
@@ -39,6 +40,8 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
 @property (nonatomic, strong) Class textViewClass;
 
 @property (nonatomic, getter=isHidden) BOOL hidden; // Required override
+
+@property (nonatomic, assign) BOOL leftButtonHidden;
 
 @end
 
@@ -200,6 +203,15 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
     
   } else {
     return CGSizeZero;
+  }
+}
+
+- (void)setLeftButtonHidden:(BOOL)hidden animated:(BOOL)animated {
+  if (!_leftButton || !_leftButtonWC) { return; }
+  
+  if (hidden) {
+    _leftButtonWC.constant = 0;
+//    _leftButtonHC.constant = 0;
   }
 }
 

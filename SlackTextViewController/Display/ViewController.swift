@@ -27,6 +27,7 @@ class ViewController: SLKTextViewController {
     super.viewDidAppear(animated)
     textInputbar.textView.becomeFirstResponder()
     self.image = #imageLiteral(resourceName: "landscape")
+    self.setLeftButtonHidden(true, animated: true)
   }
   
   override func didReceiveMemoryWarning() {
@@ -83,6 +84,7 @@ extension ViewController: UINavigationControllerDelegate, UIImagePickerControlle
     }
     
     if let image = image, let _ = UIImageJPEGRepresentation(image, 1.0) {
+      self.setLeftButtonHidden(true, animated: true)
       self.image = image
     }
   }
