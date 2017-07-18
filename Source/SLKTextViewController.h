@@ -288,7 +288,7 @@ NS_CLASS_AVAILABLE_IOS(7_0) @interface SLKTextViewController : UIViewController 
 - (void)didPressRightButton:(id _Nullable)sender NS_REQUIRES_SUPER;
 
 
-- (void)didPressImageCloseButton:(id)sender;
+- (void)didPressImageCloseButton:(id _Nullable)sender;
 
 /**
  Verifies if the right button can be pressed. If NO, the button is disabled.
