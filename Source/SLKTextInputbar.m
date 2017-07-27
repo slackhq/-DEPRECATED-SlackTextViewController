@@ -266,6 +266,7 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
     _imageView.contentMode = UIViewContentModeScaleAspectFit;
     _imageView.layer.masksToBounds = true;
     _imageView.layer.cornerRadius = 6;
+    _imageView.alpha = 0.5;
   }
   
   return _imageView;
