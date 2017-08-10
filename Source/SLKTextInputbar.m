@@ -117,6 +117,16 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
     [super layoutIfNeeded];
 }
 
+// fix the layout issue on iOS 11
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    
+    [self bringSubviewToFront:self.textView];
+    [self bringSubviewToFront:self.rightButton];
+    [self bringSubviewToFront:self.leftButton];
+    [self bringSubviewToFront:self.editorContentView];
+}
+
 - (CGSize)intrinsicContentSize
 {
     return CGSizeMake(UIViewNoIntrinsicMetric, [self minimumInputbarHeight]);
