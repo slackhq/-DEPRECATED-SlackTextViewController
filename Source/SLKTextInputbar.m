@@ -83,7 +83,7 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
     self.autoHideRightButton = YES;
     self.editorContentViewHeight = 38.0;
     self.contentInset = UIEdgeInsetsMake(5.0, 8.0, 5.0, 8.0);
-    
+
     [self addSubview:self.editorContentView];
     [self addSubview:self.leftButton];
     [self addSubview:self.rightButton];
@@ -106,6 +106,14 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
 
 
 #pragma mark - UIView Overrides
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+
+    [self bringSubviewToFront:self.textView];
+    [self bringSubviewToFront:self.rightButton];
+    [self bringSubviewToFront:self.leftButton];
+}
 
 - (void)layoutIfNeeded
 {
