@@ -2,6 +2,9 @@
 
 ## Version 1.9.6
 
+##### Hot Fixes & Enhancements:
+- Fixed the text input not being interactive on iOS. Making `SLKTextInputbar` a UIView subclass instead of `UIToolbar`.
+
 ##### Deprecation:
 - Deprecated `-shouldProcessTextForAutoCompletion:` in favor of `-shouldProcessTextForAutoCompletion`
 
