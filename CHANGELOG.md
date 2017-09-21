@@ -1,5 +1,11 @@
 # Change Log
 
+## Version 1.9.6
+
+##### Deprecation:
+- Deprecated `-shouldProcessTextForAutoCompletion:` in favor of `-shouldProcessTextForAutoCompletion`
+
+
 ## [Version 1.9.5](https://github.com/slackhq/SlackTextViewController/releases/tag/v1.9.5)
 
 ##### Features:
