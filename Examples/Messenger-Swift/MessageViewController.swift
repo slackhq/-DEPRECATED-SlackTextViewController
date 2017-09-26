@@ -474,7 +474,7 @@ extension MessageViewController {
         }
     }
     
-    override func shouldProcessText(forAutoCompletion text: String) -> Bool {
+    func shouldProcessText(forAutoCompletion text: String) -> Bool {
         return true
     }
     
