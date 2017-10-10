@@ -746,13 +746,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 
 - (void)didPressRightButton:(id)sender
 {
-    if (self.shouldClearTextAtRightButtonPress) {
-        // Clears the text and the undo manager
-        [self.textView slk_clearText:YES];
-    }
-    
-    // Clears cache
-    [self clearCachedText];
+    // No implementation here. Meant to be overriden in subclass.
 }
 
 - (void)editText:(NSString *)text

@@ -80,7 +80,6 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
     self.charCountLabelNormalColor = [UIColor lightGrayColor];
     self.charCountLabelWarningColor = [UIColor redColor];
     
-    self.autoHideRightButton = YES;
     self.editorContentViewHeight = 38.0;
     self.contentInset = UIEdgeInsetsMake(5.0, 8.0, 5.0, 8.0);
     
@@ -190,11 +189,6 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
         _rightButton = [UIButton buttonWithType:UIButtonTypeSystem];
         _rightButton.translatesAutoresizingMaskIntoConstraints = NO;
         _rightButton.titleLabel.font = [UIFont boldSystemFontOfSize:15.0];
-        _rightButton.enabled = NO;
-        
-        NSString *title = NSLocalizedString(@"Send", nil);
-        
-        [_rightButton setTitle:title forState:UIControlStateNormal];
     }
     return _rightButton;
 }
@@ -368,28 +362,6 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
     return 0.0;
 }
 
-- (CGFloat)slk_appropriateRightButtonWidth
-{
-    if (self.autoHideRightButton) {
-        if (self.textView.text.length == 0) {
-            return 0.0;
-        }
-    }
-
-    return [self.rightButton intrinsicContentSize].width;
-}
-
-- (CGFloat)slk_appropriateRightButtonMargin
-{
-    if (self.autoHideRightButton) {
-        if (self.textView.text.length == 0) {
-            return 0.0;
-        }
-    }
-    
-    return self.contentInset.right;
-}
-
 - (NSUInteger)slk_defaultNumberOfLines
 {
     if (SLK_IS_IPAD) {
@@ -410,20 +382,6 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
 {
     self.barTintColor = color;
     self.editorContentView.backgroundColor = color;
-}
-
-- (void)setAutoHideRightButton:(BOOL)hide
-{
-    if (self.autoHideRightButton == hide) {
-        return;
-    }
-    
-    _autoHideRightButton = hide;
-    
-    self.rightButtonWC.constant = [self slk_appropriateRightButtonWidth];
-    self.rightMarginWC.constant = [self slk_appropriateRightButtonMargin];
-
-    [self layoutIfNeeded];
 }
 
 - (void)setContentInset:(UIEdgeInsets)insets
@@ -592,31 +550,8 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
     if (self.maxCharCount > 0) {
         [self slk_updateCounter];
     }
-    
-    if (self.autoHideRightButton && !self.isEditing)
-    {
-        CGFloat rightButtonNewWidth = [self slk_appropriateRightButtonWidth];
-        
-        // Only updates if the width did change
-        if (self.rightButtonWC.constant == rightButtonNewWidth) {
-            return;
-        }
-        
-        self.rightButtonWC.constant = rightButtonNewWidth;
-        self.rightMarginWC.constant = [self slk_appropriateRightButtonMargin];
-        [self.rightButton layoutIfNeeded]; // Avoids the right button to stretch when animating the constraint changes
-        
-        BOOL bounces = self.bounces && [self.textView isFirstResponder];
-        
-        if (self.window) {
-            [self slk_animateLayoutIfNeededWithBounce:bounces
-                                              options:UIViewAnimationOptionCurveEaseInOut|UIViewAnimationOptionBeginFromCurrentState|UIViewAnimationOptionAllowUserInteraction
-                                           animations:NULL];
-        }
-        else {
-            [self layoutIfNeeded];
-        }
-    }
+
+    [self layoutIfNeeded];
 }
 
 - (void)slk_didChangeTextViewContentSize:(NSNotification *)notification
@@ -711,8 +646,8 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
         self.leftButtonWC.constant = roundf(leftButtonSize.width);
         self.leftMarginWC.constant = (leftButtonSize.width > 0) ? self.contentInset.left : zero;
         
-        self.rightButtonWC.constant = [self slk_appropriateRightButtonWidth];
-        self.rightMarginWC.constant = [self slk_appropriateRightButtonMargin];
+        self.rightButtonWC.constant = [self.rightButton intrinsicContentSize].width;
+        self.rightMarginWC.constant = self.contentInset.right;
         
         CGFloat rightVerMargin = (self.intrinsicContentSize.height - self.slk_contentViewHeight - self.rightButton.intrinsicContentSize.height) / 2.0;
         CGFloat rightVerBottomMargin = rightVerMargin + self.slk_contentViewHeight;
@@ -756,10 +691,6 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
         if (![newImage isEqual:oldImage]) {
             [self slk_updateConstraintConstants];
         }
-    }
-    else if ([object isEqual:self.rightButton.titleLabel] && [keyPath isEqualToString:NSStringFromSelector(@selector(font))]) {
-        
-        [self slk_updateConstraintConstants];
     }
     else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
