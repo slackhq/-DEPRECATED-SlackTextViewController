@@ -86,6 +86,9 @@ NS_ASSUME_NONNULL_BEGIN
 /** The view displayed on top if the text input bar, containing the button outlets, when editing is enabled. */
 @property (nonatomic, strong) UIView *editorContentView;
 
+/** The view displayed on top of the text input bar for custom needs. */
+@property (nonatomic, strong) UIView *addonContentView;
+
 /** The title label displayed in the middle of the accessoryView. */
 @property (nonatomic, strong) UILabel *editorTitle;
 
@@ -97,6 +100,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 /** The accessory view's maximum height. Default is 38 pts. */
 @property (nonatomic, assign) CGFloat editorContentViewHeight;
+
+/** The accessory view's maximum height. Default is 0 pts. */
+@property (nonatomic, assign) CGFloat addonContentViewHeight;
 
 /** A Boolean value indicating whether the control is in edit mode. */
 @property (nonatomic, getter = isEditing) BOOL editing;
