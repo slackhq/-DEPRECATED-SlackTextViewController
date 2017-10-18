@@ -205,6 +205,15 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     [self.scrollViewProxy flashScrollIndicators];
     
     self.viewVisible = YES;
+
+    // Huge ugly workaround to work on iOS 11
+    [self.textInputbar bringSubviewToFront:self.textInputbar.contentView];
+    [self.textInputbar bringSubviewToFront:self.textInputbar.leftButton];
+    [self.textInputbar bringSubviewToFront:self.textInputbar.rightButton];
+    [self.textInputbar bringSubviewToFront:self.textInputbar.editorTitle];
+    [self.textInputbar bringSubviewToFront:self.textInputbar.editorLeftButton];
+    [self.textInputbar bringSubviewToFront:self.textInputbar.editorRightButton];
+    [self.textInputbar bringSubviewToFront:self.textInputbar.textView];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -321,6 +330,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
         
         [_textInputbar addGestureRecognizer:self.verticalPanGesture];
     }
+
     return _textInputbar;
 }
 
@@ -708,7 +718,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     }
     
     if (self.textView.selectedRange.length > 0) {
-        if (self.isAutoCompleting && [self shouldProcessTextForAutoCompletion:self.textView.text]) {
+        if (self.isAutoCompleting && [self shouldProcessTextForAutoCompletion]) {
             [self cancelAutoCompletion];
         }
         return;
@@ -736,13 +746,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 
 - (void)didPressRightButton:(id)sender
 {
-    if (self.shouldClearTextAtRightButtonPress) {
-        // Clears the text and the undo manager
-        [self.textView slk_clearText:YES];
-    }
-    
-    // Clears cache
-    [self clearCachedText];
+    // No implementation here. Meant to be overriden in subclass.
 }
 
 - (void)editText:(NSString *)text
@@ -880,10 +884,10 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     
     __weak typeof(self) weakSelf = self;
     
-    void (^animations)() = ^void(){
-        
+    void (^animations)(void) = ^void(){
+
         weakSelf.textInputbarHC.constant = hidden ? 0.0 : weakSelf.textInputbar.appropriateHeight;
-        
+
         [weakSelf.view layoutIfNeeded];
     };
     
@@ -1394,7 +1398,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     CGRect beginFrame = [notification.userInfo[UIKeyboardFrameBeginUserInfoKey] CGRectValue];
     CGRect endFrame = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
     
-    void (^animations)() = ^void() {
+    void (^animations)(void) = ^void() {
         // Scrolls to bottom only if the keyboard is about to show.
         if (self.shouldScrollToBottomAfterKeyboardShows && self.keyboardStatus == SLKKeyboardStatusWillShow) {
             if (self.isInverted) {
@@ -1742,7 +1746,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 {
     NSString *text = self.textView.text;
     
-    if ((!self.isAutoCompleting && text.length == 0) || self.isTransitioning || ![self shouldProcessTextForAutoCompletion:text]) {
+    if ((!self.isAutoCompleting && text.length == 0) || self.isTransitioning || ![self shouldProcessTextForAutoCompletion]) {
         return;
     }
     
@@ -2224,13 +2228,14 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 
 - (void)slk_setupViewConstraints
 {
-    NSDictionary *views = @{@"scrollView": self.scrollViewProxy,
-                            @"autoCompletionView": self.autoCompletionView,
-                            @"typingIndicatorView": self.typingIndicatorProxyView,
-                            @"textInputbar": self.textInputbar,
-                            };
+    NSDictionary *views = @{
+        @"scrollView": self.scrollViewProxy,
+        @"autoCompletionView": self.autoCompletionView,
+        @"typingIndicatorView": self.typingIndicatorProxyView,
+        @"textInputbar": self.textInputbar
+    };
     
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[scrollView(0@750)][typingIndicatorView(0)]-0@999-[textInputbar(0)]|" options:0 metrics:nil views:views]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[scrollView(0@750)][typingIndicatorView(0)]-0@999-[textInputbar(0)]-100-|" options:0 metrics:nil views:views]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=0)-[autoCompletionView(0@750)][typingIndicatorView]" options:0 metrics:nil views:views]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[scrollView]|" options:0 metrics:nil views:views]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[autoCompletionView]|" options:0 metrics:nil views:views]];
