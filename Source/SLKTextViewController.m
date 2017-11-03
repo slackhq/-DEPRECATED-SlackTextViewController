@@ -246,6 +246,13 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     [super viewDidLayoutSubviews];
 }
 
+- (void)viewSafeAreaInsetsDidChange
+{
+    [super viewSafeAreaInsetsDidChange];
+    
+    [self slk_updateViewConstraints];
+}
+
 
 #pragma mark - Getters
 
@@ -268,6 +275,8 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
         _tableView.dataSource = self;
         _tableView.delegate = self;
         _tableView.clipsToBounds = NO;
+
+        [self slk_updateInsetAdjustmentBehavior];
     }
     return _tableView;
 }
@@ -425,7 +434,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 
 - (CGFloat)slk_appropriateBottomMargin
 {
-    // A bottom margin is required only if the view is extended out of it bounds
+    // A bottom margin is required if the view is extended out of it bounds
     if ((self.edgesForExtendedLayout & UIRectEdgeBottom) > 0) {
         
         UITabBar *tabBar = self.tabBarController.tabBar;
@@ -433,6 +442,13 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
         // Considers the bottom tab bar, unless it will be hidden
         if (tabBar && !tabBar.hidden && !self.hidesBottomBarWhenPushed) {
             return CGRectGetHeight(tabBar.frame);
+        }
+    }
+    
+    // A bottom margin is required for iPhone X
+    if (@available(iOS 11.0, *)) {
+        if (!self.textInputbar.isHidden) {
+            return self.view.safeAreaInsets.bottom;
         }
     }
     
@@ -570,6 +586,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     }
     
     _inverted = inverted;
+    [self slk_updateInsetAdjustmentBehavior];
     
     self.scrollViewProxy.transform = inverted ? CGAffineTransformMake(1, 0, 0, -1, 0, 0) : CGAffineTransformIdentity;
 }
@@ -579,6 +596,18 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     _bounces = bounces;
     _textInputbar.bounces = bounces;
 }
+
+- (void)slk_updateInsetAdjustmentBehavior
+    {
+        // Deactivate automatic scrollView adjustment for inverted table view
+        if (@available(iOS 11.0, *)) {
+            if (self.isInverted) {
+                _tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+            } else {
+                _tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentAutomatic;
+            }
+        }
+    }
 
 - (BOOL)slk_updateKeyboardStatus:(SLKKeyboardStatus)status
 {
@@ -887,6 +916,10 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     }
     
     _textInputbar.hidden = hidden;
+
+    if (@available(iOS 11.0, *)) {
+        [self viewSafeAreaInsetsDidChange];
+    }
     
     __weak typeof(self) weakSelf = self;
     
@@ -1631,11 +1664,6 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     [set addObjectsFromArray:[prefixes copy]];
     
     _registeredPrefixes = [NSSet setWithSet:set];
-}
-
-- (BOOL)shouldProcessTextForAutoCompletion:(NSString *)text
-{
-    return [self shouldProcessTextForAutoCompletion];
 }
 
 - (BOOL)shouldProcessTextForAutoCompletion

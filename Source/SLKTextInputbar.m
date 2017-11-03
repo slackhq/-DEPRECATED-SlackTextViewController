@@ -85,7 +85,11 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
     self.editorContentViewHeight = 38.0;
     self.addonContentViewHeight = 0.0;
     self.contentInset = UIEdgeInsetsMake(5.0, 8.0, 5.0, 8.0);
-    
+
+    // Since iOS 11, it is required to call -layoutSubviews before adding custom subviews
+    // so private UIToolbar subviews don't interfere on the touch hierarchy
+    [self layoutSubviews];
+
     [self addSubview:self.editorContentView];
     [self addSubview:self.addonContentView];
     [self addSubview:self.leftButton];
@@ -93,7 +97,7 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
     [self addSubview:self.textView];
     [self addSubview:self.charCountLabel];
     [self addSubview:self.contentView];
-    
+
     [self slk_setupViewConstraints];
     [self slk_updateConstraintConstants];
     
@@ -424,6 +428,7 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
 - (void)setBackgroundColor:(UIColor *)color
 {
     self.barTintColor = color;
+
     self.editorContentView.backgroundColor = color;
     self.addonContentView.backgroundColor = color;
 }
@@ -690,7 +695,7 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[addonContentView]|" options:0 metrics:metrics views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[contentView]|" options:0 metrics:metrics views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[contentView(0)]|" options:0 metrics:metrics views:views]];
-    
+
     self.textViewBottomMarginC = [self slk_constraintForAttribute:NSLayoutAttributeBottom firstItem:self secondItem:self.textView];
     self.editorContentViewHC = [self slk_constraintForAttribute:NSLayoutAttributeHeight firstItem:self.editorContentView secondItem:nil];
     self.addonContentViewHC = [self slk_constraintForAttribute:NSLayoutAttributeHeight firstItem:self.addonContentView secondItem:nil];
