@@ -28,6 +28,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 {
     CGPoint _scrollViewOffsetBeforeDragging;
     CGFloat _keyboardHeightBeforeDragging;
+    CGRect _cachedKeyboardRect;
 }
 
 // The shared scrollView pointer, either a tableView or collectionView
@@ -85,7 +86,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 {
     NSAssert([self class] != [SLKTextViewController class], @"Oops! You must subclass SLKTextViewController.");
     NSAssert(style == UITableViewStylePlain || style == UITableViewStyleGrouped, @"Oops! You must pass a valid UITableViewStyle.");
-
+    
     if (self = [super initWithNibName:nil bundle:nil])
     {
         self.scrollViewProxy = [self tableViewWithStyle:style];
@@ -98,7 +99,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 {
     NSAssert([self class] != [SLKTextViewController class], @"Oops! You must subclass SLKTextViewController.");
     NSAssert([layout isKindOfClass:[UICollectionViewLayout class]], @"Oops! You must pass a valid UICollectionViewLayout object.");
-
+    
     if (self = [super initWithNibName:nil bundle:nil])
     {
         self.scrollViewProxy = [self collectionViewWithLayout:layout];
@@ -111,7 +112,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 {
     NSAssert([self class] != [SLKTextViewController class], @"Oops! You must subclass SLKTextViewController.");
     NSAssert([scrollView isKindOfClass:[UIScrollView class]], @"Oops! You must pass a valid UIScrollView object.");
-
+    
     if (self = [super initWithNibName:nil bundle:nil])
     {
         _scrollView = scrollView;
@@ -127,7 +128,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 {
     NSAssert([self class] != [SLKTextViewController class], @"Oops! You must subclass SLKTextViewController.");
     NSAssert([decoder isKindOfClass:[NSCoder class]], @"Oops! You must pass a valid decoder object.");
-
+    
     if (self = [super initWithCoder:decoder])
     {
         UITableViewStyle tableViewStyle = [[self class] tableViewStyleForCoder:decoder];
@@ -158,6 +159,8 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     
     self.automaticallyAdjustsScrollViewInsets = YES;
     self.extendedLayoutIncludesOpaqueBars = YES;
+    
+    _cachedKeyboardRect = CGRectNull;
 }
 
 
@@ -241,7 +244,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 {
     [super viewSafeAreaInsetsDidChange];
     
-    [self slk_updateViewConstraints];
+    [self slk_updateViewConstraintsFromCachedKeyboard];
 }
 
 
@@ -266,7 +269,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
         _tableView.dataSource = self;
         _tableView.delegate = self;
         _tableView.clipsToBounds = NO;
-
+        
         [self slk_updateInsetAdjustmentBehavior];
     }
     return _tableView;
@@ -397,9 +400,9 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
         return [self slk_appropriateBottomMargin];
     }
     
-    CGRect keyboardRect = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    _cachedKeyboardRect = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
     
-    return [self slk_appropriateKeyboardHeightFromRect:keyboardRect];
+    return [self slk_appropriateKeyboardHeightFromRect:_cachedKeyboardRect];
 }
 
 - (CGFloat)slk_appropriateKeyboardHeightFromRect:(CGRect)rect
@@ -588,16 +591,16 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 }
 
 - (void)slk_updateInsetAdjustmentBehavior
-    {
-        // Deactivate automatic scrollView adjustment for inverted table view
-        if (@available(iOS 11.0, *)) {
-            if (self.isInverted) {
-                _tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
-            } else {
-                _tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentAutomatic;
-            }
+{
+    // Deactivate automatic scrollView adjustment for inverted table view
+    if (@available(iOS 11.0, *)) {
+        if (self.isInverted) {
+            _tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+        } else {
+            _tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentAutomatic;
         }
     }
+}
 
 - (BOOL)slk_updateKeyboardStatus:(SLKKeyboardStatus)status
 {
@@ -906,7 +909,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     }
     
     _textInputbar.hidden = hidden;
-
+    
     if (@available(iOS 11.0, *)) {
         [self viewSafeAreaInsetsDidChange];
     }
@@ -1196,7 +1199,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     BOOL enable = !self.isAutoCompleting;
     
     NSString *inputPrimaryLanguage = self.textView.textInputMode.primaryLanguage;
-
+    
     // Toggling autocorrect on Japanese keyboards breaks autocompletion by replacing the autocompletion prefix by an empty string.
     // So for now, let's not disable autocorrection for Japanese.
     if ([inputPrimaryLanguage isEqualToString:@"ja-JP"]) {
@@ -1345,7 +1348,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     else if (_textInputbar.isEditing) {
         [self didCancelTextEditing:keyCommand];
     }
-   
+    
     CGFloat bottomMargin = [self slk_appropriateBottomMargin];
     
     if ([self ignoreTextInputbarAdjustment] || ([self.textView isFirstResponder] && self.keyboardHC.constant == bottomMargin)) {
@@ -1399,6 +1402,8 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     // Programatically stops scrolling before updating the view constraints (to avoid scrolling glitch).
     if (status == SLKKeyboardStatusWillShow) {
         [self.scrollViewProxy slk_stopScrolling];
+    } else if (status == SLKKeyboardStatusWillHide) {
+        _cachedKeyboardRect = CGRectNull;
     }
     
     // Stores the previous keyboard height
@@ -1478,6 +1483,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     if (!self.isViewVisible) {
         if (status == SLKKeyboardStatusDidHide && self.keyboardStatus == SLKKeyboardStatusWillHide) {
             // Even if the view isn't visible anymore, let's still continue to update all states.
+            _cachedKeyboardRect = CGRectNull;
         }
         else {
             return;
@@ -2287,13 +2293,25 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     [super updateViewConstraints];
 }
 
+- (void)slk_updateViewConstraintsFromCachedKeyboard
+{
+    self.textInputbarHC.constant = self.textInputbar.minimumInputbarHeight;
+    self.scrollViewHC.constant = [self slk_appropriateScrollViewHeight];
+    self.keyboardHC.constant = [self slk_appropriateKeyboardHeightFromRect:_cachedKeyboardRect];
+    
+    if (_textInputbar.isEditing) {
+        self.textInputbarHC.constant += self.textInputbar.editorContentViewHeight;
+    }
+    
+    [super updateViewConstraints];
+}
 
 #pragma mark - Keyboard Command registration
 
 - (void)slk_registerKeyCommands
 {
     __weak typeof(self) weakSelf = self;
-
+    
     // Enter Key
     [self.textView observeKeyInput:@"\r" modifiers:0 title:NSLocalizedString(@"Send/Accept", nil) completion:^(UIKeyCommand *keyCommand) {
         [weakSelf didPressReturnKey:keyCommand];
@@ -2360,7 +2378,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 - (void)slk_unregisterNotifications
 {
     NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-
+    
     // Keyboard notifications
     [notificationCenter removeObserver:self name:UIKeyboardWillShowNotification object:nil];
     [notificationCenter removeObserver:self name:UIKeyboardWillHideNotification object:nil];
@@ -2446,3 +2464,4 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 }
 
 @end
+
