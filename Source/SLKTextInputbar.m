@@ -310,18 +310,11 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
 
 - (CGFloat)appropriateHeight
 {
-    CGFloat height = 0.0;
+    CGFloat height = self.textView.appropriateHeight;
     CGFloat minimumHeight = [self minimumInputbarHeight];
     
-    if (self.textView.numberOfLines == 1) {
-        height = minimumHeight;
-    }
-    else if (self.textView.numberOfLines < self.textView.maxNumberOfLines) {
-        height = [self slk_inputBarHeightForLines:self.textView.numberOfLines];
-    }
-    else {
-        height = [self slk_inputBarHeightForLines:self.textView.maxNumberOfLines];
-    }
+    height += self.contentInset.top;
+    height += self.slk_bottomMargin;
     
     if (height < minimumHeight) {
         height = minimumHeight;
@@ -342,17 +335,6 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
         return YES;
     }
     return NO;
-}
-
-- (CGFloat)slk_inputBarHeightForLines:(NSUInteger)numberOfLines
-{
-    CGFloat height = self.textView.intrinsicContentSize.height;
-    height -= self.textView.font.lineHeight;
-    height += roundf(self.textView.font.lineHeight*numberOfLines);
-    height += self.contentInset.top;
-    height += self.slk_bottomMargin;
-    
-    return height;
 }
 
 - (CGFloat)slk_bottomMargin
