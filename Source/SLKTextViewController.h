@@ -509,7 +509,7 @@ NS_CLASS_AVAILABLE_IOS(7_0) @interface SLKTextViewController : UIViewController 
 
 /**
  Accepts the autocompletion, replacing the detected word with a new string, keeping the prefix.
- This method is a convinience of -acceptAutoCompletionWithString:keepPrefix:
+ This method is a convenience of -acceptAutoCompletionWithString:keepPrefix:
  
  @param string The string to be used for replacing autocompletion placeholders.
  */
@@ -523,6 +523,13 @@ NS_CLASS_AVAILABLE_IOS(7_0) @interface SLKTextViewController : UIViewController 
  */
 - (void)acceptAutoCompletionWithString:(NSString *_Nullable)string keepPrefix:(BOOL)keepPrefix;
 
+/**
+ Accepts the autocompletion, replacing the detected word with a new attributed string, and optionally replacing the prefix too.
+ 
+ @param attributedString The attributed string to be used for replacing autocompletion placeholders.
+ @param keepPrefix YES if the prefix shouldn't be overidden.
+ */
+- (void)acceptAutoCompletionWithAttributedString:(NSAttributedString *_Nullable)attributedString keepPrefix:(BOOL)keepPrefix;
 
 #pragma mark - Text Caching
 ///------------------------------------------------
