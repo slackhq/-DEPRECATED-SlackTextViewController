@@ -1,5 +1,10 @@
 # Change Log
 
+## [Version 1.9.7](https://github.com/slackhq/SlackTextViewController/releases/tag/v1.9.7)
+
+##### Hot Fixes & Enhancements:
+- Increased SLKTextView's (and therefore its subclasses') influence on its own height By @lukkas
+
 ## [Version 1.9.6](https://github.com/slackhq/SlackTextViewController/releases/tag/v1.9.6)
 
 This release includes many iOS 11 and iPhone X hot fixes.

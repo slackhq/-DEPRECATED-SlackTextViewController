@@ -165,6 +165,16 @@ static NSString *const SLKTextViewGenericFormattingSelectorPrefix = @"slk_format
     return self.placeholderLabel.font;
 }
 
+- (CGFloat)appropriateHeight
+{
+    NSUInteger numberOfLines = self.numberOfLines > self.maxNumberOfLines ? self.maxNumberOfLines : self.numberOfLines;
+    CGFloat height = [self intrinsicContentSize].height;
+    height -= self.font.lineHeight;
+    height += roundf(self.font.lineHeight*numberOfLines);
+    
+    return height;
+}
+
 - (NSUInteger)numberOfLines
 {
     CGSize contentSize = self.contentSize;
