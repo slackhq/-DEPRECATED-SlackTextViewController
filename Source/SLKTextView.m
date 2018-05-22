@@ -193,7 +193,7 @@ static NSString *const SLKTextViewGenericFormattingSelectorPrefix = @"slk_format
 {
     NSUInteger numberOfLines = _maxNumberOfLines;
     
-    if (SLK_IS_LANDSCAPE) {
+    if (SLKIsLandscape()) {
         if ((SLK_IS_IPHONE4 || SLK_IS_IPHONE5)) {
             numberOfLines = 2.0; // 2 lines max on smaller iPhones
         }
@@ -203,7 +203,12 @@ static NSString *const SLKTextViewGenericFormattingSelectorPrefix = @"slk_format
     }
     
     if (self.isDynamicTypeEnabled) {
-        NSString *contentSizeCategory = [[UIApplication sharedApplication] preferredContentSizeCategory];
+        UIApplication *sharedApp = [UIApplication safeSharedApplication];
+        if (sharedApp == nil) {
+            return numberOfLines;
+        }
+
+        NSString *contentSizeCategory = [sharedApp preferredContentSizeCategory];
         CGFloat pointSizeDifference = SLKPointSizeDifferenceForCategory(contentSizeCategory);
         
         CGFloat factor = pointSizeDifference/self.initialFontSize;
@@ -504,7 +509,11 @@ SLKPastableMediaType SLKPastableMediaTypeFromNSString(NSString *string)
 
 - (void)setFont:(UIFont *)font
 {
-    NSString *contentSizeCategory = [[UIApplication sharedApplication] preferredContentSizeCategory];
+    UIApplication *sharedApp = [UIApplication safeSharedApplication];
+    if (sharedApp == nil) {
+        return;
+    }
+    NSString *contentSizeCategory = [sharedApp preferredContentSizeCategory];
     
     [self setFontName:font.fontName pointSize:font.pointSize withContentSizeCategory:contentSizeCategory];
     
@@ -533,8 +542,11 @@ SLKPastableMediaType SLKPastableMediaTypeFromNSString(NSString *string)
     
     _dynamicTypeEnabled = dynamicTypeEnabled;
     
-    NSString *contentSizeCategory = [[UIApplication sharedApplication] preferredContentSizeCategory];
-
+    UIApplication *sharedApp = [UIApplication safeSharedApplication];
+    if (sharedApp == nil) {
+        return;
+    }
+    NSString *contentSizeCategory = [sharedApp preferredContentSizeCategory];
     [self setFontName:self.font.fontName pointSize:self.initialFontSize withContentSizeCategory:contentSizeCategory];
 }
 

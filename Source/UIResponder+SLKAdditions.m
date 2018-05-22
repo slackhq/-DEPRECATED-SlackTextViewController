@@ -7,6 +7,7 @@
 //
 
 #import "UIResponder+SLKAdditions.h"
+#import "UIApplication+ExtensionSafe.h"
 
 static __weak id ___currentFirstResponder;
 
@@ -18,8 +19,10 @@ static __weak id ___currentFirstResponder;
 + (instancetype)slk_currentFirstResponder
 {
     ___currentFirstResponder = nil;
-    [[UIApplication sharedApplication] sendAction:@selector(slk_findFirstResponder:) to:nil from:nil forEvent:nil];
-    
+    UIApplication *sharedApp = [UIApplication safeSharedApplication];
+    if (sharedApp != nil) {
+        [sharedApp sendAction:@selector(slk_findFirstResponder:) to:nil from:nil forEvent:nil];
+    }
     return ___currentFirstResponder;
 }
 

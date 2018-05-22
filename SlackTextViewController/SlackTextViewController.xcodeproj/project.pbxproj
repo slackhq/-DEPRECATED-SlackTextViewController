@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		751FBFFA20B434480073DF8B /* UIApplication+ExtensionSafe.h in Headers */ = {isa = PBXBuildFile; fileRef = 751FBFF820B434480073DF8B /* UIApplication+ExtensionSafe.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		751FBFFB20B434480073DF8B /* UIApplication+ExtensionSafe.m in Sources */ = {isa = PBXBuildFile; fileRef = 751FBFF920B434480073DF8B /* UIApplication+ExtensionSafe.m */; };
 		F52253811CBE2F85002EECA9 /* SLKInputAccessoryView.h in Headers */ = {isa = PBXBuildFile; fileRef = F522536B1CBE2F85002EECA9 /* SLKInputAccessoryView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F52253821CBE2F85002EECA9 /* SLKInputAccessoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = F522536C1CBE2F85002EECA9 /* SLKInputAccessoryView.m */; };
 		F52253831CBE2F85002EECA9 /* SLKTextInput.h in Headers */ = {isa = PBXBuildFile; fileRef = F522536D1CBE2F85002EECA9 /* SLKTextInput.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -45,6 +47,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		751FBFF820B434480073DF8B /* UIApplication+ExtensionSafe.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIApplication+ExtensionSafe.h"; sourceTree = "<group>"; };
+		751FBFF920B434480073DF8B /* UIApplication+ExtensionSafe.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIApplication+ExtensionSafe.m"; sourceTree = "<group>"; };
 		F522536B1CBE2F85002EECA9 /* SLKInputAccessoryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLKInputAccessoryView.h; sourceTree = "<group>"; };
 		F522536C1CBE2F85002EECA9 /* SLKInputAccessoryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLKInputAccessoryView.m; sourceTree = "<group>"; };
 		F522536D1CBE2F85002EECA9 /* SLKTextInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLKTextInput.h; sourceTree = "<group>"; };
@@ -125,6 +129,8 @@
 		F5A7828F1BD0CF1D00EC230B /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				751FBFF820B434480073DF8B /* UIApplication+ExtensionSafe.h */,
+				751FBFF920B434480073DF8B /* UIApplication+ExtensionSafe.m */,
 				F522536B1CBE2F85002EECA9 /* SLKInputAccessoryView.h */,
 				F522536C1CBE2F85002EECA9 /* SLKInputAccessoryView.m */,
 				F522536D1CBE2F85002EECA9 /* SLKTextInput.h */,
@@ -181,6 +187,7 @@
 				F522538D1CBE2F85002EECA9 /* SLKTypingIndicatorProtocol.h in Headers */,
 				F52253951CBE2F85002EECA9 /* UIView+SLKAdditions.h in Headers */,
 				F52253851CBE2F85002EECA9 /* SLKTextInputbar.h in Headers */,
+				751FBFFA20B434480073DF8B /* UIApplication+ExtensionSafe.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -287,6 +294,7 @@
 				F52253841CBE2F85002EECA9 /* SLKTextInput+Implementation.m in Sources */,
 				F522538A1CBE2F85002EECA9 /* SLKTextView+SLKAdditions.m in Sources */,
 				F52253861CBE2F85002EECA9 /* SLKTextInputbar.m in Sources */,
+				751FBFFB20B434480073DF8B /* UIApplication+ExtensionSafe.m in Sources */,
 				F52253881CBE2F85002EECA9 /* SLKTextView.m in Sources */,
 				F52253961CBE2F85002EECA9 /* UIView+SLKAdditions.m in Sources */,
 				F522538C1CBE2F85002EECA9 /* SLKTextViewController.m in Sources */,
@@ -420,6 +428,7 @@
 		F5A782891BD0CEF400EC230B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -437,6 +446,7 @@
 		F5A7828A1BD0CEF400EC230B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
