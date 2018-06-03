@@ -97,7 +97,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  Adds an attributed string to a specific range.
  
- @param text The string to be appended to the current text.
+ @param attributedText The string to be appended to the current text.
  @param range The range where to insert text.
  @return The range of the newly inserted text.
  */
