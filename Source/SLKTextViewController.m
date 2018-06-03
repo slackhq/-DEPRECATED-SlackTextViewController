@@ -424,16 +424,19 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
 
 - (CGFloat)slk_appropriateBottomMargin
 {
-    // A bottom margin is required if the view is extended out of it bounds
-    if ((self.edgesForExtendedLayout & UIRectEdgeBottom) > 0) {
-        
-        UITabBar *tabBar = self.tabBarController.tabBar;
-        
-        // Considers the bottom tab bar, unless it will be hidden
-        if (tabBar && !tabBar.hidden && !self.hidesBottomBarWhenPushed) {
-            return CGRectGetHeight(tabBar.frame);
-        }
-    }
+//    I understand the intent of the following, but it is not correct. It's leaving the text field
+//    floating above the tab bar by precisely the height of the tab bar.
+//
+//    // A bottom margin is required if the view is extended out of it bounds
+//    if ((self.edgesForExtendedLayout & UIRectEdgeBottom) > 0) {
+//
+//        UITabBar *tabBar = self.tabBarController.tabBar;
+//
+//        // Considers the bottom tab bar, unless it will be hidden
+//        if (tabBar && !tabBar.hidden && !self.hidesBottomBarWhenPushed) {
+//            return CGRectGetHeight(tabBar.frame);
+//        }
+//    }
     
     // A bottom margin is required for iPhone X
     if (@available(iOS 11.0, *)) {
@@ -1780,13 +1783,13 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
                             if (prefix.length > 0 && word.length > 0) {
                                 
                                 // Captures the detected symbol prefix
-                                _foundPrefix = prefix;
+                                self->_foundPrefix = prefix;
                                 
                                 // Removes the found prefix, or not.
-                                _foundWord = [word substringFromIndex:prefix.length];
+                                self->_foundWord = [word substringFromIndex:prefix.length];
                                 
                                 // Used later for replacing the detected range with a new string alias returned in -acceptAutoCompletionWithString:
-                                _foundPrefixRange = NSMakeRange(wordRange.location, prefix.length);
+                                self->_foundPrefixRange = NSMakeRange(wordRange.location, prefix.length);
                                 
                                 [self slk_handleProcessedWord:word wordRange:wordRange];
                             }
