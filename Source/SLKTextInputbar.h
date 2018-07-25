@@ -49,6 +49,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) UIButton *rightButton;
 
 /** YES if the right button should be hidden animatedly in case the text view has no text in it. Default is YES. */
+@property (nonatomic, readwrite) BOOL leftButtonIsHidden;
+
+/** YES if the right button should be hidden animatedly in case the text view has no text in it. Default is YES. */
 @property (nonatomic, readwrite) BOOL autoHideRightButton;
 
 /** YES if animations should have bouncy effects. Default is YES. */
@@ -118,6 +121,11 @@ NS_ASSUME_NONNULL_BEGIN
  End editing the text, by updating the 'editing' flag and the view constraints.
  */
 - (void)endTextEdition;
+
+/**
+ Set hidden state for left button.
+ */
+- (void)setLeftButtonHidden:(BOOL)isHidden;
 
 
 #pragma mark - Text Counting
