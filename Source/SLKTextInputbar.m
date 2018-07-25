@@ -81,6 +81,7 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
     self.charCountLabelWarningColor = [UIColor redColor];
     
     self.autoHideRightButton = YES;
+    self.leftButtonIsHidden = YES;
     self.editorContentViewHeight = 38.0;
     self.contentInset = UIEdgeInsetsMake(5.0, 8.0, 5.0, 8.0);
 
@@ -517,6 +518,13 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
     [self addConstraints:self.charCountLabelVCs];
 }
 
+- (void)setLeftButtonHidden:(BOOL)isHidden
+{
+    self.leftButtonIsHidden = isHidden;
+    CGFloat leftButtonWidth = isHidden ? 0 : [self.rightButton intrinsicContentSize].width;
+    self.leftButton.hidden = isHidden;
+    self.leftButtonWC.constant = leftButtonWidth;
+}
 
 #pragma mark - Text Editing
 
@@ -713,8 +721,13 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
             self.leftButtonBottomMarginC.constant = roundf((self.intrinsicContentSize.height - leftButtonSize.height) / 2.0) + self.slk_contentViewHeight / 2.0;
         }
         
-        self.leftButtonWC.constant = roundf(leftButtonSize.width);
-        self.leftMarginWC.constant = (leftButtonSize.width > 0) ? self.contentInset.left : zero;
+        if (self.leftButtonIsHidden) {
+            self.leftButtonWC.constant = 0;
+            self.leftMarginWC.constant = zero;
+        } else {
+            self.leftButtonWC.constant = roundf(leftButtonSize.width);
+            self.leftMarginWC.constant = (leftButtonSize.width > 0) ? self.contentInset.left : zero;
+        }
         
         self.rightButtonWC.constant = [self slk_appropriateRightButtonWidth];
         self.rightMarginWC.constant = [self slk_appropriateRightButtonMargin];
