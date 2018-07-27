@@ -225,7 +225,7 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
                                   @"right" : @(self.contentInset.right)
                                   };
         
-        [_editorContentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(left)-[leftButton(60)]-(left)-[label(>=0)]-(right)-[rightButton(60)]-(<=right)-|" options:0 metrics:metrics views:views]];
+        [_editorContentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(16)-[leftButton(60)]-(left)-[label(>=0)]-(right)-[rightButton(60)]-(<=16)-|" options:0 metrics:metrics views:views]];
         [_editorContentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[leftButton]|" options:0 metrics:metrics views:views]];
         [_editorContentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[rightButton]|" options:0 metrics:metrics views:views]];
         [_editorContentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[label]|" options:0 metrics:metrics views:views]];
@@ -254,7 +254,7 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
     if (!_editorLeftButton) {
         _editorLeftButton = [UIButton buttonWithType:UIButtonTypeSystem];
         _editorLeftButton.translatesAutoresizingMaskIntoConstraints = NO;
-        _editorLeftButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+//        _editorLeftButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
         _editorLeftButton.titleLabel.font = [UIFont systemFontOfSize:15.0];
         
         NSString *title = NSLocalizedString(@"Cancel", nil);
@@ -269,7 +269,7 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
     if (!_editorRightButton) {
         _editorRightButton = [UIButton buttonWithType:UIButtonTypeSystem];
         _editorRightButton.translatesAutoresizingMaskIntoConstraints = NO;
-        _editorRightButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
+//        _editorRightButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
         _editorRightButton.titleLabel.font = [UIFont boldSystemFontOfSize:15.0];
         _editorRightButton.enabled = NO;
         
@@ -657,13 +657,14 @@ NSString * const SLKTextInputbarDidMoveNotification =   @"SLKTextInputbarDidMove
     NSDictionary *metrics = @{@"top" : @(self.contentInset.top),
                               @"left" : @(self.contentInset.left),
                               @"right" : @(self.contentInset.right),
+                              @"bottom" : @(self.contentInset.bottom)
                               };
     
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(left)-[leftButton(0)]-(<=left)-[textView]-(right)-[rightButton(0)]-(right)-|" options:0 metrics:metrics views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=0)-[leftButton(0)]-(0@750)-|" options:0 metrics:metrics views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(>=0)-[rightButton]-(<=0)-|" options:0 metrics:metrics views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(left@250)-[charCountLabel(<=50@1000)]-(right@750)-|" options:0 metrics:metrics views:views]];
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[editorContentView(0)]-(<=top)-[textView(0@999)]-(0)-|" options:0 metrics:metrics views:views]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-8-[textView(>=30@999)]-(<=bottom)-[editorContentView(0)]-(8)-|" options:0 metrics:metrics views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[editorContentView]|" options:0 metrics:metrics views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[contentView]|" options:0 metrics:metrics views:views]];
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[contentView(0)]|" options:0 metrics:metrics views:views]];
