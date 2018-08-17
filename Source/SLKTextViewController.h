@@ -348,9 +348,6 @@ NS_CLASS_AVAILABLE_IOS(7_0) @interface SLKTextViewController : UIViewController 
 /// @name Text Input Bar Adjustment
 ///------------------------------------------------
 
-/** YES if the text inputbar is hidden. Default is NO. */
-@property (nonatomic, getter=isTextInputbarHidden) BOOL textInputbarHidden;
-
 /**
  Changes the visibility of the text input bar.
  Calling this method with the animated parameter set to NO is equivalent to setting the value of the toolbarHidden property directly.
@@ -360,6 +357,7 @@ NS_CLASS_AVAILABLE_IOS(7_0) @interface SLKTextViewController : UIViewController 
  */
 - (void)setTextInputbarHidden:(BOOL)hidden animated:(BOOL)animated;
 
+- (BOOL)isTextInputBarHidden;
 
 #pragma mark - Text Edition
 ///------------------------------------------------
