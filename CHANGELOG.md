@@ -1,6 +1,7 @@
 # Change Log
 
 ## [Version 1.9.7](https://github.com/slackhq/SlackTextViewController/releases/tag/v1.9.7)
+- Add a warning to console about potential configuration issues when embedding SlackTextViewController into a UIContainerView when there is a configuration mismatch between SlackTextViewController and parent. By @rromanchuk (#668)
 
 #### Features:
 

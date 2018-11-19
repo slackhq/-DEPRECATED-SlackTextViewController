@@ -431,6 +431,9 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
         
         // Considers the bottom tab bar, unless it will be hidden
         if (tabBar && !tabBar.hidden && !self.hidesBottomBarWhenPushed) {
+            if (self.parentController && self.parentController.hidesBottomBarWhenPushed != self.hidesBottomBarWhenPushed) {
+                NSLog(@"WARNING!!!: Your SLKTextViewController is inside a Container View that has a different setting for hidesBottomBarWhenPushed. If unintended, this will lead to incorrect bottom margin calculations.");
+            }
             return CGRectGetHeight(tabBar.frame);
         }
     }
