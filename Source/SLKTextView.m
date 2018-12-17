@@ -382,8 +382,10 @@ SLKPastableMediaType SLKPastableMediaTypeFromNSString(NSString *string)
     CGFloat padding = self.textContainer.lineFragmentPadding;
     
     CGRect rect = CGRectZero;
-    rect.size.height = [self.placeholderLabel sizeThatFits:bounds.size].height;
-    rect.size.width = self.textContainer.size.width - padding*2.0;
+    CGSize size = bounds.size;
+    size.width = self.textContainer.size.width - padding*2.0;
+    rect.size.height = [self.placeholderLabel sizeThatFits:size].height;
+    rect.size.width = size.width;
     rect.origin = UIEdgeInsetsInsetRect(bounds, self.textContainerInset).origin;
     rect.origin.x += padding;
     
