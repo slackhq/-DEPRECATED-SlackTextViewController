@@ -1760,6 +1760,32 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     [self cancelAutoCompletion];
 }
 
+- (void)acceptAutoCompletionWithAttributedString:(NSAttributedString *)attributedString keepPrefix:(BOOL)keepPrefix
+{
+    if (attributedString.length == 0) {
+        return;
+    }
+    
+    NSUInteger location = self.foundPrefixRange.location;
+    if (keepPrefix) {
+        location += self.foundPrefixRange.length;
+    }
+    
+    NSUInteger length = self.foundWord.length;
+    if (!keepPrefix) {
+        length += self.foundPrefixRange.length;
+    }
+    
+    NSRange range = NSMakeRange(location, length);
+    NSRange insertionRange = [self.textView slk_insertAttributedText:attributedString inRange:range];
+    
+    self.textView.selectedRange = NSMakeRange(insertionRange.location, 0);
+    
+    [self.textView slk_scrollToCaretPositonAnimated:NO];
+    
+    [self cancelAutoCompletion];
+}
+
 - (void)cancelAutoCompletion
 {
     [self slk_invalidateAutoCompletion];
