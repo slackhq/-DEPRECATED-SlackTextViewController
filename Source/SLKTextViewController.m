@@ -467,13 +467,16 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     
     CGFloat topBarsHeight = CGRectGetHeight(self.navigationController.navigationBar.frame);
     
-    if ((SLK_IS_IPHONE && SLK_IS_LANDSCAPE && SLK_IS_IOS8_AND_HIGHER) ||
+    if ((SLK_IS_IPHONE && SLKIsLandscape() && SLK_IS_IOS8_AND_HIGHER) ||
         (SLK_IS_IPAD && self.modalPresentationStyle == UIModalPresentationFormSheet) ||
         self.isPresentedInPopover) {
         return topBarsHeight;
     }
-    
-    topBarsHeight += CGRectGetHeight([UIApplication sharedApplication].statusBarFrame);
+    UIApplication *sharedApp = [UIApplication safeSharedApplication];
+    if (sharedApp == nil) {
+        return topBarsHeight;
+    }
+    topBarsHeight += CGRectGetHeight(sharedApp.statusBarFrame);
     
     return topBarsHeight;
 }
@@ -1170,7 +1173,7 @@ CGFloat const SLKAutoCompletionViewDefaultHeight = 140.0;
     CGRect endFrame = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
     
     // Fixes iOS7 oddness with inverted values on landscape orientation
-    if (!SLK_IS_IOS8_AND_HIGHER && SLK_IS_LANDSCAPE) {
+    if (!SLK_IS_IOS8_AND_HIGHER && SLKIsLandscape()) {
         beginFrame = SLKRectInvert(beginFrame);
         endFrame = SLKRectInvert(endFrame);
     }
